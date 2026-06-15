@@ -1,5 +1,5 @@
 // =====================================================
-// Neuro HUD Controller v0.1
+// Neuro HUD Controller v0.2
 //
 // Drop this into the Neuro Pad HUD root.
 // This is the SL-native control layer.
@@ -7,13 +7,14 @@
 // Current focus:
 // - Button detection by prim name
 // - Settings > Neuron category
-// - Sends Neuron commands without requiring /77 typing
+// - Sends Neuron and wallet commands without requiring /77 typing
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Controller";
-integer BUILD_NUMBER = 1;
+integer BUILD_NUMBER = 2;
 
 integer NEURON_CONTROL_CHANNEL = -73463306;
+integer LM_WALLET_COMMAND = 7401;
 integer DIALOG_TIMEOUT = 60;
 
 integer gDialogChannel;
@@ -36,11 +37,16 @@ sendNeuronCommand(string cmd)
     llRegionSay(NEURON_CONTROL_CHANNEL, "NEURON_CMD|" + (string)llGetOwner() + "|" + cmd);
 }
 
+sendWalletCommand(string cmd)
+{
+    llMessageLinked(LINK_SET, LM_WALLET_COMMAND, cmd, llGetOwner());
+}
+
 openMain()
 {
     openDialog("main", "Neuro Pad\nChoose a section.", [
-        "Neuron",
-        "Apps",
+        "Profile",
+        "Stats",
         "Refresh",
         "Close"
     ]);
@@ -50,8 +56,9 @@ openSettings()
 {
     openDialog("settings", "Settings\nChoose a category.", [
         "Neuron",
-        "Display",
-        "System",
+        "Profile",
+        "Stats",
+        "Sync HUD",
         "Back",
         "Close"
     ]);
@@ -72,11 +79,54 @@ openNeuronSettings()
 
 openApps()
 {
-    openDialog("apps", "Neuro apps\nFirst versions are placeholders.", [
+    openDialog("apps", "Neuro apps\nChoose a section.", [
         "Wallet",
         "Health",
         "Social",
         "Jobs",
+        "Back",
+        "Close"
+    ]);
+}
+
+openNotifications()
+{
+    openDialog("notifications", "Notifications\nQuick alerts.", [
+        "Refresh",
+        "Stats",
+        "Profile",
+        "Back",
+        "Close"
+    ]);
+}
+
+openHealth()
+{
+    sendNeuronCommand("stats");
+    openDialog("health", "Health\nNeuron stats requested.", [
+        "Stats",
+        "Refresh",
+        "Back",
+        "Close"
+    ]);
+}
+
+openSocial()
+{
+    sendNeuronCommand("profile");
+    openDialog("social", "Social\nProfile requested.", [
+        "Profile",
+        "Refresh",
+        "Back",
+        "Close"
+    ]);
+}
+
+openJobs()
+{
+    openDialog("jobs", "Jobs\nWork tracking uses Breadcrumbs.", [
+        "Stats",
+        "Refresh",
         "Back",
         "Close"
     ]);
@@ -93,25 +143,23 @@ openDialog(string mode, string text, list buttons)
     llDialog(llGetOwner(), text, buttons, gDialogChannel);
 }
 
-comingSoon(string name)
-{
-    llOwnerSay("Neuro: " + name + " is coming soon.");
-}
-
 handleButtonName(string name)
 {
     string n = lower(name);
 
     if (n == "home") { openMain(); return; }
     if (n == "settings") { openSettings(); return; }
-    if (n == "notifications") { comingSoon("Notifications"); return; }
-    if (n == "wallet") { comingSoon("Wallet"); return; }
-    if (n == "health") { comingSoon("Health"); return; }
-    if (n == "social") { comingSoon("Social"); return; }
-    if (n == "jobs") { comingSoon("Jobs"); return; }
+    if (n == "notifications") { openNotifications(); return; }
+    if (n == "wallet") { sendWalletCommand("wallet"); return; }
+    if (n == "health") { openHealth(); return; }
+    if (n == "social") { openSocial(); return; }
+    if (n == "jobs") { openJobs(); return; }
     if (n == "edit") { sendNeuronCommand("setup"); return; }
     if (n == "refresh") { sendNeuronCommand("sync hud"); llOwnerSay("Neuro: sync requested."); return; }
     if (n == "minimize") { llOwnerSay("Neuro: minimize placeholder."); return; }
+    if (n == "info panel") { sendNeuronCommand("profile"); return; }
+    if (n == "messages") { openNotifications(); return; }
+    if (n == "time") { llOwnerSay("Neuro time: " + llGetTimestamp()); return; }
 }
 
 handleDialog(string msg)
@@ -119,7 +167,8 @@ handleDialog(string msg)
     if (msg == "Close") return;
     if (msg == "Back")
     {
-        if (gMode == "neuron" || gMode == "apps") openSettings();
+        if (gMode == "main") return;
+        if (gMode == "neuron" || gMode == "apps" || gMode == "health" || gMode == "social" || gMode == "jobs" || gMode == "notifications") openSettings();
         else openMain();
         return;
     }
@@ -133,11 +182,13 @@ handleDialog(string msg)
 
     if (msg == "Apps") { openApps(); return; }
     if (msg == "Neuron") { openNeuronSettings(); return; }
-    if (msg == "Display" || msg == "System")
-    {
-        comingSoon(msg + " settings");
-        return;
-    }
+    if (msg == "Wallet") { sendWalletCommand("wallet"); return; }
+    if (msg == "Health") { openHealth(); return; }
+    if (msg == "Social") { openSocial(); return; }
+    if (msg == "Jobs") { openJobs(); return; }
+    if (msg == "Profile") { sendNeuronCommand("profile"); return; }
+    if (msg == "Stats") { sendNeuronCommand("stats"); return; }
+    if (msg == "Sync HUD") { sendNeuronCommand("sync hud"); return; }
 
     if (gMode == "neuron")
     {
@@ -147,7 +198,7 @@ handleDialog(string msg)
         if (msg == "Sync HUD") { sendNeuronCommand("sync hud"); return; }
     }
 
-    comingSoon(msg);
+    llOwnerSay("Neuro: " + msg + " selected.");
 }
 
 default

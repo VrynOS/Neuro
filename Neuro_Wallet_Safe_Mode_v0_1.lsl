@@ -22,6 +22,7 @@ string DISPLAY_TITLE = "Neuro Wallet Safe Mode";
 integer BUILD_NUMBER = 1;
 
 integer COMMAND_CH = 77;
+integer LM_WALLET_COMMAND = 7401;
 integer BANK_CH = -777777;
 integer DIALOG_TIMEOUT = 60;
 integer USER_PAGE_SIZE = 6;
@@ -690,4 +691,12 @@ default
         }
     }
 
+    link_message(integer sender, integer num, string str, key id)
+    {
+        if (num == LM_WALLET_COMMAND)
+        {
+            if (id != llGetOwner()) return;
+            handleCommand(llGetOwner(), str);
+        }
+    }
 }
