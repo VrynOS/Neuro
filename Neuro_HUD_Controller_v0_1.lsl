@@ -1,5 +1,5 @@
 // =====================================================
-// Neuro HUD Controller v0.2
+// Neuro HUD Controller v0.3
 //
 // Drop this into the Neuro Pad HUD root.
 // This is the SL-native control layer.
@@ -11,7 +11,7 @@
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Controller";
-integer BUILD_NUMBER = 2;
+integer BUILD_NUMBER = 3;
 
 integer NEURON_CONTROL_CHANNEL = -73463306;
 integer LM_WALLET_COMMAND = 7401;
@@ -21,6 +21,7 @@ integer gDialogChannel;
 integer gDialogListen;
 string gMode = "";
 integer gDialogStarted;
+integer gOpen = FALSE;
 
 string cleanName(string name)
 {
@@ -42,8 +43,63 @@ sendWalletCommand(string cmd)
     llMessageLinked(LINK_SET, LM_WALLET_COMMAND, cmd, llGetOwner());
 }
 
+closeDialog()
+{
+    if (gDialogListen) llListenRemove(gDialogListen);
+    gDialogListen = 0;
+    gMode = "";
+    llSetTimerEvent(0.0);
+}
+
+integer isHomeLink(integer link)
+{
+    return (lower(llGetLinkName(link)) == "home");
+}
+
+setHudOpen(integer openFlag)
+{
+    integer link;
+    integer total;
+    float alpha;
+    integer changed;
+
+    changed = (gOpen != openFlag);
+    gOpen = openFlag;
+    total = llGetNumberOfPrims();
+
+    for (link = 1; link <= total; ++link)
+    {
+        alpha = 1.0;
+        if (!gOpen && !isHomeLink(link)) alpha = 0.0;
+        llSetLinkAlpha(link, alpha, ALL_SIDES);
+    }
+
+    if (gOpen)
+    {
+        sendNeuronCommand("sync hud");
+        if (changed) llOwnerSay("Neuro Pad opened.");
+    }
+    else
+    {
+        closeDialog();
+        sendWalletCommand("close");
+        if (changed) llOwnerSay("Neuro Pad closed.");
+    }
+}
+
+openHud()
+{
+    setHudOpen(TRUE);
+}
+
+closeHud()
+{
+    setHudOpen(FALSE);
+}
+
 openMain()
 {
+    if (!gOpen) openHud();
     openDialog("main", "Neuro Pad\nChoose a section.", [
         "Profile",
         "Stats",
@@ -134,6 +190,7 @@ openJobs()
 
 openDialog(string mode, string text, list buttons)
 {
+    if (!gOpen) openHud();
     if (gDialogListen) llListenRemove(gDialogListen);
     gDialogChannel = -1 * ((integer)llFrand(1000000.0) + 70000);
     gDialogListen = llListen(gDialogChannel, "", llGetOwner(), "");
@@ -147,6 +204,12 @@ handleButtonName(string name)
 {
     string n = lower(name);
 
+    if (!gOpen)
+    {
+        if (n == "home") { openHud(); return; }
+        return;
+    }
+
     if (n == "home") { openMain(); return; }
     if (n == "settings") { openSettings(); return; }
     if (n == "notifications") { openNotifications(); return; }
@@ -156,7 +219,7 @@ handleButtonName(string name)
     if (n == "jobs") { openJobs(); return; }
     if (n == "edit") { sendNeuronCommand("setup"); return; }
     if (n == "refresh") { sendNeuronCommand("sync hud"); llOwnerSay("Neuro: sync requested."); return; }
-    if (n == "minimize") { llOwnerSay("Neuro: minimize placeholder."); return; }
+    if (n == "minimize") { closeHud(); return; }
     if (n == "info panel") { sendNeuronCommand("profile"); return; }
     if (n == "messages") { openNotifications(); return; }
     if (n == "time") { llOwnerSay("Neuro time: " + llGetTimestamp()); return; }
@@ -164,7 +227,7 @@ handleButtonName(string name)
 
 handleDialog(string msg)
 {
-    if (msg == "Close") return;
+    if (msg == "Close") { closeHud(); return; }
     if (msg == "Back")
     {
         if (gMode == "main") return;
@@ -205,7 +268,18 @@ default
 {
     state_entry()
     {
+        closeHud();
         llOwnerSay(DISPLAY_TITLE + " online | Build " + (string)BUILD_NUMBER);
+    }
+
+    attach(key id)
+    {
+        if (id) closeHud();
+        else
+        {
+            closeDialog();
+            llSetTimerEvent(0.0);
+        }
     }
 
     touch_start(integer total)

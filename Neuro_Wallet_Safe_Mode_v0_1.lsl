@@ -597,6 +597,12 @@ handleCommand(key user, string raw)
         return;
     }
 
+    if (msg == "close")
+    {
+        closeMenu();
+        return;
+    }
+
     if (msg == "balance" || msg == "refresh")
     {
         activeUser = user;
