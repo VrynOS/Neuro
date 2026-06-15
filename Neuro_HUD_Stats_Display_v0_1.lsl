@@ -1,16 +1,16 @@
 // =====================================================
-// Neuro HUD Stats Display v0.1
+// Neuro HUD Stats Display v0.2
 //
 // Drop into the Neuro Pad HUD linkset.
 // Listens for Neuron snapshots and updates the stat bars.
 //
 // Expected linked prim names:
-// Hunger, Thirst, Sleep, Hygiene, Energy, Fun, XP
-// Info Panel
+// Hunger Fill, Thirst Fill, Sleep Fill, Hygiene Fill,
+// Energy Fill, Fun Fill, XP Fill
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Stats Display";
-integer BUILD_NUMBER = 1;
+integer BUILD_NUMBER = 2;
 
 integer NEURON_HUD_CHANNEL = -73463304;
 integer LM_HUD_OPEN_STATE = 7402;
@@ -23,12 +23,11 @@ integer gListen;
 integer gHudOpen = FALSE;
 string gLastSnapshot = "";
 
-list gNames = ["Hunger", "Thirst", "Sleep", "Hygiene", "Energy", "Fun", "XP"];
+list gNames = ["Hunger Fill", "Thirst Fill", "Sleep Fill", "Hygiene Fill", "Energy Fill", "Fun Fill", "XP Fill"];
 list gJsonKeys = ["stat.hunger", "stat.thirst", "stat.sleep", "stat.hygiene", "stat.energy", "stat.fun", "xp"];
 list gLinks = [];
 list gBaseSizes = [];
 list gBasePositions = [];
-integer gInfoLink = 0;
 
 string cleanName(string name)
 {
@@ -112,8 +111,6 @@ scanLinks()
         gBaseSizes += [size];
         gBasePositions += [pos];
     }
-
-    gInfoLink = findLink("Info Panel");
 }
 
 setBar(integer index, integer percent)
@@ -147,50 +144,6 @@ setBar(integer index, integer percent)
     ]);
 }
 
-string statLine(string label, string value)
-{
-    if (value == "" || value == JSON_INVALID) value = "0";
-    return label + ": " + value;
-}
-
-updateInfoText(string snapshot)
-{
-    string text;
-    string name;
-    string title;
-    string location;
-    string level;
-    string verified;
-
-    if (gInfoLink <= 0) return;
-
-    if (!gHudOpen)
-    {
-        llSetLinkPrimitiveParamsFast(gInfoLink, [PRIM_TEXT, "", <1.0, 1.0, 1.0>, 0.0]);
-        return;
-    }
-
-    name = llJsonGetValue(snapshot, ["displayName"]);
-    title = llJsonGetValue(snapshot, ["title"]);
-    location = llJsonGetValue(snapshot, ["location"]);
-    level = llJsonGetValue(snapshot, ["level"]);
-    verified = llJsonGetValue(snapshot, ["verified"]);
-
-    if (name == "" || name == JSON_INVALID) name = llKey2Name(llGetOwner());
-    if (title == JSON_INVALID) title = "";
-    if (location == JSON_INVALID) location = "";
-    if (level == JSON_INVALID) level = "0";
-
-    text = name
-        + "\n" + title
-        + "\n" + location
-        + "\nLevel " + level;
-
-    if (verified == "1") text += " | Verified";
-
-    llSetLinkPrimitiveParamsFast(gInfoLink, [PRIM_TEXT, text, <0.85, 1.0, 0.95>, 1.0]);
-}
-
 applySnapshot(string snapshot)
 {
     integer i;
@@ -206,7 +159,6 @@ applySnapshot(string snapshot)
         setBar(i, percent);
     }
 
-    updateInfoText(snapshot);
 }
 
 integer validSnapshot(string snapshot)
@@ -238,7 +190,6 @@ default
         if (num == LM_HUD_OPEN_STATE)
         {
             gHudOpen = (str == "OPEN");
-            if (gLastSnapshot != "") updateInfoText(gLastSnapshot);
         }
     }
 
