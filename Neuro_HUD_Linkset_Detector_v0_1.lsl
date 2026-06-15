@@ -21,7 +21,6 @@ integer CMD_CH = 77;
 
 list REQUIRED_NAMES = [
     "Root",
-    "Screen",
     "Settings",
     "Minimize",
     "Notifications",
@@ -50,6 +49,8 @@ list REQUIRED_NAMES = [
     "Messages",
     "Home"
 ];
+
+list ROOT_ALIASES = ["Root", "Neuro Pad"];
 
 integer listenHandle;
 
@@ -92,10 +93,44 @@ integer countLinksNamed(string wanted)
     return count;
 }
 
+integer findRootLink()
+{
+    integer i;
+    integer link;
+
+    for (i = 0; i < llGetListLength(ROOT_ALIASES); ++i)
+    {
+        link = findFirstLink(llList2String(ROOT_ALIASES, i));
+        if (link) return link;
+    }
+    return 0;
+}
+
+integer countRootLinks()
+{
+    integer i;
+    integer total = 0;
+
+    for (i = 0; i < llGetListLength(ROOT_ALIASES); ++i)
+    {
+        total += countLinksNamed(llList2String(ROOT_ALIASES, i));
+    }
+    return total;
+}
+
 string linkReportLine(string wanted)
 {
     integer link = findFirstLink(wanted);
     integer count = countLinksNamed(wanted);
+
+    if (wanted == "Root")
+    {
+        link = findRootLink();
+        count = countRootLinks();
+        if (link == 0) return "MISSING | Root or Neuro Pad";
+        if (count > 1) return "DUPLICATE x" + (string)count + " | Root/Neuro Pad | first link " + (string)link;
+        return "OK | Root/Neuro Pad | link " + (string)link;
+    }
 
     if (link == 0) return "MISSING | " + wanted;
     if (count > 1) return "DUPLICATE x" + (string)count + " | " + wanted + " | first link " + (string)link;
@@ -166,7 +201,11 @@ showMissingOnly()
     for (i = 0; i < llGetListLength(REQUIRED_NAMES); ++i)
     {
         wanted = llList2String(REQUIRED_NAMES, i);
-        if (findFirstLink(wanted) == 0) rows += [wanted];
+        if (wanted == "Root")
+        {
+            if (findRootLink() == 0) rows += ["Root or Neuro Pad"];
+        }
+        else if (findFirstLink(wanted) == 0) rows += [wanted];
     }
 
     if (llGetListLength(rows) == 0)
