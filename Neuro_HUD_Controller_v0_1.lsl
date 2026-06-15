@@ -1,5 +1,5 @@
 // =====================================================
-// Neuro HUD Controller v0.4
+// Neuro HUD Controller v0.5
 //
 // Drop this into the Neuro Pad HUD root.
 // This is the SL-native control layer.
@@ -11,10 +11,11 @@
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Controller";
-integer BUILD_NUMBER = 4;
+integer BUILD_NUMBER = 5;
 
 integer NEURON_CONTROL_CHANNEL = -73463306;
 integer LM_WALLET_COMMAND = 7401;
+integer LM_HUD_OPEN_STATE = 7402;
 integer DIALOG_TIMEOUT = 60;
 integer MINIMIZE_FACE = 4;
 
@@ -94,11 +95,13 @@ setHudOpen(integer openFlag)
 
     if (gOpen)
     {
+        llMessageLinked(LINK_SET, LM_HUD_OPEN_STATE, "OPEN", llGetOwner());
         sendNeuronCommand("sync hud");
         if (didChange) llOwnerSay("Neuro Pad opened.");
     }
     else
     {
+        llMessageLinked(LINK_SET, LM_HUD_OPEN_STATE, "CLOSED", llGetOwner());
         closeDialog();
         sendWalletCommand("close");
         if (didChange) llOwnerSay("Neuro Pad closed.");
