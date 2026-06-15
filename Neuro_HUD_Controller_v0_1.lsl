@@ -1,5 +1,5 @@
 // =====================================================
-// Neuro HUD Controller v0.3
+// Neuro HUD Controller v0.4
 //
 // Drop this into the Neuro Pad HUD root.
 // This is the SL-native control layer.
@@ -11,11 +11,12 @@
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Controller";
-integer BUILD_NUMBER = 3;
+integer BUILD_NUMBER = 4;
 
 integer NEURON_CONTROL_CHANNEL = -73463306;
 integer LM_WALLET_COMMAND = 7401;
 integer DIALOG_TIMEOUT = 60;
+integer MINIMIZE_FACE = 4;
 
 integer gDialogChannel;
 integer gDialogListen;
@@ -51,9 +52,25 @@ closeDialog()
     llSetTimerEvent(0.0);
 }
 
-integer isHomeLink(integer link)
+integer isMinimizeLink(integer link)
 {
-    return (lower(llGetLinkName(link)) == "home");
+    return (lower(llGetLinkName(link)) == "minimize");
+}
+
+setMinimizeFace()
+{
+    integer link;
+    integer total;
+    float faceAlpha;
+
+    total = llGetNumberOfPrims();
+    if (gOpen) faceAlpha = 0.0;
+    else faceAlpha = 1.0;
+
+    for (link = 1; link <= total; ++link)
+    {
+        if (isMinimizeLink(link)) llSetLinkAlpha(link, faceAlpha, MINIMIZE_FACE);
+    }
 }
 
 setHudOpen(integer openFlag)
@@ -70,9 +87,10 @@ setHudOpen(integer openFlag)
     for (link = 1; link <= total; ++link)
     {
         alpha = 1.0;
-        if (!gOpen && !isHomeLink(link)) alpha = 0.0;
+        if (!gOpen && !isMinimizeLink(link)) alpha = 0.0;
         llSetLinkAlpha(link, alpha, ALL_SIDES);
     }
+    setMinimizeFace();
 
     if (gOpen)
     {
@@ -206,11 +224,11 @@ handleButtonName(string name)
 
     if (!gOpen)
     {
-        if (n == "home") { openHud(); return; }
+        if (n == "minimize") { openHud(); return; }
         return;
     }
 
-    if (n == "home") { openMain(); return; }
+    if (n == "home") { return; }
     if (n == "settings") { openSettings(); return; }
     if (n == "notifications") { openNotifications(); return; }
     if (n == "wallet") { sendWalletCommand("wallet"); return; }
