@@ -61,9 +61,9 @@ setHudOpen(integer openFlag)
     integer link;
     integer total;
     float alpha;
-    integer changed;
+    integer didChange;
 
-    changed = (gOpen != openFlag);
+    didChange = (gOpen != openFlag);
     gOpen = openFlag;
     total = llGetNumberOfPrims();
 
@@ -77,13 +77,13 @@ setHudOpen(integer openFlag)
     if (gOpen)
     {
         sendNeuronCommand("sync hud");
-        if (changed) llOwnerSay("Neuro Pad opened.");
+        if (didChange) llOwnerSay("Neuro Pad opened.");
     }
     else
     {
         closeDialog();
         sendWalletCommand("close");
-        if (changed) llOwnerSay("Neuro Pad closed.");
+        if (didChange) llOwnerSay("Neuro Pad closed.");
     }
 }
 
