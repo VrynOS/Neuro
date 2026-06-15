@@ -139,7 +139,7 @@ setBar(integer index, integer percent)
     if (newSize.x < 0.01) newSize.x = 0.01;
 
     newPos = basePos;
-    newPos.x = basePos.x - ((baseSize.x - newSize.x) * 0.5);
+    newPos.x = basePos.x + ((baseSize.x - newSize.x) * 0.5);
 
     llSetLinkPrimitiveParamsFast(link, [
         PRIM_SIZE, newSize,
