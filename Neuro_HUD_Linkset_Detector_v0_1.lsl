@@ -1,44 +1,31 @@
 // =====================================================
-// Neuro HUD Linkset Detector v0.1
+// Neuro HUD Linkset Detector v0.2
 //
 // Drop this into the linked Neuro HUD while building.
-// It scans prim names, reports link numbers, and warns
-// about missing or duplicate controls.
+// It scans the live linkset, reports link numbers, and
+// checks the current SL-native Neuro Pad names.
 //
 // Owner commands:
 //   /77 scan
 //   /77 links
 //   /77 missing
+//   /77 stats
 //   /77 help
 //
-// Touch the HUD as owner to run a scan.
-// Remove this script after the HUD is linked/named.
+// Touch the HUD as owner to scan.
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Linkset Detector";
-integer BUILD_NUMBER = 1;
+integer BUILD_NUMBER = 2;
 integer CMD_CH = 77;
 
-list REQUIRED_NAMES = [
-    "Root",
+list ROOT_ALIASES = ["Root", "Neuro Pad"];
+
+list CORE_NAMES = [
     "Settings",
     "Minimize",
     "Notifications",
     "Time",
-    "Hunger",
-    "Thirst",
-    "Sleep",
-    "Hygiene",
-    "Energy",
-    "Fun",
-    "XP",
-    "Hunger Light",
-    "Thirst Light",
-    "Sleep Light",
-    "Hygiene Light",
-    "Energy Light",
-    "Fun Light",
-    "XP Light",
     "Info Panel",
     "Edit",
     "Refresh",
@@ -46,34 +33,50 @@ list REQUIRED_NAMES = [
     "Health",
     "Social",
     "Jobs",
-    "Messages",
+    "Messages"
+];
+
+list STAT_NAMES = [
+    "Stats Sheet",
+    "Hunger Fill",
+    "Thirst Fill",
+    "Sleep Fill",
+    "Hygiene Fill",
+    "Energy Fill",
+    "Fun Fill",
+    "XP Fill"
+];
+
+list OPTIONAL_NAMES = [
+    "Verified",
     "Home"
 ];
 
-list ROOT_ALIASES = ["Root", "Neuro Pad"];
-
 integer listenHandle;
-
-integer sameName(string a, string b)
-{
-    return (llToLower(llStringTrim(a, STRING_TRIM)) == llToLower(llStringTrim(b, STRING_TRIM)));
-}
 
 string cleanName(string name)
 {
     return llStringTrim(name, STRING_TRIM);
 }
 
+string norm(string name)
+{
+    return llToLower(cleanName(name));
+}
+
+integer sameName(string a, string b)
+{
+    return (norm(a) == norm(b));
+}
+
 integer findFirstLink(string wanted)
 {
     integer total = llGetNumberOfPrims();
     integer link;
-    string name;
 
     for (link = 1; link <= total; ++link)
     {
-        name = cleanName(llGetLinkName(link));
-        if (sameName(name, wanted)) return link;
+        if (sameName(llGetLinkName(link), wanted)) return link;
     }
     return 0;
 }
@@ -83,12 +86,10 @@ integer countLinksNamed(string wanted)
     integer total = llGetNumberOfPrims();
     integer link;
     integer count = 0;
-    string name;
 
     for (link = 1; link <= total; ++link)
     {
-        name = cleanName(llGetLinkName(link));
-        if (sameName(name, wanted)) count += 1;
+        if (sameName(llGetLinkName(link), wanted)) count += 1;
     }
     return count;
 }
@@ -118,23 +119,32 @@ integer countRootLinks()
     return total;
 }
 
-string linkReportLine(string wanted)
+string reportName(string wanted, integer required)
 {
     integer link = findFirstLink(wanted);
     integer count = countLinksNamed(wanted);
+    string prefix = "OK";
 
-    if (wanted == "Root")
+    if (!required) prefix = "OPTIONAL";
+
+    if (link == 0)
     {
-        link = findRootLink();
-        count = countRootLinks();
-        if (link == 0) return "MISSING | Root or Neuro Pad";
-        if (count > 1) return "DUPLICATE x" + (string)count + " | Root/Neuro Pad | first link " + (string)link;
-        return "OK | Root/Neuro Pad | link " + (string)link;
+        if (required) return "MISSING | " + wanted;
+        return "OPTIONAL missing | " + wanted;
     }
 
-    if (link == 0) return "MISSING | " + wanted;
     if (count > 1) return "DUPLICATE x" + (string)count + " | " + wanted + " | first link " + (string)link;
-    return "OK | " + wanted + " | link " + (string)link;
+    return prefix + " | " + wanted + " | link " + (string)link;
+}
+
+string reportRoot()
+{
+    integer link = findRootLink();
+    integer count = countRootLinks();
+
+    if (link == 0) return "MISSING | Root or Neuro Pad";
+    if (count > 1) return "DUPLICATE x" + (string)count + " | Root/Neuro Pad | first link " + (string)link;
+    return "OK | Root/Neuro Pad | link " + (string)link;
 }
 
 sayBlock(string header, list rows)
@@ -155,19 +165,39 @@ sayBlock(string header, list rows)
     llOwnerSay(out);
 }
 
-scanRequired()
+list scanList(list names, integer required)
 {
     list rows = [];
     integer i;
-    string wanted;
 
-    for (i = 0; i < llGetListLength(REQUIRED_NAMES); ++i)
+    for (i = 0; i < llGetListLength(names); ++i)
     {
-        wanted = llList2String(REQUIRED_NAMES, i);
-        rows += [linkReportLine(wanted)];
+        rows += [reportName(llList2String(names, i), required)];
     }
+    return rows;
+}
 
-    sayBlock("Neuro required link scan:", rows);
+scanRequired()
+{
+    list rows = [];
+
+    rows += [reportRoot()];
+    rows += ["-- Core --"];
+    rows += scanList(CORE_NAMES, TRUE);
+    rows += ["-- Stats --"];
+    rows += scanList(STAT_NAMES, TRUE);
+    rows += ["-- Optional --"];
+    rows += scanList(OPTIONAL_NAMES, FALSE);
+
+    sayBlock("Neuro live linkset scan:", rows);
+}
+
+showStatsOnly()
+{
+    list rows = [];
+
+    rows += scanList(STAT_NAMES, TRUE);
+    sayBlock("Neuro stat link scan:", rows);
 }
 
 list allLinkRows()
@@ -192,21 +222,27 @@ showAllLinks()
     sayBlock("Neuro all linked prims:", allLinkRows());
 }
 
-showMissingOnly()
+list addMissing(list names, list rows)
 {
-    list rows = [];
     integer i;
     string wanted;
 
-    for (i = 0; i < llGetListLength(REQUIRED_NAMES); ++i)
+    for (i = 0; i < llGetListLength(names); ++i)
     {
-        wanted = llList2String(REQUIRED_NAMES, i);
-        if (wanted == "Root")
-        {
-            if (findRootLink() == 0) rows += ["Root or Neuro Pad"];
-        }
-        else if (findFirstLink(wanted) == 0) rows += [wanted];
+        wanted = llList2String(names, i);
+        if (findFirstLink(wanted) == 0) rows += [wanted];
     }
+
+    return rows;
+}
+
+showMissingOnly()
+{
+    list rows = [];
+
+    if (findRootLink() == 0) rows += ["Root or Neuro Pad"];
+    rows = addMissing(CORE_NAMES, rows);
+    rows = addMissing(STAT_NAMES, rows);
 
     if (llGetListLength(rows) == 0)
     {
@@ -214,7 +250,7 @@ showMissingOnly()
         return;
     }
 
-    sayBlock("Neuro missing names:", rows);
+    sayBlock("Neuro missing required names:", rows);
 }
 
 showHelp()
@@ -222,9 +258,10 @@ showHelp()
     llOwnerSay(
         DISPLAY_TITLE + " Build " + (string)BUILD_NUMBER
         + "\nTouch HUD to scan."
-        + "\n/77 scan = required names"
-        + "\n/77 links = all link numbers"
+        + "\n/77 scan = current Neuro map"
+        + "\n/77 links = all live link names"
         + "\n/77 missing = missing required names"
+        + "\n/77 stats = stat sheet/fill names"
         + "\n/77 help = this help"
     );
 }
@@ -237,6 +274,7 @@ handleCommand(key speaker, string msg)
     if (msg == "scan") { scanRequired(); return; }
     if (msg == "links") { showAllLinks(); return; }
     if (msg == "missing") { showMissingOnly(); return; }
+    if (msg == "stats") { showStatsOnly(); return; }
     if (msg == "help") { showHelp(); return; }
 }
 
