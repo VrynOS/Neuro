@@ -673,6 +673,8 @@ default
     touch_start(integer total)
     {
         key toucher = llDetectedKey(0);
+        string linkName = llStringTrim(llGetLinkName(llDetectedLinkNumber(0)), STRING_TRIM);
+        if (linkName != "Wallet") return;
         if (toucher == llGetOwner() || llSameGroup(toucher)) openSafeMode(toucher);
     }
 
