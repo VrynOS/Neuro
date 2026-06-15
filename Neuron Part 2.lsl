@@ -1,45 +1,24 @@
 // =====================================================
-// Neuro-Link Neuron
-// Build 0.2
+// Neuron Part 2
+// Build 0.3
 //
-// Wear this as an avatar attachment.
-// Neuron is the player-side brain:
-// - First-time profile setup
-// - Persistent profile storage
-// - Stats decay over real time
-// - XP and unlimited levels
-// - Breadcrumb use tracking
-// - Region/location tracking
-// - HUD broadcast snapshots
-//
-// Owner commands:
-//   /77 neuron
-//   /77 stats
-//   /77 profile
-//   /77 setup
-//   /77 reset setup
-//
-// HUD/Server contracts:
-//   Breadcrumbs/CDF Tracker channel: -73463301
-//   Neuron -> HUD channel:          -73463304
-//   Neuron <-> Neuron Server:       -73463305
-//   HUD -> Neuron control:          -73463306
+// Wear in the Neuron avatar attachment with Neuron Part 1.
+// Part 2 owns stats, XP, levels, verification, and Breadcrumbs.
 // =====================================================
 
-string DISPLAY_TITLE = "Neuro-Link Neuron";
-integer BUILD_NUMBER = 2;
+string DISPLAY_TITLE = "Neuron Part 2";
+integer BUILD_NUMBER = 3;
 
 integer CDF_TRACKER_CHANNEL = -73463301;
-integer NEURON_HUD_CHANNEL = -73463304;
-integer NEURON_SERVER_CHANNEL = -73463305;
-integer NEURON_CONTROL_CHANNEL = -73463306;
 integer COMMAND_CHANNEL = 77;
 string CDF_TOKEN = "CDF_WORLD_V1";
 
-// Change this if Camden Falls time is adjusted.
-integer CDF_HOUR_SECONDS = 900; // 15 RL minutes = 1 CDF hour
+integer LM_STATS_REQ = 7301;
+integer LM_STATS_RSP = 7302;
+integer LM_STATS_RESTORE = 7303;
+integer LM_STATS_COMMAND = 7304;
 
-integer HEARTBEAT_SECONDS = 120;
+integer CDF_HOUR_SECONDS = 900;
 integer TICK_SECONDS = 60;
 integer XP_PER_LEVEL = 1000;
 integer XP_PER_CDF_HOUR_WORN = 20;
@@ -59,33 +38,17 @@ integer DECAY_HYGIENE_SECONDS = 2700;
 integer DECAY_ENERGY_SECONDS = 1200;
 integer DECAY_FUN_SECONDS = 1500;
 
-string K_PROFILE = "NEURON_PROFILE";
 string K_STATS = "NEURON_STATS";
 string K_TIMES = "NEURON_TIMES";
 string K_XP = "NEURON_XP";
 
-integer gCmdListen;
 integer gBreadcrumbListen;
-integer gServerListen;
-integer gControlListen;
-integer gSetupListen;
-integer gSetupChannel;
-string gSetupStep = "";
-
-string gDisplayName = "";
-string gSex = "";
-integer gAge = 0;
-string gTitle = "";
-string gLocation = "";
-integer gSetupDone = FALSE;
-
 integer gHunger = 100;
 integer gThirst = 100;
 integer gSleep = 100;
 integer gHygiene = 100;
 integer gEnergy = 100;
 integer gFun = 100;
-
 integer gXP = 0;
 integer gLevel = 0;
 integer gLastStatTick = 0;
@@ -96,7 +59,6 @@ integer gLastHygieneTick = 0;
 integer gLastEnergyTick = 0;
 integer gLastFunTick = 0;
 integer gLastWearXP = 0;
-integer gLastHeartbeat = 0;
 
 integer clamp(integer value, integer lo, integer hi)
 {
@@ -109,11 +71,6 @@ integer toInt(string value)
 {
     if (value == "" || value == JSON_INVALID) return 0;
     return (integer)value;
-}
-
-string cleanText(string value)
-{
-    return llStringTrim(value, STRING_TRIM);
 }
 
 string lower(string value)
@@ -130,50 +87,6 @@ integer levelFromXP(integer xp)
 integer isVerified()
 {
     return (gLevel >= 10);
-}
-
-loadProfile()
-{
-    string raw = llLinksetDataRead(K_PROFILE);
-    if (raw == "")
-    {
-        gDisplayName = llGetDisplayName(llGetOwner());
-        if (gDisplayName == "" || gDisplayName == "Resident") gDisplayName = llKey2Name(llGetOwner());
-        gSex = "";
-        gAge = 0;
-        gTitle = "";
-        gLocation = "";
-        gSetupDone = FALSE;
-        return;
-    }
-
-    gDisplayName = llJsonGetValue(raw, ["displayName"]);
-    gSex = llJsonGetValue(raw, ["sex"]);
-    gAge = toInt(llJsonGetValue(raw, ["age"]));
-    gTitle = llJsonGetValue(raw, ["title"]);
-    gLocation = llJsonGetValue(raw, ["location"]);
-    gSetupDone = (toInt(llJsonGetValue(raw, ["setupDone"])) == TRUE);
-
-    if (gDisplayName == "" || gDisplayName == JSON_INVALID) gDisplayName = llGetDisplayName(llGetOwner());
-    if (gLocation == "" || gLocation == JSON_INVALID) gLocation = "";
-}
-
-saveProfile()
-{
-    string raw = llList2Json(JSON_OBJECT, [
-        "avatar", (string)llGetOwner(),
-        "displayName", gDisplayName,
-        "legacyName", llKey2Name(llGetOwner()),
-        "sex", gSex,
-        "age", (string)gAge,
-        "title", gTitle,
-        "location", gLocation,
-        "setupDone", (string)gSetupDone,
-        "verified", (string)isVerified(),
-        "updated", (string)llGetUnixTime()
-    ]);
-
-    llLinksetDataWrite(K_PROFILE, raw);
 }
 
 loadStats()
@@ -257,6 +170,19 @@ integer decayAmount(integer elapsed, integer stepSeconds)
     return elapsed / stepSeconds;
 }
 
+addXP(integer amount, string reason)
+{
+    integer oldLevel = gLevel;
+
+    if (amount <= 0) return;
+    gXP += amount;
+    gLevel = levelFromXP(gXP);
+    saveStats();
+
+    if (gLevel > oldLevel) llOwnerSay("Neuro: Level up. Level " + (string)gLevel + ".");
+    sendStatsToPart1("xp." + reason);
+}
+
 applyTime()
 {
     integer now = llGetUnixTime();
@@ -301,24 +227,6 @@ applyTime()
     saveStats();
 }
 
-addXP(integer amount, string reason)
-{
-    integer oldLevel = gLevel;
-    if (amount <= 0) return;
-
-    gXP += amount;
-    gLevel = levelFromXP(gXP);
-    saveStats();
-
-    if (gLevel > oldLevel)
-    {
-        llOwnerSay("Neuro: Level up. Level " + (string)gLevel + ".");
-        saveProfile();
-    }
-
-    sendHudSnapshot("xp." + reason);
-}
-
 applyStat(string statName, integer amount)
 {
     statName = lower(statName);
@@ -344,7 +252,6 @@ integer xpForPayload(string payload)
 
     if (llSubStringIndex(eventName, "heartbeat") != -1) return 0;
     if (llSubStringIndex(eventName, "register") != -1) return 0;
-
     if (llSubStringIndex(eventName, "clock.in") != -1 || llSubStringIndex(eventName, "clockin") != -1) return XP_WORK_CLOCK_IN;
     if (llSubStringIndex(eventName, "clock.out") != -1 || llSubStringIndex(eventName, "clockout") != -1 || llSubStringIndex(eventName, "auto.clock") != -1) return XP_WORK_CLOCK_OUT;
     if (typeName == "work") return XP_WORK_CLOCK_IN;
@@ -370,6 +277,7 @@ handleBreadcrumb(string payload)
 
     if (avatar != llGetOwner()) return;
 
+    applyTime();
     applyStat("hunger", toInt(llJsonGetValue(payload, ["stat.hunger"])));
     applyStat("thirst", toInt(llJsonGetValue(payload, ["stat.thirst"])));
     applyStat("sleep", toInt(llJsonGetValue(payload, ["stat.sleep"])));
@@ -381,34 +289,18 @@ handleBreadcrumb(string payload)
     applyStat("care", toInt(llJsonGetValue(payload, ["stat.care"])));
     applyStat("health", toInt(llJsonGetValue(payload, ["stat.health"])));
 
-    saveProfile();
-    saveStats();
-
     gained = xpForPayload(payload);
     if (gained > 0) addXP(gained, "breadcrumb");
 
-    sendHudSnapshot("breadcrumb");
+    saveStats();
+    sendStatsToPart1("breadcrumb");
 }
 
-string snapshotJsonActive(string reason, integer active)
+string statsJson()
 {
     return llList2Json(JSON_OBJECT, [
-        "token", CDF_TOKEN,
-        "source", "neuron.brain",
-        "event", "neuron.snapshot",
-        "reason", reason,
-        "active", (string)active,
-        "paused", (string)(!active),
-        "avatar", (string)llGetOwner(),
-        "displayName", gDisplayName,
-        "legacyName", llKey2Name(llGetOwner()),
-        "sex", gSex,
-        "age", (string)gAge,
-        "title", gTitle,
-        "location", gLocation,
-        "region", llGetRegionName(),
-        "level", (string)gLevel,
         "xp", (string)gXP,
+        "level", (string)gLevel,
         "verified", (string)isVerified(),
         "stat.hunger", (string)gHunger,
         "stat.thirst", (string)gThirst,
@@ -420,45 +312,16 @@ string snapshotJsonActive(string reason, integer active)
     ]);
 }
 
-string snapshotJson(string reason)
+sendStatsToPart1(string reason)
 {
-    return snapshotJsonActive(reason, TRUE);
+    llMessageLinked(LINK_SET, LM_STATS_RSP, statsJson(), llGetOwner());
 }
 
-sendHudSnapshot(string reason)
-{
-    llRegionSay(NEURON_HUD_CHANNEL, snapshotJson(reason));
-}
-
-sendServerSnapshot(string reason, integer active)
-{
-    llRegionSay(NEURON_SERVER_CHANNEL, snapshotJsonActive(reason, active));
-}
-
-requestServerRestore()
-{
-    string msg = llList2Json(JSON_OBJECT, [
-        "token", CDF_TOKEN,
-        "source", "neuron.brain",
-        "event", "neuron.restore.request",
-        "avatar", (string)llGetOwner(),
-        "attachment", (string)llGetKey(),
-        "time", (string)llGetUnixTime()
-    ]);
-
-    llRegionSay(NEURON_SERVER_CHANNEL, msg);
-}
-
-restoreFromSnapshot(string snapshot)
+restoreStats(string snapshot)
 {
     if (llJsonGetValue(snapshot, ["token"]) != CDF_TOKEN) return;
     if (llJsonGetValue(snapshot, ["avatar"]) != (string)llGetOwner()) return;
 
-    gDisplayName = llJsonGetValue(snapshot, ["displayName"]);
-    gSex = llJsonGetValue(snapshot, ["sex"]);
-    gAge = toInt(llJsonGetValue(snapshot, ["age"]));
-    gTitle = llJsonGetValue(snapshot, ["title"]);
-    gLocation = llJsonGetValue(snapshot, ["location"]);
     gXP = toInt(llJsonGetValue(snapshot, ["xp"]));
     gLevel = levelFromXP(gXP);
     gHunger = clamp(toInt(llJsonGetValue(snapshot, ["stat.hunger"])), 0, 100);
@@ -467,51 +330,13 @@ restoreFromSnapshot(string snapshot)
     gHygiene = clamp(toInt(llJsonGetValue(snapshot, ["stat.hygiene"])), 0, 100);
     gEnergy = clamp(toInt(llJsonGetValue(snapshot, ["stat.energy"])), 0, 100);
     gFun = clamp(toInt(llJsonGetValue(snapshot, ["stat.fun"])), 0, 100);
-
-    if (gDisplayName == "" || gDisplayName == JSON_INVALID) gDisplayName = llGetDisplayName(llGetOwner());
-    if (gTitle == JSON_INVALID) gTitle = "";
-    if (gSex == JSON_INVALID) gSex = "";
-    if (gLocation == JSON_INVALID) gLocation = "";
-    gSetupDone = (gSex != "" && gAge > 0 && gLocation != "" && gTitle != "");
-
-    saveProfile();
     saveStats();
-    sendHudSnapshot("server.restore");
-    llOwnerSay("Neuro restored from Neuron Server backup.");
-}
-
-handleServerMessage(string message)
-{
-    string prefix = "NEURON_RESTORE|" + (string)llGetOwner() + "|";
-    string snapshot;
-
-    if (llGetSubString(message, 0, llStringLength(prefix) - 1) != prefix) return;
-    snapshot = llGetSubString(message, llStringLength(prefix), -1);
-    if (snapshot == "") return;
-
-    restoreFromSnapshot(snapshot);
-}
-
-sendNeuronEvent(string eventName, string detail)
-{
-    string payload = llList2Json(JSON_OBJECT, [
-        "token", CDF_TOKEN,
-        "source", "neurons",
-        "event", eventName,
-        "avatar", (string)llGetOwner(),
-        "displayName", llGetDisplayName(llGetOwner()),
-        "legacyName", llKey2Name(llGetOwner()),
-        "attachment", (string)llGetKey(),
-        "detail", detail,
-        "region", llGetRegionName(),
-        "time", (string)llGetUnixTime()
-    ]);
-
-    llRegionSay(CDF_TRACKER_CHANNEL, payload);
+    sendStatsToPart1("server.restore");
 }
 
 showStats()
 {
+    applyTime();
     llOwnerSay(
         "Neuro Stats"
         + "\nHunger: " + (string)gHunger
@@ -526,147 +351,13 @@ showStats()
     );
 }
 
-showProfile()
-{
-    llOwnerSay(
-        "Neuro Profile"
-        + "\nName: " + gDisplayName
-        + "\nSex: " + gSex
-        + "\nAge: " + (string)gAge
-        + "\nTitle: " + gTitle
-        + "\nLocation: " + gLocation
-        + "\nLevel: " + (string)gLevel
-    );
-}
-
-openHome()
-{
-    llDialog(llGetOwner(), "Neuro-Link Neuron\nChoose an action.", [
-        "Stats",
-        "Profile",
-        "Setup",
-        "Sync HUD",
-        "Close"
-    ], COMMAND_CHANNEL);
-}
-
-startSetup()
-{
-    if (gSetupListen) llListenRemove(gSetupListen);
-    gSetupChannel = -1 * ((integer)llFrand(1000000.0) + 60000);
-    gSetupListen = llListen(gSetupChannel, "", llGetOwner(), "");
-    gSetupStep = "sex";
-
-    llDialog(llGetOwner(), "Neuro first-time setup\nChoose sex.", [
-        "Male",
-        "Female",
-        "Nonbinary",
-        "Other"
-    ], gSetupChannel);
-}
-
-continueSetup(string answer)
-{
-    answer = cleanText(answer);
-
-    if (gSetupStep == "sex")
-    {
-        gSex = answer;
-        gSetupStep = "age";
-        llTextBox(llGetOwner(), "Enter age as a number.", gSetupChannel);
-        return;
-    }
-
-    if (gSetupStep == "age")
-    {
-        gAge = (integer)answer;
-        if (gAge < 0) gAge = 0;
-        gSetupStep = "location";
-        llDialog(llGetOwner(), "Choose Camden Falls location.", [
-            "Chi-Core",
-            "Eden Palms"
-        ], gSetupChannel);
-        return;
-    }
-
-    if (gSetupStep == "location")
-    {
-        if (answer == "Chi-Core" || answer == "Eden Palms") gLocation = answer;
-        else gLocation = "Eden Palms";
-        gSetupStep = "title";
-        llTextBox(llGetOwner(), "Enter title. Example: Ghost", gSetupChannel);
-        return;
-    }
-
-    if (gSetupStep == "title")
-    {
-        gTitle = answer;
-        if (gTitle == "") gTitle = "Resident";
-        gDisplayName = llGetDisplayName(llGetOwner());
-        if (gDisplayName == "" || gDisplayName == "Resident") gDisplayName = llKey2Name(llGetOwner());
-        gSetupDone = TRUE;
-        saveProfile();
-    saveStats();
-    sendHudSnapshot("setup.complete");
-        sendServerSnapshot("setup.complete", TRUE);
-        llOwnerSay("Neuro setup complete. Welcome, " + gDisplayName + ".");
-
-        if (gSetupListen) llListenRemove(gSetupListen);
-        gSetupListen = 0;
-        gSetupStep = "";
-    }
-}
-
-handleCommand(string msg)
-{
-    string cmd = lower(cleanText(msg));
-
-    if (cmd == "neuron") { openHome(); return; }
-    if (cmd == "stats") { applyTime(); showStats(); return; }
-    if (cmd == "profile") { showProfile(); return; }
-    if (cmd == "setup") { startSetup(); return; }
-    if (cmd == "reset setup")
-    {
-        llLinksetDataDelete(K_PROFILE);
-        loadProfile();
-        startSetup();
-        return;
-    }
-    if (cmd == "sync hud")
-    {
-        sendHudSnapshot("manual.sync");
-        sendServerSnapshot("manual.sync", TRUE);
-        llOwnerSay("Neuro HUD sync sent.");
-        return;
-    }
-}
-
 init()
 {
-    loadProfile();
     loadStats();
-
-    if (gCmdListen) llListenRemove(gCmdListen);
     if (gBreadcrumbListen) llListenRemove(gBreadcrumbListen);
-    if (gServerListen) llListenRemove(gServerListen);
-    if (gControlListen) llListenRemove(gControlListen);
-
-    gCmdListen = llListen(COMMAND_CHANNEL, "", llGetOwner(), "");
     gBreadcrumbListen = llListen(CDF_TRACKER_CHANNEL, "", NULL_KEY, "");
-    gServerListen = llListen(NEURON_SERVER_CHANNEL, "", NULL_KEY, "");
-    gControlListen = llListen(NEURON_CONTROL_CHANNEL, "", NULL_KEY, "");
-
     llSetTimerEvent((float)TICK_SECONDS);
-    sendNeuronEvent("neuron.online", "init");
-    sendHudSnapshot("init");
-    sendServerSnapshot("init", TRUE);
-    requestServerRestore();
-
-    if (!gSetupDone)
-    {
-        llOwnerSay("Neuro first-time setup needed. Type /77 setup.");
-        startSetup();
-    }
+    sendStatsToPart1("init");
 }
 
 default
@@ -674,91 +365,62 @@ default
     state_entry()
     {
         init();
+        llOwnerSay(DISPLAY_TITLE + " online | Build " + (string)BUILD_NUMBER);
     }
 
     attach(key id)
     {
-        if (id)
-        {
-            init();
-            sendNeuronEvent("neuron.online", "attached");
-        }
+        if (id) init();
         else
         {
             applyTime();
-            saveProfile();
             saveStats();
-            sendServerSnapshot("detached", FALSE);
-            sendNeuronEvent("neuron.offline", "detached");
             llSetTimerEvent(0.0);
         }
     }
 
     listen(integer channel, string name, key id, string message)
     {
-        list p;
-        if (channel == COMMAND_CHANNEL)
-        {
-            handleCommand(message);
-            return;
-        }
-
-        if (channel == gSetupChannel)
-        {
-            continueSetup(message);
-            return;
-        }
-
         if (channel == CDF_TRACKER_CHANNEL)
         {
             if (llJsonGetValue(message, ["token"]) != CDF_TOKEN) return;
             if (llJsonGetValue(message, ["source"]) == "breadcrumb") handleBreadcrumb(message);
             return;
         }
+    }
 
-        if (channel == NEURON_SERVER_CHANNEL)
+    link_message(integer sender, integer num, string str, key id)
+    {
+        if (num == LM_STATS_REQ)
         {
-            handleServerMessage(message);
+            applyTime();
+            saveStats();
+            sendStatsToPart1("request");
             return;
         }
 
-        if (channel == NEURON_CONTROL_CHANNEL)
+        if (num == LM_STATS_RESTORE)
         {
-            p = llParseStringKeepNulls(message, ["|"], []);
-            if (llGetListLength(p) < 3) return;
-            if (llList2String(p, 0) != "NEURON_CMD") return;
-            if ((key)llList2String(p, 1) != llGetOwner()) return;
-            if (llGetOwnerKey(id) != llGetOwner()) return;
-            handleCommand(llList2String(p, 2));
+            restoreStats(str);
+            return;
+        }
+
+        if (num == LM_STATS_COMMAND)
+        {
+            if (str == "stats") showStats();
             return;
         }
     }
 
     timer()
     {
-        integer now = llGetUnixTime();
         applyTime();
-        if (now - gLastHeartbeat >= HEARTBEAT_SECONDS)
-        {
-            gLastHeartbeat = now;
-            saveProfile();
-            sendNeuronEvent("neuron.heartbeat", "alive");
-            sendHudSnapshot("heartbeat");
-            sendServerSnapshot("heartbeat", TRUE);
-        }
+        saveStats();
+        sendStatsToPart1("tick");
     }
 
     changed(integer change)
     {
-        if (change & CHANGED_OWNER)
-        {
-            llResetScript();
-        }
-        if (change & CHANGED_REGION)
-        {
-            saveProfile();
-            sendHudSnapshot("region.changed");
-            sendServerSnapshot("region.changed", TRUE);
-        }
+        if (change & CHANGED_OWNER) llResetScript();
     }
 }

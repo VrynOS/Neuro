@@ -79,13 +79,13 @@ storeSnapshot(string message)
 
 restoreSnapshot(key avatar)
 {
-    string state;
+    string snapshot;
 
     if (avatar == NULL_KEY) return;
-    state = llLinksetDataRead(stateKey(avatar));
-    if (state == "") return;
+    snapshot = llLinksetDataRead(stateKey(avatar));
+    if (snapshot == "") return;
 
-    llRegionSay(NEURON_SERVER_CHANNEL, "NEURON_RESTORE|" + (string)avatar + "|" + state);
+    llRegionSay(NEURON_SERVER_CHANNEL, "NEURON_RESTORE|" + (string)avatar + "|" + snapshot);
     ++gRestored;
 }
 
