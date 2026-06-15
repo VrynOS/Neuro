@@ -22,6 +22,8 @@
 // HUD/Server contracts:
 //   Breadcrumbs/CDF Tracker channel: -73463301
 //   Neuron -> HUD channel:          -73463304
+//   Neuron <-> Neuron Server:       -73463305
+//   HUD -> Neuron control:          -73463306
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro-Link Neuron";
@@ -29,6 +31,8 @@ integer BUILD_NUMBER = 2;
 
 integer CDF_TRACKER_CHANNEL = -73463301;
 integer NEURON_HUD_CHANNEL = -73463304;
+integer NEURON_SERVER_CHANNEL = -73463305;
+integer NEURON_CONTROL_CHANNEL = -73463306;
 integer COMMAND_CHANNEL = 77;
 string CDF_TOKEN = "CDF_WORLD_V1";
 
@@ -62,6 +66,8 @@ string K_XP = "NEURON_XP";
 
 integer gCmdListen;
 integer gBreadcrumbListen;
+integer gServerListen;
+integer gControlListen;
 integer gSetupListen;
 integer gSetupChannel;
 string gSetupStep = "";
@@ -384,13 +390,15 @@ handleBreadcrumb(string payload)
     sendHudSnapshot("breadcrumb");
 }
 
-string snapshotJson(string reason)
+string snapshotJsonActive(string reason, integer active)
 {
     return llList2Json(JSON_OBJECT, [
         "token", CDF_TOKEN,
         "source", "neuron.brain",
         "event", "neuron.snapshot",
         "reason", reason,
+        "active", (string)active,
+        "paused", (string)(!active),
         "avatar", (string)llGetOwner(),
         "displayName", gDisplayName,
         "legacyName", llKey2Name(llGetOwner()),
@@ -412,9 +420,76 @@ string snapshotJson(string reason)
     ]);
 }
 
+string snapshotJson(string reason)
+{
+    return snapshotJsonActive(reason, TRUE);
+}
+
 sendHudSnapshot(string reason)
 {
     llRegionSay(NEURON_HUD_CHANNEL, snapshotJson(reason));
+}
+
+sendServerSnapshot(string reason, integer active)
+{
+    llRegionSay(NEURON_SERVER_CHANNEL, snapshotJsonActive(reason, active));
+}
+
+requestServerRestore()
+{
+    string msg = llList2Json(JSON_OBJECT, [
+        "token", CDF_TOKEN,
+        "source", "neuron.brain",
+        "event", "neuron.restore.request",
+        "avatar", (string)llGetOwner(),
+        "attachment", (string)llGetKey(),
+        "time", (string)llGetUnixTime()
+    ]);
+
+    llRegionSay(NEURON_SERVER_CHANNEL, msg);
+}
+
+restoreFromSnapshot(string state)
+{
+    if (llJsonGetValue(state, ["token"]) != CDF_TOKEN) return;
+    if (llJsonGetValue(state, ["avatar"]) != (string)llGetOwner()) return;
+
+    gDisplayName = llJsonGetValue(state, ["displayName"]);
+    gSex = llJsonGetValue(state, ["sex"]);
+    gAge = toInt(llJsonGetValue(state, ["age"]));
+    gTitle = llJsonGetValue(state, ["title"]);
+    gLocation = llJsonGetValue(state, ["location"]);
+    gXP = toInt(llJsonGetValue(state, ["xp"]));
+    gLevel = levelFromXP(gXP);
+    gHunger = clamp(toInt(llJsonGetValue(state, ["stat.hunger"])), 0, 100);
+    gThirst = clamp(toInt(llJsonGetValue(state, ["stat.thirst"])), 0, 100);
+    gSleep = clamp(toInt(llJsonGetValue(state, ["stat.sleep"])), 0, 100);
+    gHygiene = clamp(toInt(llJsonGetValue(state, ["stat.hygiene"])), 0, 100);
+    gEnergy = clamp(toInt(llJsonGetValue(state, ["stat.energy"])), 0, 100);
+    gFun = clamp(toInt(llJsonGetValue(state, ["stat.fun"])), 0, 100);
+
+    if (gDisplayName == "" || gDisplayName == JSON_INVALID) gDisplayName = llGetDisplayName(llGetOwner());
+    if (gTitle == JSON_INVALID) gTitle = "";
+    if (gSex == JSON_INVALID) gSex = "";
+    if (gLocation == JSON_INVALID) gLocation = "";
+    gSetupDone = (gSex != "" && gAge > 0 && gLocation != "" && gTitle != "");
+
+    saveProfile();
+    saveStats();
+    sendHudSnapshot("server.restore");
+    llOwnerSay("Neuro restored from Neuron Server backup.");
+}
+
+handleServerMessage(string message)
+{
+    string prefix = "NEURON_RESTORE|" + (string)llGetOwner() + "|";
+    string state;
+
+    if (llGetSubString(message, 0, llStringLength(prefix) - 1) != prefix) return;
+    state = llGetSubString(message, llStringLength(prefix), -1);
+    if (state == "") return;
+
+    restoreFromSnapshot(state);
 }
 
 sendNeuronEvent(string eventName, string detail)
@@ -531,8 +606,9 @@ continueSetup(string answer)
         if (gDisplayName == "" || gDisplayName == "Resident") gDisplayName = llKey2Name(llGetOwner());
         gSetupDone = TRUE;
         saveProfile();
-        saveStats();
-        sendHudSnapshot("setup.complete");
+    saveStats();
+    sendHudSnapshot("setup.complete");
+        sendServerSnapshot("setup.complete", TRUE);
         llOwnerSay("Neuro setup complete. Welcome, " + gDisplayName + ".");
 
         if (gSetupListen) llListenRemove(gSetupListen);
@@ -559,6 +635,7 @@ handleCommand(string msg)
     if (cmd == "sync hud")
     {
         sendHudSnapshot("manual.sync");
+        sendServerSnapshot("manual.sync", TRUE);
         llOwnerSay("Neuro HUD sync sent.");
         return;
     }
@@ -571,13 +648,19 @@ init()
 
     if (gCmdListen) llListenRemove(gCmdListen);
     if (gBreadcrumbListen) llListenRemove(gBreadcrumbListen);
+    if (gServerListen) llListenRemove(gServerListen);
+    if (gControlListen) llListenRemove(gControlListen);
 
     gCmdListen = llListen(COMMAND_CHANNEL, "", llGetOwner(), "");
     gBreadcrumbListen = llListen(CDF_TRACKER_CHANNEL, "", NULL_KEY, "");
+    gServerListen = llListen(NEURON_SERVER_CHANNEL, "", NULL_KEY, "");
+    gControlListen = llListen(NEURON_CONTROL_CHANNEL, "", NULL_KEY, "");
 
     llSetTimerEvent((float)TICK_SECONDS);
     sendNeuronEvent("neuron.online", "init");
     sendHudSnapshot("init");
+    sendServerSnapshot("init", TRUE);
+    requestServerRestore();
 
     if (!gSetupDone)
     {
@@ -602,6 +685,10 @@ default
         }
         else
         {
+            applyTime();
+            saveProfile();
+            saveStats();
+            sendServerSnapshot("detached", FALSE);
             sendNeuronEvent("neuron.offline", "detached");
             llSetTimerEvent(0.0);
         }
@@ -609,6 +696,7 @@ default
 
     listen(integer channel, string name, key id, string message)
     {
+        list p;
         if (channel == COMMAND_CHANNEL)
         {
             handleCommand(message);
@@ -627,6 +715,23 @@ default
             if (llJsonGetValue(message, ["source"]) == "breadcrumb") handleBreadcrumb(message);
             return;
         }
+
+        if (channel == NEURON_SERVER_CHANNEL)
+        {
+            handleServerMessage(message);
+            return;
+        }
+
+        if (channel == NEURON_CONTROL_CHANNEL)
+        {
+            p = llParseStringKeepNulls(message, ["|"], []);
+            if (llGetListLength(p) < 3) return;
+            if (llList2String(p, 0) != "NEURON_CMD") return;
+            if ((key)llList2String(p, 1) != llGetOwner()) return;
+            if (llGetOwnerKey(id) != llGetOwner()) return;
+            handleCommand(llList2String(p, 2));
+            return;
+        }
     }
 
     timer()
@@ -639,6 +744,7 @@ default
             saveProfile();
             sendNeuronEvent("neuron.heartbeat", "alive");
             sendHudSnapshot("heartbeat");
+            sendServerSnapshot("heartbeat", TRUE);
         }
     }
 
@@ -652,6 +758,7 @@ default
         {
             saveProfile();
             sendHudSnapshot("region.changed");
+            sendServerSnapshot("region.changed", TRUE);
         }
     }
 }
