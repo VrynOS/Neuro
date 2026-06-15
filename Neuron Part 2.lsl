@@ -1,13 +1,13 @@
 // =====================================================
 // Neuron Part 2
-// Build 0.3
+// Build 0.4
 //
 // Wear in the Neuron avatar attachment with Neuron Part 1.
 // Part 2 owns stats, XP, levels, verification, and Breadcrumbs.
 // =====================================================
 
 string DISPLAY_TITLE = "Neuron Part 2";
-integer BUILD_NUMBER = 3;
+integer BUILD_NUMBER = 4;
 
 integer CDF_TRACKER_CHANNEL = -73463301;
 integer COMMAND_CHANNEL = 77;
@@ -31,12 +31,12 @@ integer XP_RENT_ON_TIME = 200;
 integer XP_RENT_LATE = 50;
 integer XP_TRANSACTION = 100;
 
-integer DECAY_HUNGER_SECONDS = 900;
-integer DECAY_THIRST_SECONDS = 600;
-integer DECAY_SLEEP_SECONDS = 1800;
-integer DECAY_HYGIENE_SECONDS = 2700;
-integer DECAY_ENERGY_SECONDS = 1200;
-integer DECAY_FUN_SECONDS = 1500;
+integer DECAY_HUNGER_SECONDS = 900;  // -1 every 15 RL minutes
+integer DECAY_THIRST_SECONDS = 480;  // -1 every 8 RL minutes
+integer DECAY_SLEEP_SECONDS = 1200;  // -1 every 20 RL minutes
+integer DECAY_HYGIENE_SECONDS = 2700; // -1 every 45 RL minutes
+integer DECAY_ENERGY_SECONDS = 2700; // -1 every 45 RL minutes
+integer DECAY_FUN_SECONDS = 1800;    // -1 every 30 RL minutes
 
 string K_STATS = "NEURON_STATS";
 string K_TIMES = "NEURON_TIMES";
