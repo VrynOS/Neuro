@@ -1,5 +1,5 @@
 // =====================================================
-// Neuro HUD Controller v0.5
+// Neuro HUD Controller v0.6
 //
 // Drop this into the Neuro Pad HUD root.
 // This is the SL-native control layer.
@@ -11,19 +11,22 @@
 // =====================================================
 
 string DISPLAY_TITLE = "Neuro HUD Controller";
-integer BUILD_NUMBER = 5;
+integer BUILD_NUMBER = 6;
 
 integer NEURON_CONTROL_CHANNEL = -73463306;
 integer LM_WALLET_COMMAND = 7401;
 integer LM_HUD_OPEN_STATE = 7402;
 integer DIALOG_TIMEOUT = 60;
 integer MINIMIZE_FACE = 4;
+vector HIDDEN_OFFSET = <0.0, 0.0, -2.0>;
 
 integer gDialogChannel;
 integer gDialogListen;
 string gMode = "";
 integer gDialogStarted;
 integer gOpen = FALSE;
+list gStoredLinks = [];
+list gStoredPositions = [];
 
 string cleanName(string name)
 {
@@ -58,6 +61,47 @@ integer isMinimizeLink(integer link)
     return (lower(llGetLinkName(link)) == "minimize");
 }
 
+integer storedIndex(integer link)
+{
+    return llListFindList(gStoredLinks, [link]);
+}
+
+vector storedPosition(integer link)
+{
+    integer index = storedIndex(link);
+    if (index == -1) return ZERO_VECTOR;
+    return llList2Vector(gStoredPositions, index);
+}
+
+storePositions()
+{
+    integer link;
+    integer total;
+    vector pos;
+
+    gStoredLinks = [];
+    gStoredPositions = [];
+    total = llGetNumberOfPrims();
+
+    for (link = 2; link <= total; ++link)
+    {
+        pos = llList2Vector(llGetLinkPrimitiveParams(link, [PRIM_POS_LOCAL]), 0);
+        gStoredLinks += [link];
+        gStoredPositions += [pos];
+    }
+}
+
+clearHoverText()
+{
+    integer link;
+    integer total = llGetNumberOfPrims();
+
+    for (link = 1; link <= total; ++link)
+    {
+        llSetLinkPrimitiveParamsFast(link, [PRIM_TEXT, "", <1.0, 1.0, 1.0>, 0.0]);
+    }
+}
+
 setMinimizeFace()
 {
     integer link;
@@ -80,7 +124,10 @@ setHudOpen(integer openFlag)
     integer total;
     float alpha;
     integer didChange;
+    vector basePos;
+    vector targetPos;
 
+    if (llGetListLength(gStoredLinks) == 0) storePositions();
     didChange = (gOpen != openFlag);
     gOpen = openFlag;
     total = llGetNumberOfPrims();
@@ -90,6 +137,14 @@ setHudOpen(integer openFlag)
         alpha = 1.0;
         if (!gOpen && !isMinimizeLink(link)) alpha = 0.0;
         llSetLinkAlpha(link, alpha, ALL_SIDES);
+
+        if (link > 1 && !isMinimizeLink(link))
+        {
+            basePos = storedPosition(link);
+            targetPos = basePos;
+            if (!gOpen) targetPos = basePos + HIDDEN_OFFSET;
+            llSetLinkPrimitiveParamsFast(link, [PRIM_POS_LOCAL, targetPos]);
+        }
     }
     setMinimizeFace();
 
@@ -289,13 +344,20 @@ default
 {
     state_entry()
     {
+        storePositions();
+        clearHoverText();
         closeHud();
         llOwnerSay(DISPLAY_TITLE + " online | Build " + (string)BUILD_NUMBER);
     }
 
     attach(key id)
     {
-        if (id) closeHud();
+        if (id)
+        {
+            storePositions();
+            clearHoverText();
+            closeHud();
+        }
         else
         {
             closeDialog();
@@ -334,5 +396,6 @@ default
     changed(integer change)
     {
         if (change & CHANGED_OWNER) llResetScript();
+        if (change & CHANGED_LINK) storePositions();
     }
 }
