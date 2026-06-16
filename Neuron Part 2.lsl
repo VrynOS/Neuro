@@ -249,6 +249,9 @@ integer xpForPayload(string payload)
     string eventName = lower(llJsonGetValue(payload, ["event"]));
     string typeName = lower(llJsonGetValue(payload, ["type"]));
     string detail = lower(llJsonGetValue(payload, ["detail"]));
+    integer payloadXP = toInt(llJsonGetValue(payload, ["xp"]));
+
+    if (payloadXP > 0) return payloadXP;
 
     if (llSubStringIndex(eventName, "heartbeat") != -1) return 0;
     if (llSubStringIndex(eventName, "register") != -1) return 0;
