@@ -152,14 +152,12 @@ setHudOpen(integer openFlag)
     {
         llMessageLinked(LINK_SET, LM_HUD_OPEN_STATE, "OPEN", llGetOwner());
         sendNeuronCommand("sync hud");
-        if (didChange) llOwnerSay("Neuro Pad opened.");
     }
     else
     {
         llMessageLinked(LINK_SET, LM_HUD_OPEN_STATE, "CLOSED", llGetOwner());
         closeDialog();
         sendWalletCommand("close");
-        if (didChange) llOwnerSay("Neuro Pad closed.");
     }
 }
 
