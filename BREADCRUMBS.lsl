@@ -1,5 +1,5 @@
 // =====================================================
-// BREADCRUMBS v1
+// BREADCRUMBS v2
 //
 // One setup script for Camden Falls Neuro stat objects.
 // Drop into an object, choose stats, choose value, finalize.
@@ -12,10 +12,11 @@
 // - Manual mode uses touch.
 // - Gives 20 XP per use event.
 // - Each avatar can receive up to MAX_TOTAL per object session.
+// - Setup menu uses checkbox-style toggle labels.
 // =====================================================
 
 string DISPLAY_TITLE = "BREADCRUMBS";
-integer BUILD_NUMBER = 1;
+integer BUILD_NUMBER = 2;
 
 integer CDF_TRACKER_CHANNEL = -73463301;
 string CDF_TOKEN = "CDF_WORLD_V1";
@@ -49,6 +50,12 @@ string onOff(integer value)
 {
     if (value) return "ON";
     return "OFF";
+}
+
+string checkLabel(integer enabled, string label)
+{
+    if (enabled) return "[x] " + label;
+    return "[ ] " + label;
 }
 
 string safeLabel()
@@ -134,12 +141,12 @@ openSetup()
     llDialog(llGetOwner(),
         DISPLAY_TITLE + " setup\n" + configSummary(),
         [
-            "Hunger",
-            "Thirst",
-            "Sleep",
-            "Hygiene",
-            "Energy",
-            "Fun",
+            checkLabel(useHunger, "Hunger"),
+            checkLabel(useThirst, "Thirst"),
+            checkLabel(useSleep, "Sleep"),
+            checkLabel(useHygiene, "Hygiene"),
+            checkLabel(useEnergy, "Energy"),
+            checkLabel(useFun, "Fun"),
             "Value",
             "Mode",
             "Silent",
@@ -271,12 +278,12 @@ loadLock()
 
 handleSetup(string msg)
 {
-    if (msg == "Hunger") useHunger = !useHunger;
-    else if (msg == "Thirst") useThirst = !useThirst;
-    else if (msg == "Sleep") useSleep = !useSleep;
-    else if (msg == "Hygiene") useHygiene = !useHygiene;
-    else if (msg == "Energy") useEnergy = !useEnergy;
-    else if (msg == "Fun") useFun = !useFun;
+    if (llSubStringIndex(msg, "Hunger") != -1) useHunger = !useHunger;
+    else if (llSubStringIndex(msg, "Thirst") != -1) useThirst = !useThirst;
+    else if (llSubStringIndex(msg, "Sleep") != -1) useSleep = !useSleep;
+    else if (llSubStringIndex(msg, "Hygiene") != -1) useHygiene = !useHygiene;
+    else if (llSubStringIndex(msg, "Energy") != -1) useEnergy = !useEnergy;
+    else if (llSubStringIndex(msg, "Fun") != -1) useFun = !useFun;
     else if (msg == "Value") { openValueMenu(); return; }
     else if (msg == "Mode") autoMode = !autoMode;
     else if (msg == "Silent") silentMode = !silentMode;
