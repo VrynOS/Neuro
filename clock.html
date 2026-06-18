@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Camden Falls Official Clock</title>
+  <link rel="stylesheet" href="clock.css?v=1">
+</head>
+<body>
+  <main class="clock-shell" aria-label="Camden Falls official city clock">
+    <section class="clock-frame">
+      <header class="clock-header">
+        <span class="line"></span>
+        <div>
+          <p>Camden Falls</p>
+          <h1>Official City Clock</h1>
+        </div>
+        <span class="line"></span>
+      </header>
+
+      <section class="time-panel">
+        <p class="mode-label">CDF Time</p>
+        <div class="time-readout" id="timeReadout">--:--:-- PM</div>
+        <div class="date-readout" id="dateReadout">Camden day sync loading</div>
+      </section>
+
+      <footer class="clock-footer">
+        <button type="button" id="formatToggle" aria-label="Toggle time format">12 Hour</button>
+        <p>1 CDF day = 6 RL hours</p>
+      </footer>
+    </section>
+  </main>
+  <script src="clock.js?v=1"></script>
+</body>
+</html>
