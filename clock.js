@@ -4,7 +4,6 @@
   var CDF_DAY_SECONDS = 21600;
   var CDF_HOUR_SECONDS = 900;
   var DAY_OFFSET_CDF_HOURS = -8;
-  var STORAGE_KEY = "cdfClockFormat";
 
   var timeReadout = document.getElementById("timeReadout");
   var dateReadout = document.getElementById("dateReadout");
@@ -18,7 +17,7 @@
     return null;
   }
 
-  var timeFormat = queryFormat() || localStorage.getItem(STORAGE_KEY) || "12";
+  var timeFormat = queryFormat() || "12";
 
   function positiveMod(value, modBy) {
     var result = value % modBy;
@@ -72,12 +71,6 @@
     formatToggle.textContent = timeFormat === "24" ? "24 Hour" : "12 Hour";
     dateReadout.textContent = "Camden Falls Day Cycle - " + cdfDayPercent() + "% complete";
   }
-
-  formatToggle.addEventListener("click", function () {
-    timeFormat = timeFormat === "24" ? "12" : "24";
-    localStorage.setItem(STORAGE_KEY, timeFormat);
-    updateClock();
-  });
 
   updateClock();
   window.setInterval(updateClock, 250);
