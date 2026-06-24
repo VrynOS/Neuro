@@ -118,8 +118,18 @@
       border: 1px solid rgba(118, 222, 255, 0.35);
       border-radius: 8px;
       background: rgba(4, 10, 24, 0.58);
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
       box-shadow: 0 0 28px rgba(0, 158, 255, 0.16);
       text-align: right;
+    }
+
+    .clock:hover,
+    .clock:focus {
+      outline: none;
+      border-color: rgba(151, 235, 255, 0.72);
+      box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.14), 0 0 34px rgba(0, 158, 255, 0.24);
     }
 
     .clock-label {
@@ -282,10 +292,10 @@
         <p class="subtitle">Streaming Tecnology</p>
       </section>
 
-      <section class="clock" id="clockBox" aria-label="Time display">
+      <button class="clock" id="clockBox" type="button" aria-label="Switch time display">
         <div class="clock-label" id="clockLabel">Camden Falls Time</div>
         <span class="clock-time" id="clockTime">--:-- --</span>
-      </section>
+      </button>
     </header>
 
     <section class="center">
@@ -322,31 +332,35 @@
       }).format(date);
     }
 
-    function updateClock() {
-      var clockBox = document.getElementById("clockBox");
+    function drawClock() {
       var clockLabel = document.getElementById("clockLabel");
       var clockTime = document.getElementById("clockTime");
       var now = new Date();
       var camdenTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
 
+      if (showCamdenTime) {
+        clockLabel.textContent = "Camden Falls Time";
+        clockTime.textContent = formatTime(camdenTime);
+      } else {
+        clockLabel.textContent = "RL Time";
+        clockTime.textContent = formatTime(now);
+      }
+    }
+
+    function switchClock() {
+      var clockBox = document.getElementById("clockBox");
       clockBox.classList.add("swap");
 
       setTimeout(function () {
-        if (showCamdenTime) {
-          clockLabel.textContent = "Camden Falls Time";
-          clockTime.textContent = formatTime(camdenTime);
-        } else {
-          clockLabel.textContent = "RL Time";
-          clockTime.textContent = formatTime(now);
-        }
-
-        clockBox.classList.remove("swap");
         showCamdenTime = !showCamdenTime;
+        drawClock();
+        clockBox.classList.remove("swap");
       }, 220);
     }
 
-    updateClock();
-    setInterval(updateClock, 8000);
+    document.getElementById("clockBox").addEventListener("click", switchClock);
+    drawClock();
+    setInterval(drawClock, 30000);
   </script>
 </body>
 </html>
