@@ -14,10 +14,8 @@
       width: 100%;
       height: 100%;
       margin: 0;
-      background:
-        linear-gradient(115deg, rgba(13, 31, 45, 0.92), rgba(5, 6, 8, 0.96) 42%, rgba(38, 13, 28, 0.82)),
-        #050607;
-      color: #f7fbff;
+      background: #05070a;
+      color: #f6fbff;
       font-family: Arial, Helvetica, sans-serif;
       overflow: hidden;
     }
@@ -33,8 +31,12 @@
       min-height: 100%;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      padding: 30px 40px;
       position: relative;
+      padding: 26px 34px 22px;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(0, 187, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 82% 72%, rgba(255, 59, 141, 0.14), transparent 30%),
+        linear-gradient(135deg, #071017 0%, #05070a 48%, #0b1018 100%);
     }
 
     .screen::before {
@@ -43,165 +45,259 @@
       inset: 0;
       pointer-events: none;
       background:
-        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.045) 1px, transparent 1px, transparent 7px);
-      opacity: 0.2;
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent 78%);
+      opacity: 0.28;
+    }
+
+    .screen::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00d5ff, #ff3b8d, #ffc857, #00d5ff);
+      animation: signalSweep 6s linear infinite;
     }
 
     header,
-    .channels,
+    .stage,
     footer {
       position: relative;
       z-index: 1;
     }
 
     header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
       gap: 24px;
-      border-bottom: 1px solid rgba(166, 218, 255, 0.25);
-      padding-bottom: 18px;
     }
 
-    .brand {
-      display: grid;
-      gap: 5px;
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #6de2ff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
 
     h1 {
       margin: 0;
-      font-size: 38px;
-      line-height: 1;
+      font-size: 42px;
+      line-height: 0.95;
       letter-spacing: 0;
     }
 
-    .tagline {
-      margin: 0;
-      color: #a8c3d8;
+    .subline {
+      margin: 8px 0 0;
+      color: #a7b8c8;
       font-size: 15px;
+      font-weight: 700;
+    }
+
+    .clock {
+      min-width: 260px;
+      padding: 14px 18px;
+      border: 1px solid rgba(109, 226, 255, 0.34);
+      border-radius: 8px;
+      background: rgba(3, 8, 13, 0.72);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 16px 42px rgba(0, 0, 0, 0.34);
+      text-align: right;
+    }
+
+    .clock-label {
+      color: #91a9ba;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    .status {
-      min-width: 190px;
-      padding: 10px 14px;
-      border: 1px solid rgba(99, 196, 255, 0.32);
-      background: rgba(2, 10, 18, 0.58);
-      text-align: right;
-      font-size: 13px;
-      color: #c7d7e6;
-    }
-
-    .status strong {
+    .clock-time {
       display: block;
-      color: #73d3ff;
-      font-size: 16px;
-      margin-bottom: 2px;
+      margin-top: 4px;
+      color: #ffffff;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      transition: opacity 220ms ease, transform 220ms ease;
     }
 
-    .slt {
-      display: inline-block;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(166, 218, 255, 0.18);
-      color: #ffffff;
-      font-size: 22px;
+    .clock.swap .clock-time {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.78fr) minmax(380px, 1.22fr);
+      gap: 26px;
+      align-items: center;
+      padding: 26px 0 22px;
+    }
+
+    .feature {
+      min-height: 310px;
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      padding: 22px;
+      background:
+        linear-gradient(160deg, rgba(0, 213, 255, 0.22), transparent 34%),
+        linear-gradient(20deg, rgba(255, 59, 141, 0.18), transparent 50%),
+        #0c121b;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .feature strong {
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .feature span {
+      display: block;
+      margin-top: 12px;
+      color: #b6c4d0;
+      font-size: 15px;
       font-weight: 700;
     }
 
     .channels {
-      align-self: center;
       display: grid;
-      grid-template-columns: repeat(2, minmax(260px, 1fr));
-      gap: 22px;
-      padding: 32px 0;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
     }
 
     a {
-      min-height: 250px;
+      min-height: 270px;
       display: grid;
       grid-template-rows: 1fr auto;
+      overflow: hidden;
+      border: 1px solid rgba(210, 232, 248, 0.18);
+      border-radius: 8px;
+      background: #101721;
       color: #ffffff;
       text-decoration: none;
-      border: 1px solid rgba(195, 222, 245, 0.2);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #101721;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.42);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
     }
 
     a:hover,
     a:focus {
       outline: none;
-      border-color: #8fdcff;
-      box-shadow: 0 0 0 3px rgba(75, 191, 255, 0.22), 0 20px 70px rgba(0, 0, 0, 0.5);
+      transform: translateY(-2px);
+      border-color: #8ee8ff;
+      box-shadow: 0 0 0 3px rgba(0, 213, 255, 0.18), 0 24px 70px rgba(0, 0, 0, 0.5);
     }
 
     .preview {
-      min-height: 178px;
+      min-height: 176px;
       display: flex;
-      align-items: flex-end;
-      padding: 18px;
-      background-size: cover;
-      background-position: center;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
     }
 
     .tubi .preview {
       background:
-        linear-gradient(160deg, rgba(16, 12, 54, 0.1), rgba(18, 3, 24, 0.82)),
-        linear-gradient(45deg, #271556, #ffca28 48%, #8a1f74);
+        linear-gradient(140deg, rgba(11, 11, 31, 0.12), rgba(10, 4, 18, 0.78)),
+        linear-gradient(35deg, #130e34, #5f2eea 38%, #ffd166 72%, #ff3b8d);
     }
 
     .hub .preview {
       background:
-        linear-gradient(160deg, rgba(20, 10, 0, 0.08), rgba(12, 7, 0, 0.86)),
-        linear-gradient(45deg, #191919, #ff8a00 52%, #5b2600);
+        linear-gradient(140deg, rgba(18, 12, 4, 0.1), rgba(9, 8, 7, 0.82)),
+        linear-gradient(35deg, #0f1012, #ff8a00 54%, #40210a);
     }
 
-    .badge {
-      padding: 7px 10px;
-      border: 1px solid rgba(255, 255, 255, 0.34);
-      background: rgba(0, 0, 0, 0.4);
+    .chip {
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.34);
+      color: #f7fbff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .channel-number {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .label {
+      display: grid;
+      gap: 7px;
+      padding: 18px;
+      background: rgba(5, 9, 15, 0.96);
+    }
+
+    .label strong {
+      font-size: 33px;
+      line-height: 1;
+    }
+
+    .label span {
+      color: #a9bac9;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    footer {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      color: #9fb3c6;
       font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    .label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      padding: 18px 20px;
-      background: rgba(4, 8, 13, 0.94);
+    .meter {
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
     }
 
-    .label strong {
-      font-size: 32px;
-      line-height: 1;
+    .meter span {
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #00d5ff, #ff3b8d, #ffc857);
+      animation: meterPulse 3.6s ease-in-out infinite;
     }
 
-    .label span {
-      color: #aabbd0;
-      font-size: 15px;
-      font-weight: 700;
+    @keyframes signalSweep {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(360deg);
+      }
     }
 
-    footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      border-top: 1px solid rgba(166, 218, 255, 0.2);
-      padding-top: 14px;
-      color: #9fb4c8;
-      font-size: 14px;
-      font-weight: 700;
-    }
+    @keyframes meterPulse {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
 
-    .signal {
-      color: #7fd7ff;
+      50% {
+        transform: translateX(138%);
+      }
     }
 
     @media (max-width: 760px) {
@@ -210,30 +306,30 @@
       }
 
       header,
+      .stage,
       footer {
-        align-items: flex-start;
-        flex-direction: column;
+        grid-template-columns: 1fr;
       }
 
-      .status {
+      .clock {
+        min-width: 0;
         text-align: left;
       }
 
       h1 {
-        font-size: 30px;
+        font-size: 32px;
+      }
+
+      .feature {
+        min-height: 180px;
       }
 
       .channels {
         grid-template-columns: 1fr;
-        gap: 16px;
       }
 
       a {
-        min-height: 180px;
-      }
-
-      .preview {
-        min-height: 110px;
+        min-height: 190px;
       }
     }
   </style>
@@ -241,61 +337,92 @@
 <body>
   <main class="screen">
     <header>
-      <div class="brand">
+      <div>
+        <p class="eyebrow">Camden Falls Media Grid</p>
         <h1>Neuro Streaming</h1>
-        <p class="tagline">Tecnology v2</p>
+        <p class="subline">Tecnology v2 channel console</p>
       </div>
-      <div class="status">
-        <strong>Online</strong>
-        Hosted by VrynOS
-        <span class="slt" id="slt">--:-- -- Camden Falls Time</span>
-      </div>
+
+      <section class="clock" id="clockBox" aria-label="Time display">
+        <div class="clock-label" id="clockLabel">Camden Falls Time</div>
+        <span class="clock-time" id="clockTime">--:-- --</span>
+      </section>
     </header>
 
-    <section class="channels" aria-label="Streaming channels">
-      <a class="tubi" href="https://tubitv.com/home">
-        <div class="preview">
-          <span class="badge">Movies and TV</span>
-        </div>
-        <div class="label">
-          <strong>Tubi</strong>
-          <span>Open Channel</span>
-        </div>
-      </a>
+    <section class="stage">
+      <aside class="feature">
+        <strong>Choose a stream without leaving the TV surface.</strong>
+        <span>Clock alternates between Camden Falls and RL time.</span>
+      </aside>
 
-      <a class="hub" href="https://www.pornhub.com/video">
-        <div class="preview">
-          <span class="badge">Adults only</span>
-        </div>
-        <div class="label">
-          <strong>Pornhub</strong>
-          <span>Open Channel</span>
-        </div>
-      </a>
+      <section class="channels" aria-label="Streaming channels">
+        <a class="tubi" href="https://tubitv.com/home">
+          <div class="preview">
+            <span class="chip">Movies and TV</span>
+            <span class="channel-number">CH 01</span>
+          </div>
+          <div class="label">
+            <strong>Tubi</strong>
+            <span>Open channel</span>
+          </div>
+        </a>
+
+        <a class="hub" href="https://www.pornhub.com/video">
+          <div class="preview">
+            <span class="chip">Adults only</span>
+            <span class="channel-number">CH 02</span>
+          </div>
+          <div class="label">
+            <strong>Pornhub</strong>
+            <span>Open channel</span>
+          </div>
+        </a>
+      </section>
     </section>
 
     <footer>
-      <span>Touch a channel tile</span>
-      <span class="signal">Signal ready</span>
+      <span>Touch to select</span>
+      <div class="meter" aria-hidden="true"><span></span></div>
+      <span>Signal ready</span>
     </footer>
   </main>
+
   <script>
-    function updateSltClock() {
-      var clock = document.getElementById("slt");
-      var now = new Date();
-      var camdenTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
-      var time = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Los_Angeles",
+    var showCamdenTime = true;
+
+    function formatTime(date) {
+      return new Intl.DateTimeFormat("en-US", {
         hour: "numeric",
         minute: "2-digit",
         hour12: true
-      }).format(camdenTime);
-
-      clock.textContent = time + " Camden Falls Time";
+      }).format(date);
     }
 
-    updateSltClock();
-    setInterval(updateSltClock, 30000);
+    function updateClock() {
+      var clockBox = document.getElementById("clockBox");
+      var clockLabel = document.getElementById("clockLabel");
+      var clockTime = document.getElementById("clockTime");
+      var now = new Date();
+      var camdenTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
+
+      clockBox.classList.add("swap");
+
+      setTimeout(function () {
+        if (showCamdenTime) {
+          clockLabel.textContent = "Camden Falls Time";
+          clockTime.textContent = formatTime(camdenTime);
+        } else {
+          clockLabel.textContent = "RL Time";
+          clockTime.textContent = formatTime(now);
+        }
+
+        clockBox.classList.remove("swap");
+        showCamdenTime = !showCamdenTime;
+      }, 220);
+    }
+
+    updateClock();
+    setInterval(updateClock, 8000);
   </script>
 </body>
 </html>
