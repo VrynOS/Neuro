@@ -283,12 +283,13 @@
     function updateSltClock() {
       var clock = document.getElementById("slt");
       var now = new Date();
+      var camdenTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
       var time = new Intl.DateTimeFormat("en-US", {
         timeZone: "America/Los_Angeles",
         hour: "numeric",
         minute: "2-digit",
         hour12: true
-      }).format(now);
+      }).format(camdenTime);
 
       clock.textContent = time + " Camden Falls Time";
     }
