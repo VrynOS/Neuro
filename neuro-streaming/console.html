@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neuro Streaming Tecnology v2</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #05070a;
+      color: #f6fbff;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .screen {
+      width: 100%;
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      padding: 26px 34px 22px;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(0, 187, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 82% 72%, rgba(255, 59, 141, 0.14), transparent 30%),
+        linear-gradient(135deg, #071017 0%, #05070a 48%, #0b1018 100%);
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.95), transparent 78%);
+      opacity: 0.28;
+    }
+
+    .screen::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00d5ff, #ff3b8d, #ffc857, #00d5ff);
+      animation: signalSweep 6s linear infinite;
+    }
+
+    header,
+    .stage,
+    footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #6de2ff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .subline {
+      margin: 8px 0 0;
+      color: #a7b8c8;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .clock {
+      min-width: 260px;
+      padding: 14px 18px;
+      border: 1px solid rgba(109, 226, 255, 0.34);
+      border-radius: 8px;
+      background: rgba(3, 8, 13, 0.72);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 16px 42px rgba(0, 0, 0, 0.34);
+      text-align: right;
+    }
+
+    .clock-label {
+      color: #91a9ba;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .clock-time {
+      display: block;
+      margin-top: 4px;
+      color: #ffffff;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 700;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .clock.swap .clock-time {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.78fr) minmax(380px, 1.22fr);
+      gap: 26px;
+      align-items: center;
+      padding: 26px 0 22px;
+    }
+
+    .feature {
+      min-height: 310px;
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      padding: 22px;
+      background:
+        linear-gradient(160deg, rgba(0, 213, 255, 0.22), transparent 34%),
+        linear-gradient(20deg, rgba(255, 59, 141, 0.18), transparent 50%),
+        #0c121b;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .feature strong {
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .feature span {
+      display: block;
+      margin-top: 12px;
+      color: #b6c4d0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .channels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    a {
+      min-height: 270px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      overflow: hidden;
+      border: 1px solid rgba(210, 232, 248, 0.18);
+      border-radius: 8px;
+      background: #101721;
+      color: #ffffff;
+      text-decoration: none;
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.42);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    a:hover,
+    a:focus {
+      outline: none;
+      transform: translateY(-2px);
+      border-color: #8ee8ff;
+      box-shadow: 0 0 0 3px rgba(0, 213, 255, 0.18), 0 24px 70px rgba(0, 0, 0, 0.5);
+    }
+
+    .preview {
+      min-height: 176px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .tubi .preview {
+      background:
+        linear-gradient(140deg, rgba(11, 11, 31, 0.12), rgba(10, 4, 18, 0.78)),
+        linear-gradient(35deg, #130e34, #5f2eea 38%, #ffd166 72%, #ff3b8d);
+    }
+
+    .hub .preview {
+      background:
+        linear-gradient(140deg, rgba(18, 12, 4, 0.1), rgba(9, 8, 7, 0.82)),
+        linear-gradient(35deg, #0f1012, #ff8a00 54%, #40210a);
+    }
+
+    .chip {
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.34);
+      color: #f7fbff;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .channel-number {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .label {
+      display: grid;
+      gap: 7px;
+      padding: 18px;
+      background: rgba(5, 9, 15, 0.96);
+    }
+
+    .label strong {
+      font-size: 33px;
+      line-height: 1;
+    }
+
+    .label span {
+      color: #a9bac9;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    footer {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      color: #9fb3c6;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .meter {
+      height: 5px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .meter span {
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #00d5ff, #ff3b8d, #ffc857);
+      animation: meterPulse 3.6s ease-in-out infinite;
+    }
+
+    @keyframes signalSweep {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    @keyframes meterPulse {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(138%); }
+    }
+
+    @media (max-width: 760px) {
+      .screen { padding: 20px; }
+      header, .stage, footer { grid-template-columns: 1fr; }
+      .clock { min-width: 0; text-align: left; }
+      h1 { font-size: 32px; }
+      .feature { min-height: 180px; }
+      .channels { grid-template-columns: 1fr; }
+      a { min-height: 190px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="screen">
+    <header>
+      <div>
+        <p class="eyebrow">Camden Falls Media Grid</p>
+        <h1>Neuro Streaming</h1>
+        <p class="subline">Tecnology v2 channel console</p>
+      </div>
+
+      <section class="clock" id="clockBox" aria-label="Time display">
+        <div class="clock-label" id="clockLabel">Camden Falls Time</div>
+        <span class="clock-time" id="clockTime">--:-- --</span>
+      </section>
+    </header>
+
+    <section class="stage">
+      <aside class="feature">
+        <strong>Choose a stream without leaving the TV surface.</strong>
+        <span>Clock alternates between Camden Falls and RL time.</span>
+      </aside>
+
+      <section class="channels" aria-label="Streaming channels">
+        <a class="tubi" href="https://tubitv.com/home">
+          <div class="preview"><span class="chip">Movies and TV</span><span class="channel-number">CH 01</span></div>
+          <div class="label"><strong>Tubi</strong><span>Open channel</span></div>
+        </a>
+
+        <a class="hub" href="https://www.pornhub.com/video">
+          <div class="preview"><span class="chip">Adults only</span><span class="channel-number">CH 02</span></div>
+          <div class="label"><strong>Pornhub</strong><span>Open channel</span></div>
+        </a>
+      </section>
+    </section>
+
+    <footer>
+      <span>Touch to select</span>
+      <div class="meter" aria-hidden="true"><span></span></div>
+      <span>Signal ready</span>
+    </footer>
+  </main>
+
+  <script>
+    var showCamdenTime = true;
+
+    function formatTime(date) {
+      return new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      }).format(date);
+    }
+
+    function updateClock() {
+      var clockBox = document.getElementById("clockBox");
+      var clockLabel = document.getElementById("clockLabel");
+      var clockTime = document.getElementById("clockTime");
+      var now = new Date();
+      var camdenTime = new Date(now.getTime() - (8 * 60 * 60 * 1000));
+
+      clockBox.classList.add("swap");
+
+      setTimeout(function () {
+        if (showCamdenTime) {
+          clockLabel.textContent = "Camden Falls Time";
+          clockTime.textContent = formatTime(camdenTime);
+        } else {
+          clockLabel.textContent = "RL Time";
+          clockTime.textContent = formatTime(now);
+        }
+
+        clockBox.classList.remove("swap");
+        showCamdenTime = !showCamdenTime;
+      }, 220);
+    }
+
+    updateClock();
+    setInterval(updateClock, 8000);
+  </script>
+</body>
+</html>
