@@ -5,91 +5,268 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Streaming Tecnology v2</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     html,
     body {
       width: 100%;
       height: 100%;
       margin: 0;
-      background: #050607;
-      color: #f5f7fb;
+      background:
+        linear-gradient(115deg, rgba(13, 31, 45, 0.92), rgba(5, 6, 8, 0.96) 42%, rgba(38, 13, 28, 0.82)),
+        #050607;
+      color: #f7fbff;
       font-family: Arial, Helvetica, sans-serif;
       overflow: hidden;
     }
 
     body {
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
     }
 
-    main {
-      width: min(920px, 92vw);
-      text-align: center;
+    .screen {
+      width: 100%;
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 30px 40px;
+      position: relative;
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.045) 1px, transparent 1px, transparent 7px);
+      opacity: 0.2;
+    }
+
+    header,
+    .channels,
+    footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid rgba(166, 218, 255, 0.25);
+      padding-bottom: 18px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 5px;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 42px;
-      font-weight: 700;
+      margin: 0;
+      font-size: 38px;
+      line-height: 1;
       letter-spacing: 0;
     }
 
-    p {
-      margin: 0 0 28px;
-      color: #b7c3d7;
-      font-size: 18px;
+    .tagline {
+      margin: 0;
+      color: #a8c3d8;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status {
+      min-width: 190px;
+      padding: 10px 14px;
+      border: 1px solid rgba(99, 196, 255, 0.32);
+      background: rgba(2, 10, 18, 0.58);
+      text-align: right;
+      font-size: 13px;
+      color: #c7d7e6;
+    }
+
+    .status strong {
+      display: block;
+      color: #73d3ff;
+      font-size: 16px;
+      margin-bottom: 2px;
     }
 
     .channels {
+      align-self: center;
       display: grid;
-      grid-template-columns: repeat(2, minmax(220px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 22px;
+      padding: 32px 0;
     }
 
     a {
-      display: flex;
-      min-height: 150px;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #263241;
-      border-radius: 8px;
-      background: #101722;
+      min-height: 250px;
+      display: grid;
+      grid-template-rows: 1fr auto;
       color: #ffffff;
-      font-size: 30px;
-      font-weight: 700;
       text-decoration: none;
+      border: 1px solid rgba(195, 222, 245, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #101721;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
     }
 
-    a:focus,
-    a:hover {
-      background: #16395c;
-      border-color: #47a7ff;
+    a:hover,
+    a:focus {
+      outline: none;
+      border-color: #8fdcff;
+      box-shadow: 0 0 0 3px rgba(75, 191, 255, 0.22), 0 20px 70px rgba(0, 0, 0, 0.5);
     }
 
-    @media (max-width: 640px) {
+    .preview {
+      min-height: 178px;
+      display: flex;
+      align-items: flex-end;
+      padding: 18px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .tubi .preview {
+      background:
+        linear-gradient(160deg, rgba(16, 12, 54, 0.1), rgba(18, 3, 24, 0.82)),
+        linear-gradient(45deg, #271556, #ffca28 48%, #8a1f74);
+    }
+
+    .hub .preview {
+      background:
+        linear-gradient(160deg, rgba(20, 10, 0, 0.08), rgba(12, 7, 0, 0.86)),
+        linear-gradient(45deg, #191919, #ff8a00 52%, #5b2600);
+    }
+
+    .badge {
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      background: rgba(0, 0, 0, 0.4);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 20px;
+      background: rgba(4, 8, 13, 0.94);
+    }
+
+    .label strong {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .label span {
+      color: #aabbd0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-top: 1px solid rgba(166, 218, 255, 0.2);
+      padding-top: 14px;
+      color: #9fb4c8;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .signal {
+      color: #7fd7ff;
+    }
+
+    @media (max-width: 760px) {
+      .screen {
+        padding: 20px;
+      }
+
+      header,
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status {
+        text-align: left;
+      }
+
       h1 {
         font-size: 30px;
       }
 
       .channels {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
 
       a {
+        min-height: 180px;
+      }
+
+      .preview {
         min-height: 110px;
-        font-size: 24px;
       }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Neuro Streaming Tecnology v2</h1>
-    <p>Select a channel</p>
-    <div class="channels">
-      <a href="https://tubitv.com/home">Tubi</a>
-      <a href="https://www.pornhub.com/video">Pornhub</a>
-    </div>
+  <main class="screen">
+    <header>
+      <div class="brand">
+        <h1>Neuro Streaming</h1>
+        <p class="tagline">Tecnology v2</p>
+      </div>
+      <div class="status">
+        <strong>Online</strong>
+        Hosted by VrynOS
+      </div>
+    </header>
+
+    <section class="channels" aria-label="Streaming channels">
+      <a class="tubi" href="https://tubitv.com/home">
+        <div class="preview">
+          <span class="badge">Movies and TV</span>
+        </div>
+        <div class="label">
+          <strong>Tubi</strong>
+          <span>Open Channel</span>
+        </div>
+      </a>
+
+      <a class="hub" href="https://www.pornhub.com/video">
+        <div class="preview">
+          <span class="badge">Adults only</span>
+        </div>
+        <div class="label">
+          <strong>Pornhub</strong>
+          <span>Open Channel</span>
+        </div>
+      </a>
+    </section>
+
+    <footer>
+      <span>Touch a channel tile</span>
+      <span class="signal">Signal ready</span>
+    </footer>
   </main>
 </body>
 </html>
