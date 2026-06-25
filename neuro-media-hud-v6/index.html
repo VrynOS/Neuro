@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neuro Media Hud V6</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <main class="hud-shell" data-screen="home">
+    <header class="hud-top">
+      <section class="brand">
+        <div class="brand-mark">NE</div>
+        <div>
+          <h1>NEURO</h1>
+          <p>MEDIA HUD SYSTEM</p>
+        </div>
+      </section>
+      <section class="top-status">
+        <button class="icon-button" type="button" data-command="notify">Bell</button>
+        <time id="slt-clock">12:23 <span>SLT</span></time>
+      </section>
+    </header>
+
+    <nav class="hud-nav" aria-label="Neuro navigation">
+      <button class="nav-button is-active" type="button" data-screen-target="home">Home</button>
+      <button class="nav-button" type="button" data-screen-target="wallet">Wallet</button>
+      <button class="nav-button" type="button" data-command="health">Health</button>
+      <button class="nav-button" type="button" data-command="work">Work</button>
+      <button class="nav-button" type="button" data-screen-target="settings">Settings</button>
+    </nav>
+
+    <section class="screen screen-home is-active" id="screen-home">
+      <section class="body-status">
+        <div class="status-orb">
+          <span>Body Status</span>
+          <strong>Stable</strong>
+          <small>Neuro</small>
+        </div>
+      </section>
+
+      <section class="stat-panel" aria-label="Core stats">
+        <article><span>Hunger</span><strong>82%</strong></article>
+        <article><span>Thirst</span><strong>64%</strong></article>
+        <article><span>Energy</span><strong>91%</strong></article>
+        <article><span>Hygiene</span><strong>88%</strong></article>
+        <article><span>Fun</span><strong>55%</strong></article>
+        <article><span>XP</span><strong>78%</strong></article>
+      </section>
+
+      <section class="quick-cards">
+        <button class="quick-card" type="button" data-screen-target="wallet">
+          <span>Wallet</span>
+          <strong>GC 3,310</strong>
+        </button>
+        <button class="quick-card" type="button" data-command="health">
+          <span>Health</span>
+          <strong>Cycle: Follicular</strong>
+          <small>Care: Stable</small>
+        </button>
+        <button class="quick-card" type="button" data-command="work">
+          <span>Work</span>
+          <strong>Off Duty</strong>
+        </button>
+      </section>
+    </section>
+
+    <section class="screen screen-wallet" id="screen-wallet">
+      <h2>G Coin Wallet</h2>
+      <section class="wallet-list">
+        <article>
+          <div>
+            <span>Checking</span>
+            <small>Eye to hide</small>
+          </div>
+          <button type="button" data-wallet-eye="checking">Eye</button>
+          <strong data-balance="checking">GC 3,310</strong>
+        </article>
+        <article>
+          <div>
+            <span>Savings</span>
+            <small>Eye to hide</small>
+          </div>
+          <button type="button" data-wallet-eye="savings">Eye</button>
+          <strong data-balance="savings">GC 12,500</strong>
+        </article>
+      </section>
+      <button class="wide-action" type="button" data-command="wallet">Balance / Refresh</button>
+      <section class="wallet-actions">
+        <button type="button" data-command="wallet-request">Request</button>
+        <button type="button" data-command="wallet-transfer">Transfer</button>
+        <button type="button" data-command="wallet-transactions">Transactions</button>
+      </section>
+    </section>
+
+    <section class="screen screen-settings" id="screen-settings">
+      <h2>Settings</h2>
+      <button class="wide-action" type="button" data-command="ping">Ping LSL</button>
+      <button class="wide-action" type="button" data-command="notify">Notifications</button>
+      <pre id="bridge-log" aria-live="polite"></pre>
+    </section>
+  </main>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
