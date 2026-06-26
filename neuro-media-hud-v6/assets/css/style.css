@@ -660,6 +660,38 @@ time span {
   font-weight: 500;
 }
 
+.profile-location {
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 76px auto;
+  padding-bottom: 18px;
+}
+
+.location-options {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.location-options button {
+  min-height: 58px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 34%),
+    rgba(0, 0, 0, 0.42);
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.location-options button:first-child {
+  color: var(--gold);
+  border-color: var(--gold-soft);
+}
+
 #bridge-log {
   min-height: 180px;
   margin: 22px 0 0;
