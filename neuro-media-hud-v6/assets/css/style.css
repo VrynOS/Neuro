@@ -568,7 +568,8 @@ time span {
 }
 
 .wide-action,
-.wallet-actions button {
+.wallet-actions button,
+.profile-edit {
   min-height: 66px;
   cursor: pointer;
   font-size: 25px;
@@ -623,6 +624,24 @@ time span {
   margin-top: 12px;
   font-size: 28px;
   color: var(--text);
+}
+
+.profile-edit {
+  min-width: 210px;
+  margin-top: 26px;
+  padding: 0 28px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(25, 26, 29, 0.9), rgba(2, 2, 3, 0.92));
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -18px 28px rgba(0, 0, 0, 0.52),
+    0 0 18px rgba(244, 207, 118, 0.14);
 }
 
 .profile-grid {

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=icons-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=profile-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -92,10 +92,10 @@
 
     <nav class="hud-nav" aria-label="Neuro navigation">
       <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon"><svg><use href="#icon-home"></use></svg></span><span>Home</span></button>
+      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><svg><use href="#icon-profile"></use></svg></span><span>Profile</span></button>
       <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon"><svg><use href="#icon-wallet"></use></svg></span><span>Wallet</span></button>
       <button class="nav-button" type="button" data-command="health"><span class="nav-icon"><svg><use href="#icon-heart"></use></svg></span><span>Health</span></button>
       <button class="nav-button" type="button" data-command="work"><span class="nav-icon"><svg><use href="#icon-work"></use></svg></span><span>Work</span></button>
-      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><svg><use href="#icon-profile"></use></svg></span><span>Profile</span></button>
       <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon"><svg><use href="#icon-settings"></use></svg></span><span>Settings</span></button>
     </nav>
 
@@ -170,6 +170,7 @@
         <div class="profile-copy">
           <h2>Profile</h2>
           <p>Neuro Resident</p>
+          <button class="profile-edit" type="button" data-command="edit-profile">Edit Info</button>
         </div>
       </section>
       <section class="profile-grid">
