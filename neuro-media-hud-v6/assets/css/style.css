@@ -222,7 +222,10 @@ time span {
 .wide-action,
 .wallet-actions button,
 .wallet-list article,
-.profile-grid article {
+.profile-grid article,
+.home-profile,
+.home-notifications,
+.avatar-picker button {
   border: 1px solid var(--gold-soft);
   border-radius: 4px;
   background:
@@ -254,7 +257,8 @@ time span {
 .wallet-actions button:hover,
 .profile-edit:hover,
 .location-options button:hover,
-.wallet-list button:hover {
+.wallet-list button:hover,
+.avatar-picker button:hover {
   transform: translateY(-4px) scale(1.015);
   border-color: rgba(218, 250, 255, 0.88);
   box-shadow:
@@ -269,7 +273,8 @@ time span {
 .wallet-actions button:active,
 .profile-edit:active,
 .location-options button:active,
-.wallet-list button:active {
+.wallet-list button:active,
+.avatar-picker button:active {
   transform: translateY(1px) scale(0.985);
   box-shadow:
     inset 0 0 22px rgba(40, 161, 252, 0.32),
@@ -321,8 +326,8 @@ time span {
 
 .screen-home {
   display: none;
-  grid-template-columns: 1fr 1.05fr;
-  grid-template-rows: minmax(0, 1fr) 150px;
+  grid-template-columns: 0.72fr 1fr 1.04fr;
+  grid-template-rows: minmax(0, 1fr) 132px;
   gap: 18px;
   margin: 0 24px;
 }
@@ -335,7 +340,9 @@ time span {
 .stat-panel,
 .screen-wallet,
 .screen-settings,
-.screen-profile {
+.screen-profile,
+.home-profile,
+.home-notifications {
   border: 1px solid rgba(40, 161, 252, 0.48);
   border-radius: 4px;
   background:
@@ -349,13 +356,15 @@ time span {
   display: grid;
   place-items: center;
   overflow: hidden;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .body-status::before {
   content: "";
   position: absolute;
-  width: 620px;
-  height: 620px;
+  width: 480px;
+  height: 480px;
   border-radius: 50%;
   border: 1px solid rgba(40, 161, 252, 0.28);
   box-shadow:
@@ -369,7 +378,7 @@ time span {
   position: relative;
   display: grid;
   place-items: center;
-  width: 350px;
+  width: min(260px, 72%);
   aspect-ratio: 1;
   border: 3px solid var(--gold);
   border-radius: 50%;
@@ -386,29 +395,90 @@ time span {
 }
 
 .status-orb span {
-  margin-top: 76px;
+  margin-top: 56px;
   color: var(--gold);
   text-transform: uppercase;
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 500;
   text-shadow: var(--shadow);
 }
 
 .status-orb strong {
-  font-size: 56px;
+  font-size: 44px;
   font-weight: 400;
   text-shadow: 0 0 18px rgba(255, 255, 255, 0.24), var(--shadow);
 }
 
 .status-orb small {
   color: var(--gold);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   text-shadow: var(--shadow);
 }
 
 .stat-panel {
-  padding: 22px 30px;
+  grid-column: 3;
+  grid-row: 1;
+  padding: 12px 22px;
+}
+
+.home-profile {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 18px;
+  min-width: 0;
+  padding: 18px;
+  overflow: hidden;
+}
+
+.home-profile img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid var(--gold-soft);
+  border-radius: 3px;
+  box-shadow: inset 0 0 24px rgba(40, 161, 252, 0.24), 0 0 24px rgba(40, 161, 252, 0.16);
+}
+
+.home-profile div {
+  min-width: 0;
+}
+
+.home-profile span,
+.section-title strong {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 23px;
+}
+
+.home-profile strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 32px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-profile small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 20px;
+}
+
+.home-profile small svg {
+  width: 22px;
+  height: 22px;
+  color: var(--gold);
 }
 
 .stat-panel article,
@@ -421,9 +491,9 @@ time span {
 }
 
 .stat-panel article {
-  grid-template-columns: 54px 1fr 110px;
-  min-height: 68px;
-  font-size: 28px;
+  grid-template-columns: 44px 1fr 86px;
+  min-height: 40px;
+  font-size: 23px;
   animation: statFloat 4.2s ease-in-out infinite;
 }
 
@@ -454,11 +524,11 @@ time span {
 }
 
 .stat-icon {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 3px;
   border: 1px solid var(--gold-dim);
-  padding: 8px;
+  padding: 6px;
   background: rgba(40, 161, 252, 0.1);
   box-shadow: inset 0 0 14px rgba(40, 161, 252, 0.16);
   animation: iconPulse 2.4s ease-in-out infinite;
@@ -489,26 +559,104 @@ time span {
 
 .stat-panel strong {
   color: var(--gold);
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 800;
   text-align: right;
   animation: numberGlow 2.6s ease-in-out infinite;
 }
 
 .quick-cards {
-  grid-column: 1 / -1;
+  grid-column: 2 / -1;
+  grid-row: 2;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 14px;
+}
+
+.home-notifications {
+  grid-column: 1;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: stretch;
+  gap: 10px;
+  padding: 12px 14px;
+  overflow: hidden;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  padding: 8px;
+  color: var(--gold);
+  background: rgba(40, 161, 252, 0.12);
+}
+
+.notification-list {
+  display: grid;
+  gap: 7px;
+}
+
+.notification-item {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 7px;
+  border: 1px solid rgba(40, 161, 252, 0.28);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.26);
+  animation: notificationIn 280ms ease both;
+}
+
+.notification-item span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  padding: 6px;
+  background: rgba(40, 161, 252, 0.1);
+}
+
+.notification-item strong,
+.notification-item small {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-item strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.notification-item small {
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .quick-card {
   position: relative;
   display: grid;
-  grid-template-columns: 104px 1fr 28px;
+  grid-template-columns: 74px minmax(0, 1fr) 22px;
   align-items: center;
-  min-height: 150px;
-  padding: 18px 24px;
+  min-height: 132px;
+  padding: 12px 16px;
   text-align: left;
   cursor: pointer;
 }
@@ -519,7 +667,8 @@ time span {
 }
 
 .card-icon,
-.profile-orb {
+.profile-orb,
+.profile-avatar-frame {
   display: grid;
   place-items: center;
   border-radius: 4px;
@@ -533,9 +682,9 @@ time span {
 }
 
 .card-icon {
-  width: 88px;
-  height: 88px;
-  padding: 23px;
+  width: 60px;
+  height: 60px;
+  padding: 15px;
 }
 
 .card-copy span,
@@ -545,29 +694,29 @@ time span {
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: 26px;
+  font-size: 23px;
   font-weight: 500;
   text-shadow: var(--shadow);
 }
 
 .card-copy strong {
   display: block;
-  margin-top: 14px;
-  font-size: 30px;
+  margin-top: 10px;
+  font-size: 23px;
   font-weight: 400;
   text-shadow: var(--shadow);
 }
 
 .card-copy small {
   display: block;
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--text);
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .quick-card b {
   color: var(--gold);
-  font-size: 46px;
+  font-size: 38px;
   font-weight: 300;
 }
 
@@ -638,7 +787,7 @@ time span {
 
 .screen-profile {
   display: none;
-  grid-template-columns: 0.82fr 1.18fr;
+  grid-template-columns: 0.95fr 1.05fr;
   gap: 28px;
   align-items: stretch;
 }
@@ -649,10 +798,11 @@ time span {
 
 .profile-card {
   display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
   place-items: center;
-  gap: 26px;
+  gap: 18px;
   min-height: 520px;
-  padding: 34px;
+  padding: 24px;
   border-right: 1px solid rgba(40, 161, 252, 0.24);
 }
 
@@ -660,6 +810,20 @@ time span {
   width: 210px;
   height: 210px;
   padding: 58px;
+}
+
+.profile-avatar-frame {
+  width: min(330px, 100%);
+  aspect-ratio: 1;
+  padding: 0;
+  overflow: hidden;
+}
+
+.profile-avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
 }
 
 .profile-copy {
@@ -673,6 +837,10 @@ time span {
 }
 
 .profile-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   min-width: 210px;
   margin-top: 26px;
   padding: 0 28px;
@@ -688,6 +856,43 @@ time span {
     inset 0 1px 0 rgba(255, 255, 255, 0.24),
     inset 0 -18px 28px rgba(0, 0, 0, 0.52),
     0 0 18px rgba(40, 161, 252, 0.2);
+}
+
+.profile-edit span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+}
+
+.avatar-picker {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.avatar-picker button {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 3px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.avatar-picker button.is-selected {
+  border-color: var(--gold);
+  box-shadow:
+    inset 0 0 16px rgba(40, 161, 252, 0.28),
+    0 0 24px rgba(40, 161, 252, 0.42);
+}
+
+.avatar-picker img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  border-radius: 2px;
 }
 
 .profile-grid {
@@ -733,9 +938,10 @@ time span {
   cursor: pointer;
 }
 
-.location-options button:first-child {
+.location-options button.is-selected {
   color: var(--gold);
   border-color: var(--gold-soft);
+  box-shadow: inset 0 0 18px rgba(40, 161, 252, 0.2), 0 0 16px rgba(40, 161, 252, 0.18);
 }
 
 #bridge-log {
@@ -812,5 +1018,16 @@ time span {
   }
   50% {
     transform: translateX(4px);
+  }
+}
+
+@keyframes notificationIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

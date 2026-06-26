@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=windows-stats-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=profile-avatars-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -39,6 +39,21 @@
     <symbol id="icon-settings" viewBox="0 0 24 24">
       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
       <path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.8-1L14.4 3h-4.8L9.3 6a7 7 0 0 0-1.8 1L5.1 6l-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.8 1l.3 3h4.8l.3-3a7 7 0 0 0 1.8-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"></path>
+    </symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24">
+      <path d="M4 20h4l11-11-4-4L4 16z"></path>
+      <path d="M13 7l4 4"></path>
+      <path d="M15 5l2-2 4 4-2 2"></path>
+    </symbol>
+    <symbol id="icon-id" viewBox="0 0 24 24">
+      <path d="M4 5h16v14H4z"></path>
+      <path d="M8 10h4"></path>
+      <path d="M8 14h8"></path>
+      <path d="M15 10h2"></path>
+    </symbol>
+    <symbol id="icon-location" viewBox="0 0 24 24">
+      <path d="M12 21s7-5.4 7-12a7 7 0 0 0-14 0c0 6.6 7 12 7 12z"></path>
+      <path d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"></path>
     </symbol>
     <symbol id="icon-food" viewBox="0 0 24 24">
       <path d="M7 3v18"></path>
@@ -110,6 +125,15 @@
     </nav>
 
     <section class="screen screen-home is-active" id="screen-home">
+      <section class="home-profile">
+        <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
+        <div>
+          <span data-profile-field="title">Resident</span>
+          <strong data-profile-field="name">Neuro Resident</strong>
+          <small><svg><use href="#icon-location"></use></svg><span data-profile-field="location">Chi-Core</span></small>
+        </div>
+      </section>
+
       <section class="body-status">
         <div class="status-orb">
           <span>Body Status</span>
@@ -144,6 +168,14 @@
           <b>&gt;</b>
         </button>
       </section>
+
+      <section class="home-notifications" aria-label="HUD notifications">
+        <div class="section-title">
+          <span><svg><use href="#icon-bell"></use></svg></span>
+          <strong>Notifications</strong>
+        </div>
+        <div class="notification-list" data-notification-list></div>
+      </section>
     </section>
 
     <section class="screen screen-wallet" id="screen-wallet">
@@ -176,24 +208,38 @@
 
     <section class="screen screen-profile" id="screen-profile">
       <section class="profile-card">
-        <div class="profile-orb"><span><svg><use href="#icon-profile"></use></svg></span></div>
+        <div class="profile-avatar-frame">
+          <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
+        </div>
         <div class="profile-copy">
           <h2>Profile</h2>
           <p>Resident Card</p>
-          <button class="profile-edit" type="button" data-command="edit-profile">Edit Info</button>
+          <button class="profile-edit" type="button" data-command="edit-profile"><span><svg><use href="#icon-edit"></use></svg></span>Edit Info</button>
         </div>
+        <section class="avatar-picker" aria-label="Profile avatar choices">
+          <button class="is-selected" type="button" data-avatar-id="01" aria-label="Choose avatar 1"><img src="assets/img/avatars/avatar-01.png" alt=""></button>
+          <button type="button" data-avatar-id="02" aria-label="Choose avatar 2"><img src="assets/img/avatars/avatar-02.png" alt=""></button>
+          <button type="button" data-avatar-id="03" aria-label="Choose avatar 3"><img src="assets/img/avatars/avatar-03.png" alt=""></button>
+          <button type="button" data-avatar-id="04" aria-label="Choose avatar 4"><img src="assets/img/avatars/avatar-04.png" alt=""></button>
+          <button type="button" data-avatar-id="05" aria-label="Choose avatar 5"><img src="assets/img/avatars/avatar-05.png" alt=""></button>
+          <button type="button" data-avatar-id="06" aria-label="Choose avatar 6"><img src="assets/img/avatars/avatar-06.png" alt=""></button>
+          <button type="button" data-avatar-id="07" aria-label="Choose avatar 7"><img src="assets/img/avatars/avatar-07.png" alt=""></button>
+          <button type="button" data-avatar-id="08" aria-label="Choose avatar 8"><img src="assets/img/avatars/avatar-08.png" alt=""></button>
+          <button type="button" data-avatar-id="09" aria-label="Choose avatar 9"><img src="assets/img/avatars/avatar-09.png" alt=""></button>
+          <button type="button" data-avatar-id="10" aria-label="Choose avatar 10"><img src="assets/img/avatars/avatar-10.png" alt=""></button>
+        </section>
       </section>
       <section class="profile-grid">
-        <article><span>Title</span><strong>Resident</strong></article>
-        <article><span>Name</span><strong>Neuro Resident</strong></article>
-        <article><span>Age</span><strong>Adult</strong></article>
-        <article><span>Sex</span><strong>Not Set</strong></article>
+        <article><span>Title</span><strong data-profile-field="title">Resident</strong></article>
+        <article><span>Name</span><strong data-profile-field="name">Neuro Resident</strong></article>
+        <article><span>Age</span><strong data-profile-field="age">Adult</strong></article>
+        <article><span>Sex</span><strong data-profile-field="sex">Not Set</strong></article>
         <article class="profile-location">
           <span>Location</span>
-          <strong>Chi-Core</strong>
+          <strong data-profile-field="location">Chi-Core</strong>
           <div class="location-options" aria-label="Profile location options">
-            <button type="button" data-command="edit-profile">Chi-Core</button>
-            <button type="button" data-command="edit-profile">Eden Palms</button>
+            <button class="is-selected" type="button" data-profile-location="Chi-Core">Chi-Core</button>
+            <button type="button" data-profile-location="Eden Palms">Eden Palms</button>
           </div>
         </article>
       </section>
@@ -207,6 +253,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=windows-stats-1"></script>
+  <script src="assets/js/app.js?v=profile-avatars-1"></script>
 </body>
 </html>

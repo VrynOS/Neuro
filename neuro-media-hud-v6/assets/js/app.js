@@ -4,7 +4,25 @@ const state = {
   hiddenBalances: {
     checking: false,
     savings: false
-  }
+  },
+  profile: {
+    title: "Resident",
+    name: "Neuro Resident",
+    age: "Adult",
+    sex: "Not Set",
+    location: "Chi-Core",
+    avatar: "01"
+  },
+  notifications: []
+};
+
+const avatarPath = (id) => `assets/img/avatars/avatar-${id}.png`;
+
+const notificationIcons = {
+  avatar: "#icon-profile",
+  profile: "#icon-id",
+  location: "#icon-location",
+  bridge: "#icon-bell"
 };
 
 function logBridge(line) {
@@ -13,7 +31,7 @@ function logBridge(line) {
   log.textContent = `${line}\n${log.textContent}`.trim();
 }
 
-function sendBridge(op, text = "") {
+function sendBridge(op, text = "", notify = true) {
   const tick = Date.now().toString();
   const query = new URLSearchParams({
     op,
@@ -23,6 +41,88 @@ function sendBridge(op, text = "") {
 
   window.parent.postMessage(`${BRIDGE_PREFIX}${query}`, "*");
   logBridge(`sent: ${op}`);
+  if (notify) addNotification("bridge", "Command Sent", op);
+}
+
+function loadSavedProfile() {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem("neuroProfile") || "{}");
+    state.profile = { ...state.profile, ...saved };
+  } catch {
+    window.localStorage.removeItem("neuroProfile");
+  }
+}
+
+function saveProfile() {
+  try {
+    window.localStorage.setItem("neuroProfile", JSON.stringify(state.profile));
+  } catch {
+    logBridge("profile: local save skipped");
+  }
+}
+
+function addNotification(type, title, detail) {
+  const stamp = new Date().toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
+  state.notifications.unshift({
+    type,
+    title,
+    detail,
+    stamp
+  });
+  state.notifications = state.notifications.slice(0, 1);
+  renderNotifications();
+}
+
+function renderNotifications() {
+  const list = document.querySelector("[data-notification-list]");
+  if (!list) return;
+  list.innerHTML = state.notifications.map((item) => `
+    <article class="notification-item">
+      <span><svg><use href="${notificationIcons[item.type] || notificationIcons.bridge}"></use></svg></span>
+      <div>
+        <strong>${item.title}</strong>
+        <small>${item.detail} - ${item.stamp}</small>
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderProfile() {
+  document.querySelectorAll("[data-profile-field]").forEach((node) => {
+    const key = node.dataset.profileField;
+    if (key in state.profile) node.textContent = state.profile[key];
+  });
+
+  document.querySelectorAll("[data-avatar-display]").forEach((image) => {
+    image.src = avatarPath(state.profile.avatar);
+  });
+
+  document.querySelectorAll("[data-avatar-id]").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.avatarId === state.profile.avatar);
+  });
+
+  document.querySelectorAll("[data-profile-location]").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.profileLocation === state.profile.location);
+  });
+}
+
+function selectAvatar(id) {
+  state.profile.avatar = id;
+  saveProfile();
+  renderProfile();
+  addNotification("avatar", "Avatar Updated", `Profile avatar ${Number(id)} active`);
+}
+
+function setProfileLocation(location) {
+  state.profile.location = location;
+  saveProfile();
+  renderProfile();
+  addNotification("location", "Location Updated", location);
 }
 
 function showScreen(name) {
@@ -106,6 +206,19 @@ function setupClock() {
 }
 
 document.addEventListener("click", (event) => {
+  const avatarButton = event.target.closest("[data-avatar-id]");
+  if (avatarButton) {
+    selectAvatar(avatarButton.dataset.avatarId);
+    return;
+  }
+
+  const locationButton = event.target.closest("[data-profile-location]");
+  if (locationButton) {
+    setProfileLocation(locationButton.dataset.profileLocation);
+    sendBridge("edit-profile", locationButton.dataset.profileLocation, false);
+    return;
+  }
+
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
@@ -129,6 +242,7 @@ window.addEventListener("message", (event) => {
   if (!data.startsWith("NEURO_GATEWAY_ACK|")) return;
   const parts = data.split("|");
   logBridge(`${parts[1] || "ack"}: LSL ${parts[2] || "?"} ${parts.slice(3).join("|")}`);
+  addNotification("bridge", "LSL Ack", parts[2] || "Gateway ready");
 });
 
 document.querySelectorAll("[data-balance]").forEach((balance) => {
@@ -136,4 +250,7 @@ document.querySelectorAll("[data-balance]").forEach((balance) => {
 });
 
 setupStats();
+loadSavedProfile();
+renderProfile();
+addNotification("profile", "Profile Loaded", `${state.profile.name} - ${state.profile.location}`);
 setupClock();
