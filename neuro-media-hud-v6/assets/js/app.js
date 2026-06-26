@@ -33,7 +33,8 @@ const avatarPath = (id) => `assets/img/avatars/avatar-${id}.png`;
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
   if (!log) return;
-  log.textContent = `${line}\n${log.textContent}`.trim();
+  const lines = `${line}\n${log.textContent}`.trim().split("\n");
+  log.textContent = lines.slice(0, 12).join("\n");
 }
 
 function sendBridge(op, text = "") {
@@ -46,7 +47,7 @@ function sendBridge(op, text = "") {
 
   pendingBridge.set(tick, op);
   window.parent.postMessage(`${BRIDGE_PREFIX}${query}`, "*");
-  logBridge(`sent: ${op}`);
+  if (op !== "stats") logBridge(`sent: ${op}`);
   return tick;
 }
 
@@ -312,7 +313,7 @@ window.addEventListener("message", (event) => {
   const body = parts.slice(3).join("|");
   const op = pendingBridge.get(tick) || tick;
   pendingBridge.delete(tick);
-  logBridge(`${op}: LSL ${status} ${body}`);
+  if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
   }
