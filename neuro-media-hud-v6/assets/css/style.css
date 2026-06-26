@@ -20,6 +20,8 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  display: grid;
+  place-items: center;
   background: radial-gradient(circle at 30% 30%, rgba(220, 173, 84, 0.14), transparent 34%), #020203;
   color: var(--text);
   font-family: "Segoe UI", Arial, sans-serif;
@@ -31,10 +33,10 @@ button {
 }
 
 .hud-shell {
-  width: 100vw;
-  height: 100vh;
+  width: 92vw;
+  height: 88vh;
   margin: 0;
-  padding: 3.2vh 3.4vw;
+  padding: 2.2vh 2.4vw;
   border: 1px solid var(--line);
   border-radius: 2.2vh;
   background:
@@ -85,14 +87,15 @@ p {
 
 h1 {
   letter-spacing: 0.34em;
-  font-size: 4.2vh;
+  font-size: 3.2vh;
   font-weight: 500;
   color: var(--line-hot);
 }
 
 .brand p {
-  margin-top: 4px;
+  margin-top: 0.3vh;
   letter-spacing: 0.32em;
+  font-size: 1.35vh;
   color: var(--line-hot);
 }
 
@@ -120,13 +123,13 @@ h1 {
 }
 
 time {
-  font-size: 5.4vh;
+  font-size: 4.4vh;
   letter-spacing: 0.08em;
   color: var(--line-hot);
 }
 
 time span {
-  font-size: 22px;
+  font-size: 1.7vh;
 }
 
 .hud-nav {
@@ -148,7 +151,7 @@ time span {
 .nav-button,
 .wide-action,
 .wallet-actions button {
-  min-height: 6.4vh;
+  min-height: 5vh;
   cursor: pointer;
 }
 
@@ -168,9 +171,9 @@ time span {
 .screen-home {
   display: none;
   grid-template-columns: 1.05fr 0.95fr;
-  grid-template-rows: 1fr 13.2vh;
-  gap: 2vh;
-  height: calc(100vh - 22.4vh);
+  grid-template-rows: 1fr 10.4vh;
+  gap: 1.4vh;
+  height: calc(88vh - 18.4vh);
 }
 
 .screen-home.is-active {
@@ -195,7 +198,7 @@ time span {
 .status-orb {
   display: grid;
   place-items: center;
-  width: min(33vh, 22vw);
+  width: min(27vh, 18vw);
   aspect-ratio: 1;
   border: 2px solid var(--line-hot);
   border-radius: 50%;
@@ -209,7 +212,7 @@ time span {
 }
 
 .status-orb strong {
-  font-size: 5.2vh;
+  font-size: 4.2vh;
   font-weight: 500;
 }
 
@@ -218,7 +221,7 @@ time span {
 }
 
 .stat-panel {
-  padding: 2vh 2.4vw;
+  padding: 1.3vh 1.8vw;
 }
 
 .stat-panel article,
@@ -226,9 +229,9 @@ time span {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  min-height: 8.2vh;
+  min-height: 6.4vh;
   border-bottom: 1px solid rgba(240, 199, 104, 0.16);
-  font-size: 2.6vh;
+  font-size: 2vh;
 }
 
 .stat-panel article:last-child {
@@ -247,7 +250,7 @@ time span {
 
 .quick-card {
   min-height: 0;
-  padding: 2vh 2vw;
+  padding: 1.2vh 1.4vw;
   text-align: left;
   cursor: pointer;
 }
@@ -262,14 +265,14 @@ time span {
 
 .quick-card strong {
   display: block;
-  margin-top: 1vh;
-  font-size: 2.7vh;
+  margin-top: 0.7vh;
+  font-size: 1.9vh;
   font-weight: 500;
 }
 
 .quick-card small {
   display: block;
-  margin-top: 8px;
+  margin-top: 0.5vh;
   color: var(--muted);
 }
 
