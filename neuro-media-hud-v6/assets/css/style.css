@@ -1,5 +1,6 @@
 :root {
   color-scheme: dark;
+  --hud-ratio: 1.595;
   --bg: #050506;
   --panel: rgba(12, 13, 16, 0.84);
   --panel-strong: rgba(20, 21, 26, 0.94);
@@ -33,17 +34,22 @@ button {
 }
 
 .hud-shell {
-  width: 92vw;
-  height: 88vh;
+  width: min(94vw, calc(94vh * var(--hud-ratio)));
+  height: auto;
+  max-height: 94vh;
+  aspect-ratio: var(--hud-ratio);
   margin: 0;
-  padding: 2.2vh 2.4vw;
+  padding: 2.6%;
   border: 1px solid var(--line);
-  border-radius: 2.2vh;
+  border-radius: 16px;
   background:
     linear-gradient(130deg, rgba(255, 255, 255, 0.14), transparent 21%),
     linear-gradient(160deg, transparent, rgba(240, 199, 104, 0.08)),
     rgba(2, 2, 3, 0.94);
   box-shadow: 0 0 32px rgba(240, 199, 104, 0.22), inset 0 0 32px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .hud-top,
@@ -51,13 +57,14 @@ button {
 .quick-cards,
 .wallet-actions {
   display: grid;
-  gap: 2vh;
+  gap: 1.5vh;
 }
 
 .hud-top {
   grid-template-columns: 1fr auto;
   align-items: center;
-  margin-bottom: 2.4vh;
+  margin-bottom: 1.55vh;
+  flex: 0 0 auto;
 }
 
 .brand {
@@ -70,8 +77,8 @@ button {
 .icon-button {
   display: grid;
   place-items: center;
-  width: 78px;
-  height: 78px;
+  width: 9vh;
+  height: 9vh;
   border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--panel);
@@ -87,7 +94,7 @@ p {
 
 h1 {
   letter-spacing: 0.34em;
-  font-size: 3.2vh;
+  font-size: 3vh;
   font-weight: 500;
   color: var(--line-hot);
 }
@@ -106,8 +113,8 @@ h1 {
 }
 
 .icon-button {
-  width: 58px;
-  height: 58px;
+  width: 7vh;
+  height: 7vh;
   border: 0;
   font-size: 0;
   cursor: pointer;
@@ -123,7 +130,7 @@ h1 {
 }
 
 time {
-  font-size: 4.4vh;
+  font-size: 4vh;
   letter-spacing: 0.08em;
   color: var(--line-hot);
 }
@@ -134,7 +141,8 @@ time span {
 
 .hud-nav {
   grid-template-columns: repeat(5, 1fr);
-  margin-bottom: 2.2vh;
+  margin-bottom: 1.55vh;
+  flex: 0 0 auto;
 }
 
 .nav-button,
@@ -151,7 +159,7 @@ time span {
 .nav-button,
 .wide-action,
 .wallet-actions button {
-  min-height: 5vh;
+  min-height: 4.65vh;
   cursor: pointer;
 }
 
@@ -166,14 +174,18 @@ time span {
 
 .screen.is-active {
   display: block;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .screen-home {
   display: none;
   grid-template-columns: 1.05fr 0.95fr;
-  grid-template-rows: 1fr 10.4vh;
-  gap: 1.4vh;
-  height: calc(88vh - 18.4vh);
+  grid-template-rows: minmax(0, 1fr) 8.2vh;
+  gap: 1.25vh;
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .screen-home.is-active {
@@ -185,7 +197,7 @@ time span {
 .screen-wallet,
 .screen-settings {
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background: var(--panel);
 }
 
@@ -198,7 +210,7 @@ time span {
 .status-orb {
   display: grid;
   place-items: center;
-  width: min(27vh, 18vw);
+  width: min(26vh, 18vw);
   aspect-ratio: 1;
   border: 2px solid var(--line-hot);
   border-radius: 50%;
@@ -212,7 +224,7 @@ time span {
 }
 
 .status-orb strong {
-  font-size: 4.2vh;
+  font-size: 3.9vh;
   font-weight: 500;
 }
 
@@ -221,7 +233,7 @@ time span {
 }
 
 .stat-panel {
-  padding: 1.3vh 1.8vw;
+  padding: 1.15vh 1.5vw;
 }
 
 .stat-panel article,
@@ -229,9 +241,9 @@ time span {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  min-height: 6.4vh;
+  min-height: 5.65vh;
   border-bottom: 1px solid rgba(240, 199, 104, 0.16);
-  font-size: 2vh;
+  font-size: 1.85vh;
 }
 
 .stat-panel article:last-child {
@@ -250,9 +262,10 @@ time span {
 
 .quick-card {
   min-height: 0;
-  padding: 1.2vh 1.4vw;
+  padding: 0.9vh 1.1vw;
   text-align: left;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .quick-card span,
@@ -265,14 +278,14 @@ time span {
 
 .quick-card strong {
   display: block;
-  margin-top: 0.7vh;
-  font-size: 1.9vh;
+  margin-top: 0.35vh;
+  font-size: 1.55vh;
   font-weight: 500;
 }
 
 .quick-card small {
   display: block;
-  margin-top: 0.5vh;
+  margin-top: 0.2vh;
   color: var(--muted);
 }
 
