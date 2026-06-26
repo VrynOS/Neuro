@@ -3,10 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=home-social-1">
+  <title>Neuro Tec</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-tec-1">
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 3h16z"></path><path d="M10 21h4"></path><path d="M12 5V3"></path></symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M4 12 12 5l8 7"></path><path d="M6 10v10h5v-5h2v5h5V10"></path></symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path><path d="M5 21a7 7 0 0 1 14 0"></path></symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M4 7h15a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h13"></path><path d="M16 13h5"></path></symbol>
+    <symbol id="icon-health" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"></path><path d="M7 13h3l1.5-3 2.5 6 1.5-3H18"></path></symbol>
+    <symbol id="icon-work" viewBox="0 0 24 24"><path d="M9 7V5h6v2"></path><path d="M4 7h16v13H4z"></path><path d="M4 12h16"></path></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.8-1L14.4 3h-4.8L9.3 6a7 7 0 0 0-1.8 1L5.1 6l-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.8 1l.3 3h4.8l.3-3a7 7 0 0 0 1.8-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"></path></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16z"></path><path d="M13 7l4 4"></path></symbol>
+    <symbol id="icon-id" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M8 10h4"></path><path d="M8 14h8"></path></symbol>
+    <symbol id="icon-stat-good" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></symbol>
+    <symbol id="icon-stat-low" viewBox="0 0 24 24"><path d="M12 4v9"></path><path d="M12 18h.1"></path><path d="M4 20h16L12 4z"></path></symbol>
+    <symbol id="icon-stat-hunger" viewBox="0 0 24 24"><path d="M7 3v18"></path><path d="M4 3v6a3 3 0 0 0 6 0V3"></path><path d="M17 3v18"></path><path d="M14 3h3a3 7 0 0 1 0 14"></path></symbol>
+    <symbol id="icon-stat-thirst" viewBox="0 0 24 24"><path d="M12 3s7 8 7 13a7 7 0 0 1-14 0C5 11 12 3 12 3z"></path></symbol>
+    <symbol id="icon-stat-energy" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 10-13h-7z"></path></symbol>
+    <symbol id="icon-stat-hygiene" viewBox="0 0 24 24"><path d="M6 11h12"></path><path d="M8 11v8"></path><path d="M12 11v8"></path><path d="M16 11v8"></path><path d="M7 8a5 5 0 0 1 10 0"></path></symbol>
+    <symbol id="icon-stat-fun" viewBox="0 0 24 24"><path d="M7 9h10a4 4 0 0 1 4 4v2a3 3 0 0 1-5 2l-2-2h-4l-2 2a3 3 0 0 1-5-2v-2a4 4 0 0 1 4-4z"></path><path d="M8 13h4"></path><path d="M10 11v4"></path><path d="M16 12h.1"></path><path d="M18 14h.1"></path></symbol>
+    <symbol id="icon-stat-xp" viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"></path></symbol>
+    <symbol id="icon-neugram" viewBox="0 0 24 24"><path d="M5 8h14"></path><path d="M5 12h11"></path><path d="M5 16h7"></path><path d="M4 5h16v14H4z"></path></symbol>
+  </svg>
+
   <main class="hud-shell" data-screen="home">
     <header class="hud-top">
       <section class="brand">
@@ -15,102 +36,71 @@
         </div>
         <div>
           <h1>NEURO</h1>
-          <p>MEDIA HUD SYSTEM</p>
+          <p>TEC</p>
         </div>
       </section>
       <section class="top-status">
-        <button class="icon-button" type="button" data-command="notify" aria-label="Notifications">
-          <span class="emoji-icon">🔔</span>
-        </button>
+        <button class="icon-button" type="button" data-command="notify" aria-label="Notifications"><svg><use href="#icon-bell"></use></svg></button>
         <time id="slt-clock">12:23 <span>SLT</span></time>
       </section>
     </header>
 
     <nav class="hud-nav" aria-label="Neuro navigation">
-      <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon"><span class="emoji-icon">🏠</span></span><span>Home</span></button>
-      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><span class="emoji-icon">👤</span></span><span>Profile</span></button>
-      <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon"><span class="emoji-icon">👛</span></span><span>Wallet</span></button>
-      <button class="nav-button" type="button" data-command="health"><span class="nav-icon"><span class="emoji-icon">💙</span></span><span>Health</span></button>
-      <button class="nav-button" type="button" data-command="work"><span class="nav-icon"><span class="emoji-icon">💼</span></span><span>Work</span></button>
-      <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon"><span class="emoji-icon">⚙️</span></span><span>Settings</span></button>
+      <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon"><svg><use href="#icon-home"></use></svg></span><span>Home</span></button>
+      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><svg><use href="#icon-profile"></use></svg></span><span>Profile</span></button>
+      <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon"><svg><use href="#icon-wallet"></use></svg></span><span>Wallet</span></button>
+      <button class="nav-button" type="button" data-command="health"><span class="nav-icon"><svg><use href="#icon-health"></use></svg></span><span>Health</span></button>
+      <button class="nav-button" type="button" data-command="work"><span class="nav-icon"><svg><use href="#icon-work"></use></svg></span><span>Work</span></button>
+      <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon"><svg><use href="#icon-settings"></use></svg></span><span>Settings</span></button>
     </nav>
 
     <section class="screen screen-home is-active" id="screen-home">
       <section class="body-status">
-        <div class="status-orb">
-          <span>Body Status</span>
-          <strong>Stable</strong>
-          <i class="pulse-line" aria-hidden="true"></i>
-          <small>NEURO</small>
+        <div class="reactor">
+          <div class="reactor-core">
+            <span>Body Status</span>
+            <strong>Stable</strong>
+            <i class="pulse-line" aria-hidden="true"></i>
+            <small>NEURO</small>
+          </div>
         </div>
       </section>
 
       <section class="stat-panel" aria-label="Core stats">
-        <article data-stat="hunger" data-value="82"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>Hunger</span><strong>82%</strong></article>
-        <article data-stat="thirst" data-value="64"><span class="stat-icon"><span class="emoji-icon">➕</span></span><span>Thirst</span><strong>64%</strong></article>
-        <article data-stat="energy" data-value="91"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>Energy</span><strong>91%</strong></article>
-        <article data-stat="hygiene" data-value="88"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>Hygiene</span><strong>88%</strong></article>
-        <article data-stat="fun" data-value="55"><span class="stat-icon"><span class="emoji-icon">➕</span></span><span>Fun</span><strong>55%</strong></article>
-        <article data-stat="xp" data-value="78"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>XP</span><strong>78%</strong></article>
+        <article data-stat="hunger" data-value="82"><span class="stat-icon"><svg><use href="#icon-stat-hunger"></use></svg></span><span>Hunger</span><strong>82%</strong></article>
+        <article data-stat="thirst" data-value="64"><span class="stat-icon"><svg><use href="#icon-stat-thirst"></use></svg></span><span>Thirst</span><strong>64%</strong></article>
+        <article data-stat="energy" data-value="91"><span class="stat-icon"><svg><use href="#icon-stat-energy"></use></svg></span><span>Energy</span><strong>91%</strong></article>
+        <article data-stat="hygiene" data-value="88"><span class="stat-icon"><svg><use href="#icon-stat-hygiene"></use></svg></span><span>Hygiene</span><strong>88%</strong></article>
+        <article data-stat="fun" data-value="55"><span class="stat-icon"><svg><use href="#icon-stat-fun"></use></svg></span><span>Fun</span><strong>55%</strong></article>
+        <article data-stat="xp" data-value="78"><span class="stat-icon"><svg><use href="#icon-stat-xp"></use></svg></span><span>XP</span><strong>78%</strong></article>
       </section>
 
-      <section class="social-hub" aria-label="CDF Socials">
-        <section class="social-panel messages-panel">
-          <header><span class="emoji-icon">👥</span><strong>CDF Socials</strong><small>Messages <b>3</b></small></header>
-          <article><img src="assets/img/avatars/avatar-02.png" alt=""><div><strong>Nova</strong><span>Hey, ready for the drop?</span></div><time>2m</time></article>
-          <article><img src="assets/img/avatars/avatar-07.png" alt=""><div><strong>Echo</strong><span>See you on-grid.</span></div><time>15m</time></article>
-          <article><img src="assets/img/avatars/avatar-10.png" alt=""><div><strong>Lira</strong><span>Shared a location.</span></div><time>1h</time></article>
+      <section class="neugram" aria-label="Neugram">
+        <section class="online-panel">
+          <header><svg><use href="#icon-profile"></use></svg><strong>Neugram</strong><small>Online <b>12</b></small></header>
+          <div class="online-row">
+            <img src="assets/img/avatars/avatar-04.png" alt="">
+            <img src="assets/img/avatars/avatar-02.png" alt="">
+            <img src="assets/img/avatars/avatar-09.png" alt="">
+            <img src="assets/img/avatars/avatar-10.png" alt="">
+            <img src="assets/img/avatars/avatar-07.png" alt="">
+            <button type="button">+7</button>
+          </div>
         </section>
-
-        <section class="social-panel activity-panel">
-          <header><span class="emoji-icon">〽️</span><strong>Activity</strong></header>
-          <article><img src="assets/img/avatars/avatar-02.png" alt=""><div><strong>Nova</strong><span>completed a mission</span></div><time>10m</time></article>
-          <article><img src="assets/img/avatars/avatar-07.png" alt=""><div><strong>Echo</strong><span>crafted NeuroBoost v2</span></div><time>35m</time></article>
-          <article><img src="assets/img/avatars/avatar-08.png" alt=""><div><strong>Lira</strong><span>reached Level 27</span></div><time>1h</time></article>
+        <section class="live-feed-panel">
+          <header><svg><use href="#icon-neugram"></use></svg><strong>Camden Falls Feed</strong><small>Live</small></header>
+          <article><img src="assets/img/avatars/avatar-02.png" alt=""><span>Nova</span><p>Rare mod found near Chi-Core. Meet at the south gate.</p><time>5m</time></article>
+          <article><img src="assets/img/avatars/avatar-07.png" alt=""><span>Echo</span><p>Grid signal is clear. Eden Palms route is open.</p><time>18m</time></article>
+          <article><img src="assets/img/avatars/avatar-10.png" alt=""><span>Lira</span><p>Sunset over Camden Falls. Social deck filling up.</p><time>1h</time></article>
         </section>
-
-        <aside class="social-side">
-          <section class="online-panel">
-            <header><span></span><strong>Online</strong><b>12</b></header>
-            <div class="online-row">
-              <img src="assets/img/avatars/avatar-04.png" alt="">
-              <img src="assets/img/avatars/avatar-02.png" alt="">
-              <img src="assets/img/avatars/avatar-09.png" alt="">
-              <img src="assets/img/avatars/avatar-10.png" alt="">
-              <img src="assets/img/avatars/avatar-07.png" alt="">
-              <button type="button">+7</button>
-            </div>
-          </section>
-          <section class="social-feed-panel">
-            <header><span class="emoji-icon">👥</span><strong>Social Feed</strong></header>
-            <article><img src="assets/img/avatars/avatar-02.png" alt=""><span>Nova</span><p>Just pulled a rare mod in the sprawl.</p><time>5m</time></article>
-            <article><img src="assets/img/avatars/avatar-07.png" alt=""><span>Echo</span><p>Grinding blueprints all night.</p><time>28m</time></article>
-            <article><img src="assets/img/avatars/avatar-10.png" alt=""><span>Lira</span><p>Sunset over the Arcology.</p><time>1h</time></article>
-          </section>
-        </aside>
       </section>
-
     </section>
 
     <section class="screen screen-wallet" id="screen-wallet">
       <h2>G Coin Wallet</h2>
       <section class="wallet-list">
-        <article>
-          <div>
-            <span>Checking</span>
-            <small>Eye to hide</small>
-          </div>
-          <button type="button" data-wallet-eye="checking">Eye</button>
-          <strong data-balance="checking">GC 3,310</strong>
-        </article>
-        <article>
-          <div>
-            <span>Savings</span>
-            <small>Eye to hide</small>
-          </div>
-          <button type="button" data-wallet-eye="savings">Eye</button>
-          <strong data-balance="savings">GC 12,500</strong>
-        </article>
+        <article><div><span>Checking</span><small>Eye to hide</small></div><button type="button" data-wallet-eye="checking">Eye</button><strong data-balance="checking">GC 3,310</strong></article>
+        <article><div><span>Savings</span><small>Eye to hide</small></div><button type="button" data-wallet-eye="savings">Eye</button><strong data-balance="savings">GC 12,500</strong></article>
       </section>
       <button class="wide-action" type="button" data-command="wallet">Balance / Refresh</button>
       <section class="wallet-actions">
@@ -122,13 +112,11 @@
 
     <section class="screen screen-profile" id="screen-profile">
       <section class="profile-card">
-        <div class="profile-avatar-frame">
-          <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
-        </div>
+        <div class="profile-avatar-frame"><img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display></div>
         <div class="profile-copy">
           <div class="profile-actions">
-            <button class="profile-edit" type="button" data-command="edit-profile"><span class="emoji-icon">✏️</span>Edit Info</button>
-            <button class="profile-edit" type="button" data-command="profile"><span class="emoji-icon">🪪</span>Show Profile</button>
+            <button class="profile-edit" type="button" data-command="edit-profile"><svg><use href="#icon-edit"></use></svg>Edit Info</button>
+            <button class="profile-edit" type="button" data-command="profile"><svg><use href="#icon-id"></use></svg>Show Profile</button>
           </div>
         </div>
       </section>
@@ -149,6 +137,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=home-social-1"></script>
+  <script src="assets/js/app.js?v=neuro-tec-1"></script>
 </body>
 </html>

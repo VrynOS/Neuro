@@ -84,28 +84,28 @@ function statState(value) {
 }
 
 function statIcon(statName, stateName) {
-  if (stateName === "low") return "⚠️";
+  if (stateName === "low") return "#icon-stat-low";
   return {
-    hunger: "✅",
-    thirst: "➕",
-    energy: "⚡",
-    hygiene: "💧",
-    fun: "🎮",
-    xp: "⭐"
-  }[statName] || "✅";
+    hunger: "#icon-stat-hunger",
+    thirst: "#icon-stat-thirst",
+    energy: "#icon-stat-energy",
+    hygiene: "#icon-stat-hygiene",
+    fun: "#icon-stat-fun",
+    xp: "#icon-stat-xp"
+  }[statName] || "#icon-stat-good";
 }
 
 function updateStatRow(row) {
   const valueText = row.dataset.value || row.querySelector("strong")?.textContent || "0";
   const value = Number.parseInt(valueText, 10);
   const stateName = statState(Number.isFinite(value) ? value : 0);
-  const icon = row.querySelector(".stat-icon .emoji-icon");
+  const icon = row.querySelector(".stat-icon use");
 
   row.classList.toggle("is-good", stateName === "good");
   row.classList.toggle("is-mid", stateName === "mid");
   row.classList.toggle("is-low", stateName === "low");
   row.dataset.state = stateName;
-  if (icon) icon.textContent = statIcon(row.dataset.stat, stateName);
+  if (icon) icon.setAttribute("href", statIcon(row.dataset.stat, stateName));
 }
 
 function setupStats() {
