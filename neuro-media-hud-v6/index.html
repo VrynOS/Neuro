@@ -4,30 +4,37 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=readable-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=glass-2">
 </head>
 <body>
   <main class="hud-shell" data-screen="home">
     <header class="hud-top">
       <section class="brand">
-        <div class="brand-mark">NE</div>
+        <div class="brand-mark" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
         <div>
           <h1>NEURO</h1>
           <p>MEDIA HUD SYSTEM</p>
         </div>
       </section>
       <section class="top-status">
-        <button class="icon-button" type="button" data-command="notify">Bell</button>
+        <button class="icon-button" type="button" data-command="notify" aria-label="Notifications">
+          <span class="bell-icon">!</span>
+        </button>
         <time id="slt-clock">12:23 <span>SLT</span></time>
       </section>
     </header>
 
     <nav class="hud-nav" aria-label="Neuro navigation">
-      <button class="nav-button is-active" type="button" data-screen-target="home">Home</button>
-      <button class="nav-button" type="button" data-screen-target="wallet">Wallet</button>
-      <button class="nav-button" type="button" data-command="health">Health</button>
-      <button class="nav-button" type="button" data-command="work">Work</button>
-      <button class="nav-button" type="button" data-screen-target="settings">Settings</button>
+      <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon">HM</span><span>Home</span></button>
+      <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon">GC</span><span>Wallet</span></button>
+      <button class="nav-button" type="button" data-command="health"><span class="nav-icon">HT</span><span>Health</span></button>
+      <button class="nav-button" type="button" data-command="work"><span class="nav-icon">WK</span><span>Work</span></button>
+      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon">ID</span><span>Profile</span></button>
+      <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon">ST</span><span>Settings</span></button>
     </nav>
 
     <section class="screen screen-home is-active" id="screen-home">
@@ -35,32 +42,34 @@
         <div class="status-orb">
           <span>Body Status</span>
           <strong>Stable</strong>
-          <small>Neuro</small>
+          <small>NEURO</small>
         </div>
       </section>
 
       <section class="stat-panel" aria-label="Core stats">
-        <article><span>Hunger</span><strong>82%</strong></article>
-        <article><span>Thirst</span><strong>64%</strong></article>
-        <article><span>Energy</span><strong>91%</strong></article>
-        <article><span>Hygiene</span><strong>88%</strong></article>
-        <article><span>Fun</span><strong>55%</strong></article>
-        <article><span>XP</span><strong>78%</strong></article>
+        <article><span class="stat-icon">HU</span><span>Hunger</span><i></i><strong>82%</strong></article>
+        <article><span class="stat-icon">TH</span><span>Thirst</span><i></i><strong>64%</strong></article>
+        <article><span class="stat-icon">EN</span><span>Energy</span><i></i><strong>91%</strong></article>
+        <article><span class="stat-icon">HY</span><span>Hygiene</span><i></i><strong>88%</strong></article>
+        <article><span class="stat-icon">FN</span><span>Fun</span><i></i><strong>55%</strong></article>
+        <article><span class="stat-icon">XP</span><span>XP</span><i></i><strong>78%</strong></article>
       </section>
 
       <section class="quick-cards">
         <button class="quick-card" type="button" data-screen-target="wallet">
-          <span>Wallet</span>
-          <strong>GC 3,310</strong>
+          <span class="card-icon">GC</span>
+          <span class="card-copy"><span>Wallet</span><strong>GC 3,310</strong></span>
+          <b>&gt;</b>
         </button>
         <button class="quick-card" type="button" data-command="health">
-          <span>Health</span>
-          <strong>Cycle: Follicular</strong>
-          <small>Care: Stable</small>
+          <span class="card-icon">HT</span>
+          <span class="card-copy"><span>Health</span><strong>Cycle: Follicular</strong><small>Care: Stable</small></span>
+          <b>&gt;</b>
         </button>
         <button class="quick-card" type="button" data-command="work">
-          <span>Work</span>
-          <strong>Off Duty</strong>
+          <span class="card-icon">WK</span>
+          <span class="card-copy"><span>Work</span><strong>Work: Off Duty</strong></span>
+          <b>&gt;</b>
         </button>
       </section>
     </section>
@@ -90,6 +99,24 @@
         <button type="button" data-command="wallet-request">Request</button>
         <button type="button" data-command="wallet-transfer">Transfer</button>
         <button type="button" data-command="wallet-transactions">Transactions</button>
+      </section>
+    </section>
+
+    <section class="screen screen-profile" id="screen-profile">
+      <section class="profile-card">
+        <div class="profile-orb"><span>ID</span></div>
+        <div class="profile-copy">
+          <h2>Profile</h2>
+          <p>Neuro Resident</p>
+        </div>
+      </section>
+      <section class="profile-grid">
+        <article><span>Status</span><strong>Stable</strong></article>
+        <article><span>Wallet</span><strong>GC 3,310</strong></article>
+        <article><span>Cycle</span><strong>Follicular</strong></article>
+        <article><span>Work</span><strong>Off Duty</strong></article>
+        <article><span>Home</span><strong>Camden Falls</strong></article>
+        <article><span>Care</span><strong>Stable</strong></article>
       </section>
     </section>
 
