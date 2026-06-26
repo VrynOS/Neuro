@@ -4,9 +4,71 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=glass-2">
+  <link rel="stylesheet" href="assets/css/style.css?v=icons-1">
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 3h16z"></path>
+      <path d="M10 21h4"></path>
+      <path d="M12 5V3"></path>
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="M3 11 12 3l9 8"></path>
+      <path d="M5 10v11h5v-6h4v6h5V10"></path>
+    </symbol>
+    <symbol id="icon-wallet" viewBox="0 0 24 24">
+      <path d="M4 7h15a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h13"></path>
+      <path d="M16 13h5"></path>
+      <path d="M16 13a1 1 0 1 0 0 .1"></path>
+    </symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24">
+      <path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"></path>
+      <path d="M7 13h3l1.5-3 2.5 6 1.5-3H18"></path>
+    </symbol>
+    <symbol id="icon-work" viewBox="0 0 24 24">
+      <path d="M9 7V5h6v2"></path>
+      <path d="M4 7h16v13H4z"></path>
+      <path d="M4 12h16"></path>
+      <path d="M10 12v2h4v-2"></path>
+    </symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24">
+      <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path>
+      <path d="M4 21a8 8 0 0 1 16 0"></path>
+    </symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24">
+      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+      <path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.8-1L14.4 3h-4.8L9.3 6a7 7 0 0 0-1.8 1L5.1 6l-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.8 1l.3 3h4.8l.3-3a7 7 0 0 0 1.8-1l2.4 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"></path>
+    </symbol>
+    <symbol id="icon-food" viewBox="0 0 24 24">
+      <path d="M7 3v18"></path>
+      <path d="M4 3v6a3 3 0 0 0 6 0V3"></path>
+      <path d="M17 3v18"></path>
+      <path d="M14 3h3a3 7 0 0 1 0 14"></path>
+    </symbol>
+    <symbol id="icon-drop" viewBox="0 0 24 24">
+      <path d="M12 3s7 8 7 13a7 7 0 0 1-14 0C5 11 12 3 12 3z"></path>
+    </symbol>
+    <symbol id="icon-energy" viewBox="0 0 24 24">
+      <path d="M13 2 4 14h7l-1 8 10-13h-7z"></path>
+    </symbol>
+    <symbol id="icon-hygiene" viewBox="0 0 24 24">
+      <path d="M6 11h12"></path>
+      <path d="M8 11v8"></path>
+      <path d="M12 11v8"></path>
+      <path d="M16 11v8"></path>
+      <path d="M7 8a5 5 0 0 1 10 0"></path>
+    </symbol>
+    <symbol id="icon-fun" viewBox="0 0 24 24">
+      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path>
+      <path d="M8 10h.1"></path>
+      <path d="M16 10h.1"></path>
+      <path d="M8 15a6 6 0 0 0 8 0"></path>
+    </symbol>
+    <symbol id="icon-star" viewBox="0 0 24 24">
+      <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"></path>
+    </symbol>
+  </svg>
   <main class="hud-shell" data-screen="home">
     <header class="hud-top">
       <section class="brand">
@@ -22,19 +84,19 @@
       </section>
       <section class="top-status">
         <button class="icon-button" type="button" data-command="notify" aria-label="Notifications">
-          <span class="bell-icon">!</span>
+          <span class="bell-icon"><svg><use href="#icon-bell"></use></svg></span>
         </button>
         <time id="slt-clock">12:23 <span>SLT</span></time>
       </section>
     </header>
 
     <nav class="hud-nav" aria-label="Neuro navigation">
-      <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon">HM</span><span>Home</span></button>
-      <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon">GC</span><span>Wallet</span></button>
-      <button class="nav-button" type="button" data-command="health"><span class="nav-icon">HT</span><span>Health</span></button>
-      <button class="nav-button" type="button" data-command="work"><span class="nav-icon">WK</span><span>Work</span></button>
-      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon">ID</span><span>Profile</span></button>
-      <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon">ST</span><span>Settings</span></button>
+      <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon"><svg><use href="#icon-home"></use></svg></span><span>Home</span></button>
+      <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon"><svg><use href="#icon-wallet"></use></svg></span><span>Wallet</span></button>
+      <button class="nav-button" type="button" data-command="health"><span class="nav-icon"><svg><use href="#icon-heart"></use></svg></span><span>Health</span></button>
+      <button class="nav-button" type="button" data-command="work"><span class="nav-icon"><svg><use href="#icon-work"></use></svg></span><span>Work</span></button>
+      <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><svg><use href="#icon-profile"></use></svg></span><span>Profile</span></button>
+      <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon"><svg><use href="#icon-settings"></use></svg></span><span>Settings</span></button>
     </nav>
 
     <section class="screen screen-home is-active" id="screen-home">
@@ -47,27 +109,27 @@
       </section>
 
       <section class="stat-panel" aria-label="Core stats">
-        <article><span class="stat-icon">HU</span><span>Hunger</span><i></i><strong>82%</strong></article>
-        <article><span class="stat-icon">TH</span><span>Thirst</span><i></i><strong>64%</strong></article>
-        <article><span class="stat-icon">EN</span><span>Energy</span><i></i><strong>91%</strong></article>
-        <article><span class="stat-icon">HY</span><span>Hygiene</span><i></i><strong>88%</strong></article>
-        <article><span class="stat-icon">FN</span><span>Fun</span><i></i><strong>55%</strong></article>
-        <article><span class="stat-icon">XP</span><span>XP</span><i></i><strong>78%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-food"></use></svg></span><span>Hunger</span><i></i><strong>82%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-drop"></use></svg></span><span>Thirst</span><i></i><strong>64%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-energy"></use></svg></span><span>Energy</span><i></i><strong>91%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-hygiene"></use></svg></span><span>Hygiene</span><i></i><strong>88%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-fun"></use></svg></span><span>Fun</span><i></i><strong>55%</strong></article>
+        <article><span class="stat-icon"><svg><use href="#icon-star"></use></svg></span><span>XP</span><i></i><strong>78%</strong></article>
       </section>
 
       <section class="quick-cards">
         <button class="quick-card" type="button" data-screen-target="wallet">
-          <span class="card-icon">GC</span>
+          <span class="card-icon"><svg><use href="#icon-wallet"></use></svg></span>
           <span class="card-copy"><span>Wallet</span><strong>GC 3,310</strong></span>
           <b>&gt;</b>
         </button>
         <button class="quick-card" type="button" data-command="health">
-          <span class="card-icon">HT</span>
+          <span class="card-icon"><svg><use href="#icon-heart"></use></svg></span>
           <span class="card-copy"><span>Health</span><strong>Cycle: Follicular</strong><small>Care: Stable</small></span>
           <b>&gt;</b>
         </button>
         <button class="quick-card" type="button" data-command="work">
-          <span class="card-icon">WK</span>
+          <span class="card-icon"><svg><use href="#icon-work"></use></svg></span>
           <span class="card-copy"><span>Work</span><strong>Work: Off Duty</strong></span>
           <b>&gt;</b>
         </button>
@@ -104,7 +166,7 @@
 
     <section class="screen screen-profile" id="screen-profile">
       <section class="profile-card">
-        <div class="profile-orb"><span>ID</span></div>
+        <div class="profile-orb"><span><svg><use href="#icon-profile"></use></svg></span></div>
         <div class="profile-copy">
           <h2>Profile</h2>
           <p>Neuro Resident</p>
