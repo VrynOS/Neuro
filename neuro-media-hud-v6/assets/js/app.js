@@ -14,7 +14,9 @@ const state = {
     age: "Adult",
     sex: "Not Set",
     location: "Not Set",
-    avatar: "01"
+    avatar: "01",
+    favoriteColor: "#28a1fc",
+    zodiac: "sagittarius"
   },
   stats: {
     hunger: 82,
@@ -29,6 +31,35 @@ const state = {
 };
 
 const avatarPath = (id) => `assets/img/avatars/avatar-${id}.png`;
+const zodiacPath = (sign) => `assets/img/zodiac/${sign}.png`;
+const zodiacLabels = {
+  aries: "Aries",
+  taurus: "Taurus",
+  gemini: "Gemini",
+  cancer: "Cancer",
+  leo: "Leo",
+  virgo: "Virgo",
+  libra: "Libra",
+  scorpio: "Scorpio",
+  sagittarius: "Sagittarius",
+  capricorn: "Capricorn",
+  aquarius: "Aquarius",
+  pisces: "Pisces"
+};
+const zodiacGlyphs = {
+  aries: "♈",
+  taurus: "♉",
+  gemini: "♊",
+  cancer: "♋",
+  leo: "♌",
+  virgo: "♍",
+  libra: "♎",
+  scorpio: "♏",
+  sagittarius: "♐",
+  capricorn: "♑",
+  aquarius: "♒",
+  pisces: "♓"
+};
 
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
@@ -61,14 +92,96 @@ function loadSavedProfile() {
 }
 
 function renderProfile() {
+  const accent = state.profile.favoriteColor || "#28a1fc";
+  const zodiac = state.profile.zodiac || "sagittarius";
+  const zodiacLabel = zodiacLabels[zodiac] || zodiacLabels.sagittarius;
+
   document.querySelectorAll("[data-profile-field]").forEach((node) => {
     const key = node.dataset.profileField;
-    if (key in state.profile) node.textContent = state.profile[key];
+    if (key === "zodiac") {
+      node.textContent = zodiacLabel;
+    } else if (key in state.profile) {
+      node.textContent = state.profile[key];
+    }
   });
 
   document.querySelectorAll("[data-avatar-display]").forEach((image) => {
     image.src = avatarPath(state.profile.avatar);
   });
+
+  document.querySelectorAll("[data-profile-accent], .profile-editor").forEach((node) => {
+    node.style.setProperty("--profile-accent", accent);
+  });
+
+  document.querySelectorAll("[data-zodiac-mark]").forEach((node) => {
+    node.textContent = zodiacGlyphs[zodiac] || zodiacGlyphs.sagittarius;
+    node.style.webkitMaskImage = "none";
+    node.style.maskImage = "none";
+  });
+
+  document.querySelectorAll("[data-avatar-choice]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.avatarChoice === state.profile.avatar);
+  });
+
+  const ready = ["title", "name", "age", "sex", "location"].every((key) => {
+    const value = String(state.profile[key] || "").trim();
+    return value && value !== "Not Set";
+  });
+  const readyNode = document.querySelector("[data-profile-ready]");
+  if (readyNode) readyNode.textContent = ready ? "Ready" : "Setup Needed";
+}
+
+function openProfileEditor() {
+  const editor = document.querySelector("[data-profile-editor]");
+  const form = document.querySelector("[data-profile-form]");
+  if (!editor || !form) return;
+
+  ["title", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
+    if (form.elements[name]) form.elements[name].value = state.profile[name] || "";
+  });
+
+  editor.hidden = false;
+  renderProfile();
+}
+
+function closeProfileEditor() {
+  const editor = document.querySelector("[data-profile-editor]");
+  if (editor) editor.hidden = true;
+}
+
+function saveProfileFromForm(form) {
+  const next = { ...state.profile };
+  ["title", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
+    if (!form.elements[name]) return;
+    const value = String(form.elements[name].value || "").trim();
+    next[name] = value || state.profile[name];
+  });
+
+  state.profile = next;
+  window.localStorage.setItem("neuroProfile", JSON.stringify(state.profile));
+  renderProfile();
+  closeProfileEditor();
+}
+
+function sendLocalMessage(text) {
+  const thread = document.querySelector("[data-message-thread]");
+  if (!thread) return;
+
+  const message = document.createElement("article");
+  message.className = "self";
+  message.innerHTML = `<span>You</span><p></p>`;
+  message.querySelector("p").textContent = text;
+  thread.append(message);
+
+  while (thread.children.length > 4) thread.firstElementChild?.remove();
+}
+
+function selectFriend(name) {
+  document.querySelectorAll("[data-friend]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.friend === name);
+  });
+  const active = document.querySelector("[data-active-friend]");
+  if (active) active.textContent = name;
 }
 
 function showScreen(name) {
@@ -286,6 +399,31 @@ function setupClock() {
 }
 
 document.addEventListener("click", (event) => {
+  const editOpen = event.target.closest("[data-profile-edit-open]");
+  if (editOpen) {
+    openProfileEditor();
+    return;
+  }
+
+  const editClose = event.target.closest("[data-profile-edit-close]");
+  if (editClose) {
+    closeProfileEditor();
+    return;
+  }
+
+  const avatarChoice = event.target.closest("[data-avatar-choice]");
+  if (avatarChoice) {
+    state.profile.avatar = avatarChoice.dataset.avatarChoice;
+    renderProfile();
+    return;
+  }
+
+  const friend = event.target.closest("[data-friend]");
+  if (friend) {
+    selectFriend(friend.dataset.friend);
+    return;
+  }
+
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
@@ -301,6 +439,25 @@ document.addEventListener("click", (event) => {
   const eyeButton = event.target.closest("[data-wallet-eye]");
   if (eyeButton) {
     toggleBalance(eyeButton.dataset.walletEye);
+  }
+});
+
+document.addEventListener("submit", (event) => {
+  const profileForm = event.target.closest("[data-profile-form]");
+  if (profileForm) {
+    event.preventDefault();
+    saveProfileFromForm(profileForm);
+    return;
+  }
+
+  const messageForm = event.target.closest("[data-message-form]");
+  if (messageForm) {
+    event.preventDefault();
+    const input = messageForm.elements.message;
+    const text = String(input?.value || "").trim();
+    if (!text) return;
+    sendLocalMessage(text);
+    input.value = "";
   }
 });
 
