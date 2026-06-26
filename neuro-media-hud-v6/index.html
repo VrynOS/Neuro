@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=home-clean-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=home-social-1">
 </head>
 <body>
   <main class="hud-shell" data-screen="home">
@@ -40,6 +40,7 @@
         <div class="status-orb">
           <span>Body Status</span>
           <strong>Stable</strong>
+          <i class="pulse-line" aria-hidden="true"></i>
           <small>NEURO</small>
         </div>
       </section>
@@ -51,6 +52,42 @@
         <article data-stat="hygiene" data-value="88"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>Hygiene</span><strong>88%</strong></article>
         <article data-stat="fun" data-value="55"><span class="stat-icon"><span class="emoji-icon">➕</span></span><span>Fun</span><strong>55%</strong></article>
         <article data-stat="xp" data-value="78"><span class="stat-icon"><span class="emoji-icon">✅</span></span><span>XP</span><strong>78%</strong></article>
+      </section>
+
+      <section class="social-hub" aria-label="CDF Socials">
+        <section class="social-panel messages-panel">
+          <header><span class="emoji-icon">👥</span><strong>CDF Socials</strong><small>Messages <b>3</b></small></header>
+          <article><img src="assets/img/avatars/avatar-02.png" alt=""><div><strong>Nova</strong><span>Hey, ready for the drop?</span></div><time>2m</time></article>
+          <article><img src="assets/img/avatars/avatar-07.png" alt=""><div><strong>Echo</strong><span>See you on-grid.</span></div><time>15m</time></article>
+          <article><img src="assets/img/avatars/avatar-10.png" alt=""><div><strong>Lira</strong><span>Shared a location.</span></div><time>1h</time></article>
+        </section>
+
+        <section class="social-panel activity-panel">
+          <header><span class="emoji-icon">〽️</span><strong>Activity</strong></header>
+          <article><img src="assets/img/avatars/avatar-02.png" alt=""><div><strong>Nova</strong><span>completed a mission</span></div><time>10m</time></article>
+          <article><img src="assets/img/avatars/avatar-07.png" alt=""><div><strong>Echo</strong><span>crafted NeuroBoost v2</span></div><time>35m</time></article>
+          <article><img src="assets/img/avatars/avatar-08.png" alt=""><div><strong>Lira</strong><span>reached Level 27</span></div><time>1h</time></article>
+        </section>
+
+        <aside class="social-side">
+          <section class="online-panel">
+            <header><span></span><strong>Online</strong><b>12</b></header>
+            <div class="online-row">
+              <img src="assets/img/avatars/avatar-04.png" alt="">
+              <img src="assets/img/avatars/avatar-02.png" alt="">
+              <img src="assets/img/avatars/avatar-09.png" alt="">
+              <img src="assets/img/avatars/avatar-10.png" alt="">
+              <img src="assets/img/avatars/avatar-07.png" alt="">
+              <button type="button">+7</button>
+            </div>
+          </section>
+          <section class="social-feed-panel">
+            <header><span class="emoji-icon">👥</span><strong>Social Feed</strong></header>
+            <article><img src="assets/img/avatars/avatar-02.png" alt=""><span>Nova</span><p>Just pulled a rare mod in the sprawl.</p><time>5m</time></article>
+            <article><img src="assets/img/avatars/avatar-07.png" alt=""><span>Echo</span><p>Grinding blueprints all night.</p><time>28m</time></article>
+            <article><img src="assets/img/avatars/avatar-10.png" alt=""><span>Lira</span><p>Sunset over the Arcology.</p><time>1h</time></article>
+          </section>
+        </aside>
       </section>
 
     </section>
@@ -112,6 +149,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=home-clean-1"></script>
+  <script src="assets/js/app.js?v=home-social-1"></script>
 </body>
 </html>

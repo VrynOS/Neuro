@@ -83,10 +83,16 @@ function statState(value) {
   return "good";
 }
 
-function statIcon(stateName) {
+function statIcon(statName, stateName) {
   if (stateName === "low") return "⚠️";
-  if (stateName === "mid") return "➕";
-  return "✅";
+  return {
+    hunger: "✅",
+    thirst: "➕",
+    energy: "⚡",
+    hygiene: "💧",
+    fun: "🎮",
+    xp: "⭐"
+  }[statName] || "✅";
 }
 
 function updateStatRow(row) {
@@ -99,7 +105,7 @@ function updateStatRow(row) {
   row.classList.toggle("is-mid", stateName === "mid");
   row.classList.toggle("is-low", stateName === "low");
   row.dataset.state = stateName;
-  if (icon) icon.textContent = statIcon(stateName);
+  if (icon) icon.textContent = statIcon(row.dataset.stat, stateName);
 }
 
 function setupStats() {
