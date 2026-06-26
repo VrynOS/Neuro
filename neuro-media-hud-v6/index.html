@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-glass-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-live-stats-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -21,6 +21,7 @@
     <symbol id="icon-stat-low" viewBox="0 0 24 24"><path d="M12 4v9"></path><path d="M12 18h.1"></path><path d="M4 20h16L12 4z"></path></symbol>
     <symbol id="icon-stat-hunger" viewBox="0 0 24 24"><path d="M7 3v18"></path><path d="M4 3v6a3 3 0 0 0 6 0V3"></path><path d="M17 3v18"></path><path d="M14 3h3a3 7 0 0 1 0 14"></path></symbol>
     <symbol id="icon-stat-thirst" viewBox="0 0 24 24"><path d="M12 3s7 8 7 13a7 7 0 0 1-14 0C5 11 12 3 12 3z"></path></symbol>
+    <symbol id="icon-stat-sleep" viewBox="0 0 24 24"><path d="M18 16.5A8 8 0 0 1 7.5 6a7 7 0 1 0 10.5 10.5z"></path><path d="M14 5h5l-5 5h5"></path></symbol>
     <symbol id="icon-stat-energy" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 10-13h-7z"></path></symbol>
     <symbol id="icon-stat-hygiene" viewBox="0 0 24 24"><path d="M6 11h12"></path><path d="M8 11v8"></path><path d="M12 11v8"></path><path d="M16 11v8"></path><path d="M7 8a5 5 0 0 1 10 0"></path></symbol>
     <symbol id="icon-stat-fun" viewBox="0 0 24 24"><path d="M7 9h10a4 4 0 0 1 4 4v2a3 3 0 0 1-5 2l-2-2h-4l-2 2a3 3 0 0 1-5-2v-2a4 4 0 0 1 4-4z"></path><path d="M8 13h4"></path><path d="M10 11v4"></path><path d="M16 12h.1"></path><path d="M18 14h.1"></path></symbol>
@@ -59,9 +60,9 @@
         <div class="reactor">
           <div class="reactor-core">
             <span>Body Status</span>
-            <strong>Stable</strong>
+            <strong data-body-status-label>Stable</strong>
             <i class="pulse-line" aria-hidden="true"></i>
-            <small>NEURO</small>
+            <small data-body-status-detail>NEURO</small>
           </div>
         </div>
       </section>
@@ -69,6 +70,7 @@
       <section class="stat-panel" aria-label="Core stats">
         <article data-stat="hunger" data-value="82"><span class="stat-icon"><svg><use href="#icon-stat-hunger"></use></svg></span><span>Hunger</span><strong>82%</strong></article>
         <article data-stat="thirst" data-value="64"><span class="stat-icon"><svg><use href="#icon-stat-thirst"></use></svg></span><span>Thirst</span><strong>64%</strong></article>
+        <article data-stat="sleep" data-value="100"><span class="stat-icon"><svg><use href="#icon-stat-sleep"></use></svg></span><span>Sleep</span><strong>100%</strong></article>
         <article data-stat="energy" data-value="91"><span class="stat-icon"><svg><use href="#icon-stat-energy"></use></svg></span><span>Energy</span><strong>91%</strong></article>
         <article data-stat="hygiene" data-value="88"><span class="stat-icon"><svg><use href="#icon-stat-hygiene"></use></svg></span><span>Hygiene</span><strong>88%</strong></article>
         <article data-stat="fun" data-value="55"><span class="stat-icon"><svg><use href="#icon-stat-fun"></use></svg></span><span>Fun</span><strong>55%</strong></article>
@@ -136,6 +138,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-glass-1"></script>
+  <script src="assets/js/app.js?v=neuro-live-stats-1"></script>
 </body>
 </html>
