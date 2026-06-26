@@ -9,6 +9,7 @@
   --text: #f8f1df;
   --muted: #a9a194;
   --red: #ff313d;
+  --readable-shadow: 0 2px 10px rgba(0, 0, 0, 0.72);
 }
 
 * {
@@ -26,6 +27,7 @@ body {
   background: radial-gradient(circle at 30% 30%, rgba(220, 173, 84, 0.14), transparent 34%), #020203;
   color: var(--text);
   font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.15;
 }
 
 button {
@@ -34,14 +36,14 @@ button {
 }
 
 .hud-shell {
-  width: min(94vw, calc(94vh * var(--hud-ratio)));
+  width: min(98vw, calc(98vh * var(--hud-ratio)));
   height: auto;
-  max-height: 94vh;
+  max-height: 98vh;
   aspect-ratio: var(--hud-ratio);
   margin: 0;
-  padding: 2.6%;
+  padding: 2.1%;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 12px;
   background:
     linear-gradient(130deg, rgba(255, 255, 255, 0.14), transparent 21%),
     linear-gradient(160deg, transparent, rgba(240, 199, 104, 0.08)),
@@ -57,33 +59,36 @@ button {
 .quick-cards,
 .wallet-actions {
   display: grid;
-  gap: 1.5vh;
+  gap: 16px;
 }
 
 .hud-top {
   grid-template-columns: 1fr auto;
   align-items: center;
-  margin-bottom: 1.55vh;
+  margin-bottom: 16px;
   flex: 0 0 auto;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 1.5vw;
+  gap: 24px;
 }
 
 .brand-mark,
 .icon-button {
   display: grid;
   place-items: center;
-  width: 9vh;
-  height: 9vh;
+  width: 82px;
+  height: 82px;
   border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--panel);
   color: var(--line-hot);
   box-shadow: inset 0 0 18px rgba(240, 199, 104, 0.16);
+  font-size: 22px;
+  font-weight: 700;
+  text-shadow: var(--readable-shadow);
 }
 
 h1,
@@ -93,28 +98,31 @@ p {
 }
 
 h1 {
-  letter-spacing: 0.34em;
-  font-size: 3vh;
-  font-weight: 500;
+  letter-spacing: 0.22em;
+  font-size: 40px;
+  font-weight: 700;
   color: var(--line-hot);
+  text-shadow: var(--readable-shadow);
 }
 
 .brand p {
-  margin-top: 0.3vh;
-  letter-spacing: 0.32em;
-  font-size: 1.35vh;
+  margin-top: 4px;
+  letter-spacing: 0.18em;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--line-hot);
+  text-shadow: var(--readable-shadow);
 }
 
 .top-status {
   display: flex;
   align-items: center;
-  gap: 1.5vw;
+  gap: 22px;
 }
 
 .icon-button {
-  width: 7vh;
-  height: 7vh;
+  width: 72px;
+  height: 72px;
   border: 0;
   font-size: 0;
   cursor: pointer;
@@ -130,18 +138,21 @@ h1 {
 }
 
 time {
-  font-size: 4vh;
-  letter-spacing: 0.08em;
+  font-size: 42px;
+  letter-spacing: 0.04em;
   color: var(--line-hot);
+  font-weight: 700;
+  text-shadow: var(--readable-shadow);
 }
 
 time span {
-  font-size: 1.7vh;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .hud-nav {
   grid-template-columns: repeat(5, 1fr);
-  margin-bottom: 1.55vh;
+  margin-bottom: 16px;
   flex: 0 0 auto;
 }
 
@@ -151,7 +162,7 @@ time span {
 .wallet-actions button,
 .wallet-list article {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), transparent 42%), var(--panel);
   box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.04);
 }
@@ -159,8 +170,11 @@ time span {
 .nav-button,
 .wide-action,
 .wallet-actions button {
-  min-height: 4.65vh;
+  min-height: 62px;
   cursor: pointer;
+  font-size: 23px;
+  font-weight: 700;
+  text-shadow: var(--readable-shadow);
 }
 
 .nav-button.is-active {
@@ -180,9 +194,9 @@ time span {
 
 .screen-home {
   display: none;
-  grid-template-columns: 1.05fr 0.95fr;
-  grid-template-rows: minmax(0, 1fr) 8.2vh;
-  gap: 1.25vh;
+  grid-template-columns: 0.82fr 1.18fr;
+  grid-template-rows: minmax(0, 1fr) 112px;
+  gap: 16px;
   height: auto;
   flex: 1 1 auto;
   min-height: 0;
@@ -197,7 +211,7 @@ time span {
 .screen-wallet,
 .screen-settings {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--panel);
 }
 
@@ -210,7 +224,7 @@ time span {
 .status-orb {
   display: grid;
   place-items: center;
-  width: min(26vh, 18vw);
+  width: min(360px, 75%);
   aspect-ratio: 1;
   border: 2px solid var(--line-hot);
   border-radius: 50%;
@@ -221,19 +235,26 @@ time span {
 .status-orb span {
   color: var(--line-hot);
   text-transform: uppercase;
+  font-size: 20px;
+  font-weight: 800;
+  text-shadow: var(--readable-shadow);
 }
 
 .status-orb strong {
-  font-size: 3.9vh;
-  font-weight: 500;
+  font-size: 48px;
+  font-weight: 800;
+  text-shadow: var(--readable-shadow);
 }
 
 .status-orb small {
   color: var(--line-hot);
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: var(--readable-shadow);
 }
 
 .stat-panel {
-  padding: 1.15vh 1.5vw;
+  padding: 18px 26px;
 }
 
 .stat-panel article,
@@ -241,9 +262,12 @@ time span {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  min-height: 5.65vh;
+  min-height: 74px;
   border-bottom: 1px solid rgba(240, 199, 104, 0.16);
-  font-size: 1.85vh;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-shadow: var(--readable-shadow);
 }
 
 .stat-panel article:last-child {
@@ -262,7 +286,7 @@ time span {
 
 .quick-card {
   min-height: 0;
-  padding: 0.9vh 1.1vw;
+  padding: 14px 22px;
   text-align: left;
   cursor: pointer;
   overflow: hidden;
@@ -273,20 +297,26 @@ time span {
 .screen-settings h2 {
   color: var(--line-hot);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+  font-size: 20px;
+  font-weight: 800;
+  text-shadow: var(--readable-shadow);
 }
 
 .quick-card strong {
   display: block;
-  margin-top: 0.35vh;
-  font-size: 1.55vh;
-  font-weight: 500;
+  margin-top: 7px;
+  font-size: 25px;
+  font-weight: 800;
+  text-shadow: var(--readable-shadow);
 }
 
 .quick-card small {
   display: block;
-  margin-top: 0.2vh;
+  margin-top: 3px;
   color: var(--muted);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .screen-wallet,
