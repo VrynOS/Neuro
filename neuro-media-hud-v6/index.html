@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Media Hud V6</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=logo-blue-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=windows-stats-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -68,6 +68,18 @@
     <symbol id="icon-star" viewBox="0 0 24 24">
       <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"></path>
     </symbol>
+    <symbol id="icon-stat-good" viewBox="0 0 24 24">
+      <path d="M5 13l4 4L19 7"></path>
+    </symbol>
+    <symbol id="icon-stat-mid" viewBox="0 0 24 24">
+      <path d="M4 12h16"></path>
+      <path d="M12 4v16"></path>
+    </symbol>
+    <symbol id="icon-stat-low" viewBox="0 0 24 24">
+      <path d="M12 4v9"></path>
+      <path d="M12 18h.1"></path>
+      <path d="M4 20h16L12 4z"></path>
+    </symbol>
   </svg>
   <main class="hud-shell" data-screen="home">
     <header class="hud-top">
@@ -107,12 +119,12 @@
       </section>
 
       <section class="stat-panel" aria-label="Core stats">
-        <article><span class="stat-icon"><svg><use href="#icon-food"></use></svg></span><span>Hunger</span><i></i><strong>82%</strong></article>
-        <article><span class="stat-icon"><svg><use href="#icon-drop"></use></svg></span><span>Thirst</span><i></i><strong>64%</strong></article>
-        <article><span class="stat-icon"><svg><use href="#icon-energy"></use></svg></span><span>Energy</span><i></i><strong>91%</strong></article>
-        <article><span class="stat-icon"><svg><use href="#icon-hygiene"></use></svg></span><span>Hygiene</span><i></i><strong>88%</strong></article>
-        <article><span class="stat-icon"><svg><use href="#icon-fun"></use></svg></span><span>Fun</span><i></i><strong>55%</strong></article>
-        <article><span class="stat-icon"><svg><use href="#icon-star"></use></svg></span><span>XP</span><i></i><strong>78%</strong></article>
+        <article data-stat="hunger" data-value="82"><span class="stat-icon"><svg><use href="#icon-stat-good"></use></svg></span><span>Hunger</span><i></i><strong>82%</strong></article>
+        <article data-stat="thirst" data-value="64"><span class="stat-icon"><svg><use href="#icon-stat-mid"></use></svg></span><span>Thirst</span><i></i><strong>64%</strong></article>
+        <article data-stat="energy" data-value="91"><span class="stat-icon"><svg><use href="#icon-stat-good"></use></svg></span><span>Energy</span><i></i><strong>91%</strong></article>
+        <article data-stat="hygiene" data-value="88"><span class="stat-icon"><svg><use href="#icon-stat-good"></use></svg></span><span>Hygiene</span><i></i><strong>88%</strong></article>
+        <article data-stat="fun" data-value="55"><span class="stat-icon"><svg><use href="#icon-stat-mid"></use></svg></span><span>Fun</span><i></i><strong>55%</strong></article>
+        <article data-stat="xp" data-value="78"><span class="stat-icon"><svg><use href="#icon-stat-good"></use></svg></span><span>XP</span><i></i><strong>78%</strong></article>
       </section>
 
       <section class="quick-cards">
@@ -195,6 +207,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/app.js?v=windows-stats-1"></script>
 </body>
 </html>

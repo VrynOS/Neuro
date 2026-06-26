@@ -47,6 +47,43 @@ function toggleBalance(name) {
   }
 }
 
+function statState(value) {
+  if (value <= 35) return "low";
+  if (value <= 69) return "mid";
+  return "good";
+}
+
+function statIcon(stateName) {
+  if (stateName === "low") return "#icon-stat-low";
+  if (stateName === "mid") return "#icon-stat-mid";
+  return "#icon-stat-good";
+}
+
+function updateStatRow(row) {
+  const valueText = row.dataset.value || row.querySelector("strong")?.textContent || "0";
+  const value = Number.parseInt(valueText, 10);
+  const stateName = statState(Number.isFinite(value) ? value : 0);
+  const use = row.querySelector(".stat-icon use");
+
+  row.classList.toggle("is-good", stateName === "good");
+  row.classList.toggle("is-mid", stateName === "mid");
+  row.classList.toggle("is-low", stateName === "low");
+  row.dataset.state = stateName;
+  if (use) use.setAttribute("href", statIcon(stateName));
+}
+
+function setupStats() {
+  document.querySelectorAll(".stat-panel article").forEach((row) => {
+    updateStatRow(row);
+    const valueNode = row.querySelector("strong");
+    if (!valueNode) return;
+    new MutationObserver(() => {
+      row.dataset.value = valueNode.textContent;
+      updateStatRow(row);
+    }).observe(valueNode, { childList: true, characterData: true, subtree: true });
+  });
+}
+
 function setupClock() {
   const clock = document.querySelector("#slt-clock");
   if (!clock) return;
@@ -98,4 +135,5 @@ document.querySelectorAll("[data-balance]").forEach((balance) => {
   balance.dataset.original = balance.textContent;
 });
 
+setupStats();
 setupClock();
