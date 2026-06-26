@@ -41,13 +41,6 @@ button {
   font: inherit;
 }
 
-.icon-sprite {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
 svg {
   width: 100%;
   height: 100%;
@@ -56,6 +49,17 @@ svg {
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgba(40, 161, 252, 0.54));
+}
+
+.emoji-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.15em;
+  height: 1.15em;
+  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", sans-serif;
+  font-size: 1em;
+  line-height: 1;
   filter: drop-shadow(0 0 8px rgba(40, 161, 252, 0.54));
 }
 
@@ -222,10 +226,7 @@ time span {
 .wide-action,
 .wallet-actions button,
 .wallet-list article,
-.profile-grid article,
-.home-profile,
-.home-notifications,
-.avatar-picker button {
+.profile-grid article {
   border: 1px solid var(--gold-soft);
   border-radius: 4px;
   background:
@@ -256,9 +257,7 @@ time span {
 .wide-action:hover,
 .wallet-actions button:hover,
 .profile-edit:hover,
-.location-options button:hover,
-.wallet-list button:hover,
-.avatar-picker button:hover {
+.wallet-list button:hover {
   transform: translateY(-4px) scale(1.015);
   border-color: rgba(218, 250, 255, 0.88);
   box-shadow:
@@ -272,9 +271,7 @@ time span {
 .wide-action:active,
 .wallet-actions button:active,
 .profile-edit:active,
-.location-options button:active,
-.wallet-list button:active,
-.avatar-picker button:active {
+.wallet-list button:active {
   transform: translateY(1px) scale(0.985);
   box-shadow:
     inset 0 0 22px rgba(40, 161, 252, 0.32),
@@ -326,7 +323,7 @@ time span {
 
 .screen-home {
   display: none;
-  grid-template-columns: 0.72fr 1fr 1.04fr;
+  grid-template-columns: 1fr 1.05fr;
   grid-template-rows: minmax(0, 1fr) 132px;
   gap: 18px;
   margin: 0 24px;
@@ -340,9 +337,7 @@ time span {
 .stat-panel,
 .screen-wallet,
 .screen-settings,
-.screen-profile,
-.home-profile,
-.home-notifications {
+.screen-profile {
   border: 1px solid rgba(40, 161, 252, 0.48);
   border-radius: 4px;
   background:
@@ -356,7 +351,7 @@ time span {
   display: grid;
   place-items: center;
   overflow: hidden;
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
 }
 
@@ -417,68 +412,9 @@ time span {
 }
 
 .stat-panel {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
   padding: 12px 22px;
-}
-
-.home-profile {
-  grid-column: 1;
-  grid-row: 1;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 18px;
-  min-width: 0;
-  padding: 18px;
-  overflow: hidden;
-}
-
-.home-profile img {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: cover;
-  object-position: center 18%;
-  border: 1px solid var(--gold-soft);
-  border-radius: 3px;
-  box-shadow: inset 0 0 24px rgba(40, 161, 252, 0.24), 0 0 24px rgba(40, 161, 252, 0.16);
-}
-
-.home-profile div {
-  min-width: 0;
-}
-
-.home-profile span,
-.section-title strong {
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 23px;
-}
-
-.home-profile strong {
-  display: block;
-  margin-top: 8px;
-  font-size: 32px;
-  font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.home-profile small {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 20px;
-}
-
-.home-profile small svg {
-  width: 22px;
-  height: 22px;
-  color: var(--gold);
 }
 
 .stat-panel article,
@@ -566,88 +502,11 @@ time span {
 }
 
 .quick-cards {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
   grid-row: 2;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-}
-
-.home-notifications {
-  grid-column: 1;
-  grid-row: 2;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  align-items: stretch;
-  gap: 10px;
-  padding: 12px 14px;
-  overflow: hidden;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.section-title span {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--gold-dim);
-  border-radius: 3px;
-  padding: 8px;
-  color: var(--gold);
-  background: rgba(40, 161, 252, 0.12);
-}
-
-.notification-list {
-  display: grid;
-  gap: 7px;
-}
-
-.notification-item {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  padding: 4px 7px;
-  border: 1px solid rgba(40, 161, 252, 0.28);
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.26);
-  animation: notificationIn 280ms ease both;
-}
-
-.notification-item span {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  padding: 6px;
-  background: rgba(40, 161, 252, 0.1);
-}
-
-.notification-item strong,
-.notification-item small {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.notification-item strong {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.notification-item small {
-  margin-top: 1px;
-  color: var(--muted);
-  font-size: 12px;
 }
 
 .quick-card {
@@ -772,6 +631,10 @@ time span {
   text-shadow: var(--shadow);
 }
 
+.screen-profile .profile-edit {
+  min-height: 54px;
+}
+
 .wide-action {
   width: 100%;
   margin: 28px 0;
@@ -787,7 +650,7 @@ time span {
 
 .screen-profile {
   display: none;
-  grid-template-columns: 0.95fr 1.05fr;
+  grid-template-columns: 0.72fr 1.28fr;
   gap: 28px;
   align-items: stretch;
 }
@@ -798,11 +661,11 @@ time span {
 
 .profile-card {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   place-items: center;
-  gap: 18px;
-  min-height: 520px;
-  padding: 24px;
+  gap: 14px;
+  min-height: 0;
+  padding: 22px;
   border-right: 1px solid rgba(40, 161, 252, 0.24);
 }
 
@@ -813,10 +676,11 @@ time span {
 }
 
 .profile-avatar-frame {
-  width: min(330px, 100%);
+  width: min(210px, 100%);
   aspect-ratio: 1;
   padding: 0;
   overflow: hidden;
+  background: rgba(2, 12, 18, 0.86);
 }
 
 .profile-avatar-frame img {
@@ -827,13 +691,21 @@ time span {
 }
 
 .profile-copy {
+  width: 100%;
   text-align: center;
 }
 
 .profile-copy p {
-  margin-top: 12px;
-  font-size: 28px;
+  margin-top: 6px;
+  font-size: 21px;
   color: var(--text);
+}
+
+.profile-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .profile-edit {
@@ -841,8 +713,8 @@ time span {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  min-width: 210px;
-  margin-top: 26px;
+  min-width: 0;
+  margin-top: 0;
   padding: 0 28px;
   border: 1px solid var(--gold-soft);
   border-radius: 4px;
@@ -865,83 +737,21 @@ time span {
   height: 30px;
 }
 
-.avatar-picker {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-.avatar-picker button {
-  aspect-ratio: 1;
-  min-width: 0;
-  padding: 3px;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.avatar-picker button.is-selected {
-  border-color: var(--gold);
-  box-shadow:
-    inset 0 0 16px rgba(40, 161, 252, 0.28),
-    0 0 24px rgba(40, 161, 252, 0.42);
-}
-
-.avatar-picker img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 18%;
-  border-radius: 2px;
-}
-
 .profile-grid {
   align-content: center;
+  gap: 12px;
 }
 
 .profile-grid article {
   grid-template-columns: 1fr auto;
-  min-height: 76px;
-  padding: 0 26px;
-  font-size: 27px;
+  min-height: 58px;
+  padding: 0 28px;
+  font-size: 25px;
 }
 
 .profile-grid strong {
   color: var(--gold);
   font-weight: 500;
-}
-
-.profile-location {
-  grid-template-columns: 1fr auto;
-  grid-template-rows: 76px auto;
-  padding-bottom: 18px;
-}
-
-.location-options {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.location-options button {
-  min-height: 58px;
-  border: 1px solid var(--gold-dim);
-  border-radius: 4px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 34%),
-    rgba(0, 0, 0, 0.42);
-  color: var(--text);
-  font-size: 24px;
-  font-weight: 600;
-  text-shadow: var(--shadow);
-  cursor: pointer;
-}
-
-.location-options button.is-selected {
-  color: var(--gold);
-  border-color: var(--gold-soft);
-  box-shadow: inset 0 0 18px rgba(40, 161, 252, 0.2), 0 0 16px rgba(40, 161, 252, 0.18);
 }
 
 #bridge-log {
@@ -1018,16 +828,5 @@ time span {
   }
   50% {
     transform: translateX(4px);
-  }
-}
-
-@keyframes notificationIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
