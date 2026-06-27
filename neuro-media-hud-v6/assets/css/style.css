@@ -866,9 +866,9 @@ h1 {
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
-  width: 31px;
-  height: 31px;
-  margin-left: 1px;
+  width: 25px;
+  height: 25px;
+  margin-left: 0;
   overflow: visible;
   background: transparent;
   transform: translateY(1px);
@@ -880,15 +880,12 @@ h1 {
 
 .verified-badge img {
   display: block;
-  width: 31px;
-  height: 31px;
-  max-width: 31px;
+  width: 25px;
+  height: 25px;
+  max-width: 25px;
   object-fit: contain;
   object-position: 50% 50%;
-  filter:
-    saturate(1.04)
-    contrast(1.05)
-    drop-shadow(0 0 5px rgba(111, 255, 91, 0.42));
+  filter: saturate(1.02) contrast(1.04);
 }
 
 .profile-copy small {
