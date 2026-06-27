@@ -86,11 +86,26 @@ const state = {
     fun: 55,
     xp: 78
   },
-  lastSnapshot: null
+  lastSnapshot: null,
+  perf: {
+    activeTab: "home",
+    loaded: {
+      home: false,
+      profile: false,
+      wallet: false,
+      settings: false,
+      feed: false
+    },
+    timers: new Map(),
+    lastRefresh: "none",
+    bridgeActive: liveBridge,
+    statsTimer: 0,
+    clockTimer: 0
+  }
 };
 
-const avatarPath = (id) => `assets/img/avatars/avatar-${id}.png`;
-const zodiacPath = (sign) => `assets/img/zodiac/${sign}.png`;
+const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png`;
+const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
   aries: "Aries",
   taurus: "Taurus",
@@ -119,11 +134,56 @@ const zodiacMeta = {
   aquarius: { element: "Air", traits: "Original \u2022 Visionary \u2022 Independent", line: "Future-facing mind. Refuses the default path." },
   pisces: { element: "Water", traits: "Dreamy \u2022 Empathic \u2022 Artistic", line: "Feels the unseen. Turns emotion into signal." }
 };
+
+document.body.classList.add("perf-lite");
+
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
   if (!log) return;
   const lines = `${line}\n${log.textContent}`.trim().split("\n");
   log.textContent = lines.slice(0, 12).join("\n");
+}
+
+function activeTimerCount() {
+  let count = 0;
+  state.perf.timers.forEach((timer) => {
+    if (timer.active) count += 1;
+  });
+  return count;
+}
+
+function setPerfTimer(name, id) {
+  state.perf.timers.set(name, { id, active: true });
+  renderPerfDebug();
+  return id;
+}
+
+function perfInterval(name, fn, ms) {
+  window.clearInterval(state.perf.timers.get(name)?.id || 0);
+  return setPerfTimer(name, window.setInterval(fn, ms));
+}
+
+function perfTimeout(name, fn, ms) {
+  window.clearTimeout(state.perf.timers.get(name)?.id || 0);
+  return setPerfTimer(name, window.setTimeout(() => {
+    const timer = state.perf.timers.get(name);
+    if (timer) timer.active = false;
+    renderPerfDebug();
+    fn();
+  }, ms));
+}
+
+function setLastRefresh(label) {
+  state.perf.lastRefresh = label;
+  renderPerfDebug();
+}
+
+function renderPerfDebug() {
+  document.querySelectorAll("[data-perf-active-tab]").forEach((node) => { node.textContent = state.perf.activeTab; });
+  document.querySelectorAll("[data-perf-active-timers]").forEach((node) => { node.textContent = String(activeTimerCount()); });
+  document.querySelectorAll("[data-perf-last-refresh]").forEach((node) => { node.textContent = state.perf.lastRefresh; });
+  document.querySelectorAll("[data-perf-feed-loaded]").forEach((node) => { node.textContent = state.perf.loaded.feed ? "yes" : "no"; });
+  document.querySelectorAll("[data-perf-bridge-active]").forEach((node) => { node.textContent = state.perf.bridgeActive ? "yes" : "no"; });
 }
 
 function sendBridge(op, text = "") {
@@ -135,6 +195,7 @@ function sendBridge(op, text = "") {
   }).toString();
 
   pendingBridge.set(tick, op);
+  window.setTimeout(() => pendingBridge.delete(tick), 20000);
   window.parent.postMessage(`${BRIDGE_PREFIX}${query}`, "*");
   if (op !== "stats") logBridge(`sent: ${op}`);
   return tick;
@@ -155,6 +216,7 @@ function renderWalletStatus(text, live = false) {
 }
 
 function renderWallet() {
+  if (!state.perf.loaded.wallet) return;
   Object.entries({
     checking: state.wallet.checking,
     savings: state.wallet.savings
@@ -170,12 +232,14 @@ function renderWallet() {
 }
 
 function requestWalletBalance() {
+  state.perf.loaded.wallet = true;
   if (!liveBridge) {
     renderWalletStatus("Open in Second Life to sync live G-Coin balances", false);
     return;
   }
   renderWalletStatus("Requesting live G-Coin balance...", false);
   sendBridge("wallet-balance");
+  setLastRefresh("wallet requested");
 }
 
 function handleWalletResponse(body) {
@@ -191,7 +255,7 @@ function handleWalletResponse(body) {
   if (body.startsWith("WALLET_SYNC_REQUESTED")) {
     renderWalletStatus("Wallet sync requested. Waiting for G-Coin reply...", false);
     window.clearTimeout(state.wallet.retryTimer);
-    state.wallet.retryTimer = window.setTimeout(() => {
+    state.wallet.retryTimer = perfTimeout("wallet retry", () => {
       if (document.querySelector("#screen-wallet")?.classList.contains("is-active")) sendBridge("wallet-balance");
     }, 1200);
     return true;
@@ -248,6 +312,7 @@ function profileXp() {
 }
 
 function renderProfile() {
+  if (!state.perf.loaded.profile && !document.querySelector("[data-profile-editor]:not([hidden])")) return;
   const accent = state.profile.favoriteColor || "#28a1fc";
   const zodiac = state.profile.zodiac || "sagittarius";
   const zodiacLabel = zodiacLabels[zodiac] || zodiacLabels.sagittarius;
@@ -351,7 +416,10 @@ function saveProfileFromForm(form) {
 }
 
 function requestStoredProfile() {
-  if (liveBridge) sendBridge("profile-load");
+  if (liveBridge && state.perf.loaded.profile) {
+    sendBridge("profile-load");
+    setLastRefresh("profile loaded");
+  }
 }
 
 function handleProfileResponse(body) {
@@ -510,6 +578,7 @@ function createRepostEntry(originalPost) {
 }
 
 function renderFeed() {
+  if (!state.perf.loaded.feed || state.perf.activeTab !== "profile") return;
   const thread = document.querySelector("[data-message-thread]");
   if (!thread) return;
 
@@ -691,7 +760,9 @@ function addFeedComment(postId, text) {
 }
 
 function refreshFeed() {
+  state.perf.loaded.feed = true;
   sendFeedBridge("refresh");
+  setLastRefresh("feed refresh");
   renderFeed();
 }
 
@@ -709,12 +780,43 @@ function handleFeedResponse(body) {
     const posts = JSON.parse(payload);
     if (Array.isArray(posts)) {
       state.feed.posts = mergeLocalFeedState(posts.map(normalizePost));
+      state.perf.loaded.feed = true;
+      setLastRefresh("feed response");
       renderFeed();
     }
   } catch {
     logBridge("bad feed payload");
   }
   return true;
+}
+
+function loadHome() {
+  if (state.perf.loaded.home) return;
+  state.perf.loaded.home = true;
+  renderStats(state.stats);
+  renderBodyStatus(state.stats);
+}
+
+function loadProfile() {
+  state.perf.loaded.profile = true;
+  state.perf.loaded.feed = true;
+  renderProfile();
+  renderFeed();
+  requestStoredProfile();
+  if (liveBridge) {
+    refreshFeed();
+  }
+}
+
+function loadWallet() {
+  state.perf.loaded.wallet = true;
+  renderWallet();
+  requestWalletBalance();
+}
+
+function loadSettings() {
+  state.perf.loaded.settings = true;
+  renderPerfDebug();
 }
 
 function showScreen(name) {
@@ -727,7 +829,12 @@ function showScreen(name) {
   });
 
   document.querySelector(".hud-shell")?.setAttribute("data-screen", name);
-  if (name === "wallet") requestWalletBalance();
+  state.perf.activeTab = name;
+  if (name === "home") loadHome();
+  if (name === "profile") loadProfile();
+  if (name === "wallet") loadWallet();
+  if (name === "settings") loadSettings();
+  renderPerfDebug();
 }
 
 function toggleBalance(name) {
@@ -775,12 +882,6 @@ function updateStatRow(row) {
 function setupStats() {
   document.querySelectorAll(".stat-panel article").forEach((row) => {
     updateStatRow(row);
-    const valueNode = row.querySelector("strong");
-    if (!valueNode) return;
-    new MutationObserver(() => {
-      row.dataset.value = valueNode.textContent;
-      updateStatRow(row);
-    }).observe(valueNode, { childList: true, characterData: true, subtree: true });
   });
 }
 
@@ -921,16 +1022,20 @@ function handleStatsResponse(body) {
 function startLiveStats() {
   if (!liveBridge) {
     renderBodyStatus(state.stats);
+    renderPerfDebug();
     return;
   }
 
   const detail = document.querySelector("[data-body-status-detail]");
   if (detail) detail.textContent = "SYNCING";
-  sendBridge("sync");
   sendBridge("stats");
-  refreshFeed();
-  window.setInterval(() => sendBridge("stats"), 5000);
-  window.setInterval(refreshFeed, 15000);
+  setLastRefresh("stats requested");
+  perfInterval("stats", () => {
+    if (state.perf.activeTab === "home" || state.perf.activeTab === "profile") {
+      sendBridge("stats");
+      setLastRefresh("stats polled");
+    }
+  }, 30000);
 }
 
 function setupClock() {
@@ -951,7 +1056,7 @@ function setupClock() {
   }
 
   tick();
-  window.setInterval(tick, 30000);
+  state.perf.clockTimer = perfInterval("clock", tick, 30000);
 }
 
 document.addEventListener("click", (event) => {
@@ -1081,16 +1186,9 @@ window.addEventListener("message", (event) => {
   }
 });
 
-document.querySelectorAll("[data-balance]").forEach((balance) => {
-  balance.dataset.original = balance.textContent;
-});
-
 setupStats();
 loadSavedProfile();
-renderProfile();
-renderFeed();
-renderWallet();
 setupClock();
-renderStats(state.stats);
-requestStoredProfile();
+loadHome();
 startLiveStats();
+renderPerfDebug();
