@@ -288,10 +288,21 @@ h1 {
   justify-content: center;
   gap: 13px;
   min-height: 64px;
+  color: rgba(8, 13, 18, 0.94);
   font-size: 26px;
-  font-weight: 650;
+  font-weight: 500;
   cursor: pointer;
-  text-shadow: var(--shadow);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.48),
+    0 -1px 0 rgba(0, 0, 0, 0.58);
+}
+
+.nav-button > span:last-child {
+  color: rgba(5, 10, 15, 0.96);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.52),
+    0 -1px 0 rgba(0, 0, 0, 0.62),
+    0 0 10px rgba(255, 255, 255, 0.16);
 }
 
 .nav-button:hover,
@@ -313,12 +324,18 @@ h1 {
 }
 
 .nav-button.is-active {
+  color: var(--text);
   border-color: var(--blue);
   background:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.44), transparent 18%),
     linear-gradient(135deg, rgba(40, 161, 252, 0.42), transparent 42%),
     linear-gradient(180deg, rgba(17, 68, 111, 0.78), rgba(0, 16, 30, 0.82));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 0 26px rgba(40, 161, 252, 0.26), 0 0 24px rgba(40, 161, 252, 0.42);
+}
+
+.nav-button.is-active > span:last-child {
+  color: var(--blue);
+  text-shadow: 0 0 12px rgba(40, 161, 252, 0.62), var(--shadow);
 }
 
 .nav-button.is-active::after {
@@ -421,6 +438,13 @@ h1 {
   box-shadow: 0 0 0 34px rgba(40, 161, 252, 0.035), 0 0 0 66px rgba(40, 161, 252, 0.02), inset 0 0 40px rgba(40, 161, 252, 0.12);
 }
 
+.body-status .reactor::before,
+.body-status .reactor::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
 .reactor {
   position: relative;
   z-index: 1;
@@ -433,16 +457,9 @@ h1 {
   box-shadow: 0 0 0 11px rgba(40, 161, 252, 0.09), 0 0 0 29px rgba(40, 161, 252, 0.05), 0 0 38px rgba(40, 161, 252, 0.22), inset 0 0 48px rgba(225, 252, 255, 0.1);
 }
 
-.reactor::before,
-.reactor::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
 .reactor::before {
   inset: -8px;
+  border-radius: 50%;
   background: conic-gradient(from -5deg, var(--blue) 0 38deg, transparent 38deg 51deg, var(--blue) 51deg 91deg, transparent 91deg 104deg, var(--blue) 104deg 144deg, transparent 144deg 180deg, var(--blue) 180deg 220deg, transparent 220deg 233deg, var(--blue) 233deg 273deg, transparent 273deg 286deg, var(--blue) 286deg 326deg, transparent 326deg 360deg);
   -webkit-mask: radial-gradient(circle, transparent 0 72%, #000 73% 82%, transparent 83% 100%);
   mask: radial-gradient(circle, transparent 0 72%, #000 73% 82%, transparent 83% 100%);
@@ -450,9 +467,15 @@ h1 {
 }
 
 .reactor::after {
-  inset: 31px;
-  border: 1px solid rgba(40, 161, 252, 0.38);
-  box-shadow: 0 0 0 18px rgba(40, 161, 252, 0.04), inset 0 0 30px rgba(40, 161, 252, 0.16);
+  inset: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(40, 161, 252, 0.32);
+  background:
+    radial-gradient(circle, rgba(142, 225, 255, 0.18) 0 16%, transparent 17% 34%, rgba(40, 161, 252, 0.1) 35% 36%, transparent 37% 100%);
+  box-shadow:
+    0 0 0 18px rgba(40, 161, 252, 0.04),
+    inset 0 0 30px rgba(40, 161, 252, 0.14);
+  animation: reactorGlow 7.5s ease-in-out infinite;
 }
 
 .reactor-core {
@@ -513,21 +536,6 @@ h1 {
   color: var(--amber);
 }
 
-.pulse-line {
-  position: absolute;
-  left: 50%;
-  top: 54%;
-  z-index: 1;
-  width: 430px;
-  max-width: min(430px, 118vw);
-  height: 22px;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(90deg, transparent 0 18%, var(--blue) 18% 42%, transparent 42% 45%, var(--blue) 45% 48%, transparent 48% 50%, var(--blue) 50% 52%, transparent 52% 54%, var(--blue) 54% 58%, transparent 58% 100%);
-  clip-path: polygon(0 58%, 38% 58%, 41% 46%, 44% 58%, 49% 58%, 51% 24%, 54% 76%, 57% 58%, 100% 58%, 100% 64%, 57% 64%, 54% 82%, 51% 32%, 49% 64%, 44% 64%, 41% 52%, 38% 64%, 0 64%);
-  filter: drop-shadow(0 0 6px rgba(40, 161, 252, 0.76));
-  opacity: 0.9;
-}
-
 .stat-panel {
   grid-column: 2;
   grid-row: 1;
@@ -541,21 +549,15 @@ h1 {
   display: grid;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  text-shadow: var(--shadow);
 }
 
 .stat-panel article {
   grid-template-columns: 56px minmax(0, 1fr) 96px;
   min-height: 43px;
-  font-size: 26px;
-  font-weight: 650;
+  color: rgba(245, 252, 255, 0.9);
+  font-size: 25px;
+  font-weight: 200;
 }
-
-.stat-panel article:nth-child(2) { animation-delay: 180ms; }
-.stat-panel article:nth-child(3) { animation-delay: 360ms; }
-.stat-panel article:nth-child(4) { animation-delay: 540ms; }
-.stat-panel article:nth-child(5) { animation-delay: 720ms; }
-.stat-panel article:nth-child(6) { animation-delay: 900ms; }
 
 .stat-panel article:last-child,
 .wallet-list article:last-child,
@@ -584,10 +586,10 @@ h1 {
   color: var(--blue);
   font-family: var(--hud-font);
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 200;
   letter-spacing: 0;
   text-align: right;
-  text-shadow: 0 0 10px rgba(40, 161, 252, 0.3), var(--shadow);
+  text-shadow: none;
 }
 
 .cdf-updates {
@@ -1652,8 +1654,7 @@ body.perf-lite .stat-panel strong {
 
 body.perf-lite .brand-mark img,
 body.perf-lite .zodiac-mark,
-body.perf-lite .level-mark svg,
-body.perf-lite .pulse-line {
+body.perf-lite .level-mark svg {
   filter: none;
 }
 
@@ -1666,4 +1667,15 @@ body.perf-lite .profile-edit,
 body.perf-lite .wallet-list article,
 body.perf-lite .profile-grid article {
   box-shadow: none;
+}
+
+@keyframes reactorGlow {
+  0%, 100% {
+    opacity: 0.54;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.018);
+  }
 }

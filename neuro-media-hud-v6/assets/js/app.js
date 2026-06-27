@@ -779,6 +779,14 @@ function snapshotValue(snapshot, key, fallback = "") {
   return value === undefined || value === null || value === "" ? fallback : value;
 }
 
+function firstSnapshotValue(snapshot, keys, fallback = "") {
+  for (const key of keys) {
+    const value = snapshotValue(snapshot, key, undefined);
+    if (value !== undefined) return value;
+  }
+  return fallback;
+}
+
 function profileXpFromSnapshot(snapshot) {
   const rawLevel = snapshotValue(snapshot, "level", snapshotValue(snapshot, "xpLevel", state.profile.level));
   const rawXp = snapshotValue(snapshot, "xpCurrent", snapshotValue(snapshot, "currentXp", snapshotValue(snapshot, "xp", state.profile.xpCurrent)));
@@ -796,6 +804,21 @@ function statsFromSnapshot(snapshot) {
   const sleep = clampStat(snapshotValue(snapshot, "stat.sleep", state.stats.sleep));
   const energy = clampStat(snapshotValue(snapshot, "stat.energy", state.stats.energy));
   const careFallback = Math.round((hygiene + sleep + energy) / 3);
+  const careValue = firstSnapshotValue(snapshot, [
+    "stat.care",
+    "care",
+    "careScore",
+    "neuroCare",
+    "stat.neuroCare",
+    "health.care",
+    "healthCare",
+    "stat.health",
+    "health",
+    "wellness",
+    "stat.wellness",
+    "medical",
+    "stat.medical"
+  ], careFallback);
   return {
     hunger: clampStat(snapshotValue(snapshot, "stat.hunger", state.stats.hunger)),
     thirst: clampStat(snapshotValue(snapshot, "stat.thirst", state.stats.thirst)),
@@ -803,7 +826,7 @@ function statsFromSnapshot(snapshot) {
     hygiene,
     energy,
     fun: clampStat(snapshotValue(snapshot, "stat.fun", state.stats.fun)),
-    care: clampStat(snapshotValue(snapshot, "stat.care", snapshotValue(snapshot, "care", careFallback)))
+    care: clampStat(careValue)
   };
 }
 
