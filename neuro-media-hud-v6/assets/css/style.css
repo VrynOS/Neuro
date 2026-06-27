@@ -13,7 +13,13 @@
   --amber: #ffc85c;
   --purple: #8c6dff;
   --shadow: 0 4px 18px rgba(0, 0, 0, 0.82);
-  --hud-font: "Neuropol X", "Neuropol X Free", "NeuropolXRg-Regular", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
+  --hud-font: "Ravenscroft", "Neuropol X", "Neuropol X Free", "NeuropolXRg-Regular", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
+}
+
+@font-face {
+  font-family: "Ravenscroft";
+  src: url("../fonts/Ravenscroft.ttf") format("truetype");
+  font-display: swap;
 }
 
 * {
