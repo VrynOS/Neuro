@@ -22,6 +22,7 @@
     <symbol id="icon-like" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"></path></symbol>
     <symbol id="icon-repost" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"></path><path d="M3 11V8a2 2 0 0 1 2-2h16"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v3a2 2 0 0 1-2 2H3"></path></symbol>
     <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 6v6h-6"></path><path d="M4 18v-6h6"></path><path d="M19 12a7 7 0 0 0-12-5l-3 3"></path><path d="M5 12a7 7 0 0 0 12 5l3-3"></path></symbol>
+    <symbol id="icon-photo" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="m7 16 3.5-4 2.5 3 2-2.5 3 3.5"></path><path d="M8.5 9h.1"></path></symbol>
     <symbol id="icon-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.5a2.5 2.5 0 0 0 1.8-4.2 2 2 0 0 1 1.4-3.4H18a3 3 0 0 0 3-3A7.4 7.4 0 0 0 12 3z"></path><path d="M7.5 10h.1"></path><path d="M9.5 6.8h.1"></path><path d="M14 6.5h.1"></path></symbol>
     <symbol id="icon-stat-good" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></symbol>
     <symbol id="icon-stat-low" viewBox="0 0 24 24"><path d="M12 4v9"></path><path d="M12 18h.1"></path><path d="M4 20h16L12 4z"></path></symbol>
@@ -175,9 +176,12 @@
           </section>
           <form class="message-compose" data-message-form>
             <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
-            <input type="text" name="message" autocomplete="off" placeholder="Post to the Neuro community...">
-            <input type="text" name="image" autocomplete="off" placeholder="Image URL or SL texture UUID">
+            <input type="text" name="message" autocomplete="off" placeholder="What's on your mind?">
+            <button type="button" data-photo-toggle aria-label="Add photo"><svg><use href="#icon-photo"></use></svg></button>
             <button type="submit" aria-label="Post"><svg><use href="#icon-send"></use></svg></button>
+            <div class="photo-attach" data-photo-panel hidden>
+              <input type="text" name="image" autocomplete="off" placeholder="Paste image link or SL texture UUID">
+            </div>
           </form>
         </section>
 

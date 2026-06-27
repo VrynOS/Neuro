@@ -400,10 +400,31 @@ function postImageSrc(value) {
   return "";
 }
 
+function normalizeComment(comment) {
+  const now = Date.now();
+  const rawCreatedAt = Number(comment?.createdAt || now);
+  const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
+  return {
+    id: String(comment?.id || `neuro-comment-${now}-${Math.round(Math.random() * 10000)}`),
+    ownerUuid: String(comment?.ownerUuid || currentOwnerUuid()),
+    name: String(comment?.name || state.profile.name || "Neuro Resident"),
+    handle: String(comment?.handle || currentHandle()),
+    message: String(comment?.message || comment?.text || ""),
+    createdAt
+  };
+}
+
 function normalizePost(post) {
   const now = Date.now();
   const rawCreatedAt = Number(post.createdAt || now);
   const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
+  const commentItems = Array.isArray(post.commentItems)
+    ? post.commentItems.map(normalizeComment).filter((comment) => comment.message)
+    : [];
+  const commentCount = Math.max(
+    commentItems.length,
+    Math.round(asNumber(post.comments, 0))
+  );
   return {
     id: String(post.id || `neuro-post-${now}-${Math.round(Math.random() * 10000)}`),
     ownerUuid: String(post.ownerUuid || currentOwnerUuid()),
@@ -414,11 +435,30 @@ function normalizePost(post) {
     imageUrl: String(post.imageUrl || post.image || ""),
     createdAt,
     likes: Math.max(0, Math.round(asNumber(post.likes, 0))),
-    comments: Math.max(0, Math.round(asNumber(post.comments, 0))),
+    comments: commentCount,
+    commentItems,
+    commentOpen: Boolean(post.commentOpen),
     reposts: Math.max(0, Math.round(asNumber(post.reposts, 0))),
     liked: Boolean(post.liked),
     reposted: Boolean(post.reposted)
   };
+}
+
+function mergeLocalFeedState(posts) {
+  const localById = new Map(state.feed.posts.map((post) => [post.id, post]));
+  return posts.map((post) => {
+    const local = localById.get(post.id);
+    if (!local) return post;
+    const localComments = Array.isArray(local.commentItems) ? local.commentItems : [];
+    return {
+      ...post,
+      liked: Boolean(local.liked),
+      reposted: Boolean(local.reposted),
+      commentOpen: Boolean(local.commentOpen),
+      commentItems: post.commentItems.length ? post.commentItems : localComments,
+      comments: Math.max(post.comments, local.comments || 0, localComments.length)
+    };
+  });
 }
 
 function renderFeed() {
@@ -434,14 +474,14 @@ function renderFeed() {
     card.dataset.ownerUuid = post.ownerUuid;
     card.innerHTML = `
       <img alt="">
-      <div>
+      <div class="feed-post-body">
         <header><strong></strong><span></span><time></time></header>
         <p></p>
         <img class="feed-image" alt="" hidden>
         <footer>
-          <button type="button" data-feed-action="like"><svg><use href="#icon-like"></use></svg><span></span></button>
-          <button type="button" data-feed-action="comment"><svg><use href="#icon-comment"></use></svg><span></span></button>
-          <button type="button" data-feed-action="repost"><svg><use href="#icon-repost"></use></svg><span></span></button>
+          <button type="button" data-feed-action="like" aria-label="Like post"><svg><use href="#icon-like"></use></svg><span></span></button>
+          <button type="button" data-feed-action="comment" aria-label="Open comments"><svg><use href="#icon-comment"></use></svg><span></span></button>
+          <button type="button" data-feed-action="repost" aria-label="Repost"><svg><use href="#icon-repost"></use></svg><span></span></button>
         </footer>
       </div>`;
     card.querySelector("img").src = avatarPath(post.avatar);
@@ -461,9 +501,44 @@ function renderFeed() {
     buttons[0].textContent = post.likes;
     buttons[1].textContent = post.comments;
     buttons[2].textContent = post.reposts;
-    card.querySelector('[data-feed-action="like"]').classList.toggle("is-active", post.liked);
-    card.querySelector('[data-feed-action="repost"]').classList.toggle("is-active", post.reposted);
+    const likeButton = card.querySelector('[data-feed-action="like"]');
+    const commentButton = card.querySelector('[data-feed-action="comment"]');
+    const repostButton = card.querySelector('[data-feed-action="repost"]');
+    likeButton.classList.toggle("is-active", post.liked);
+    likeButton.setAttribute("aria-pressed", String(post.liked));
+    commentButton.classList.toggle("is-active", post.commentOpen);
+    commentButton.setAttribute("aria-expanded", String(post.commentOpen));
+    repostButton.classList.toggle("is-active", post.reposted);
+    repostButton.setAttribute("aria-pressed", String(post.reposted));
     thread.append(card);
+    if (!post.commentOpen) return;
+    const commentsPanel = document.createElement("div");
+    commentsPanel.className = "feed-comments";
+    commentsPanel.dataset.commentPostId = post.id;
+    commentsPanel.innerHTML = `
+      <div data-comment-list></div>
+      <form data-comment-form>
+        <input type="text" name="comment" maxlength="180" autocomplete="off" placeholder="Add a comment...">
+        <button type="submit">Send</button>
+      </form>`;
+    const commentsList = commentsPanel.querySelector("[data-comment-list]");
+    if (post.commentItems.length) {
+      post.commentItems.forEach((comment) => {
+        const row = document.createElement("div");
+        row.className = "feed-comment";
+        row.innerHTML = "<strong></strong><span></span><p></p>";
+        row.querySelector("strong").textContent = comment.name;
+        row.querySelector("span").textContent = timeAgo(comment.createdAt);
+        row.querySelector("p").textContent = comment.message;
+        commentsList.append(row);
+      });
+    } else {
+      const empty = document.createElement("p");
+      empty.className = "comment-empty";
+      empty.textContent = post.comments > 0 ? `${post.comments} comments synced. New visible comments will appear here.` : "No comments yet.";
+      commentsList.append(empty);
+    }
+    thread.append(commentsPanel);
   });
 }
 
@@ -498,7 +573,9 @@ function handleFeedAction(postId, action) {
     active = post.liked;
     post.likes = Math.max(0, post.likes + (post.liked ? 1 : -1));
   } else if (action === "comment") {
-    post.comments += 1;
+    post.commentOpen = !post.commentOpen;
+    renderFeed();
+    return;
   } else if (action === "repost") {
     post.reposted = !post.reposted;
     active = post.reposted;
@@ -506,6 +583,24 @@ function handleFeedAction(postId, action) {
   }
 
   sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid, active });
+  renderFeed();
+}
+
+function addFeedComment(postId, text) {
+  const post = state.feed.posts.find((item) => item.id === postId);
+  if (!post) return;
+  const comment = normalizeComment({
+    ownerUuid: currentOwnerUuid(),
+    name: state.profile.name || "Neuro Resident",
+    handle: currentHandle(),
+    message: text,
+    createdAt: Date.now()
+  });
+  post.commentItems = Array.isArray(post.commentItems) ? post.commentItems : [];
+  post.commentItems.push(comment);
+  post.comments = Math.max(post.comments + 1, post.commentItems.length);
+  post.commentOpen = true;
+  sendFeedBridge("comment", { postId, ownerUuid: post.ownerUuid, comment });
   renderFeed();
 }
 
@@ -527,7 +622,7 @@ function handleFeedResponse(body) {
   try {
     const posts = JSON.parse(payload);
     if (Array.isArray(posts)) {
-      state.feed.posts = posts.map(normalizePost);
+      state.feed.posts = mergeLocalFeedState(posts.map(normalizePost));
       renderFeed();
     }
   } catch {
@@ -818,6 +913,18 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const photoToggle = event.target.closest("[data-photo-toggle]");
+  if (photoToggle) {
+    const form = photoToggle.closest("[data-message-form]");
+    const panel = form?.querySelector("[data-photo-panel]");
+    if (panel) {
+      panel.hidden = !panel.hidden;
+      photoToggle.classList.toggle("is-active", !panel.hidden);
+      if (!panel.hidden) panel.querySelector("input")?.focus();
+    }
+    return;
+  }
+
   const walletRefresh = event.target.closest("[data-wallet-refresh]");
   if (walletRefresh) {
     requestWalletBalance();
@@ -838,6 +945,17 @@ document.addEventListener("submit", (event) => {
     return;
   }
 
+  const commentForm = event.target.closest("[data-comment-form]");
+  if (commentForm) {
+    event.preventDefault();
+    const panel = commentForm.closest("[data-comment-post-id]");
+    const input = commentForm.elements.comment;
+    const text = String(input?.value || "").trim();
+    if (panel && text) addFeedComment(panel.dataset.commentPostId, text);
+    if (input) input.value = "";
+    return;
+  }
+
   const messageForm = event.target.closest("[data-message-form]");
   if (messageForm) {
     event.preventDefault();
@@ -848,7 +966,13 @@ document.addEventListener("submit", (event) => {
     if (!text && !image) return;
     createFeedPost(text || "Shared an image.", image);
     input.value = "";
-    if (imageInput) imageInput.value = "";
+    if (imageInput) {
+      imageInput.value = "";
+      const panel = messageForm.querySelector("[data-photo-panel]");
+      const photoToggle = messageForm.querySelector("[data-photo-toggle]");
+      if (panel) panel.hidden = true;
+      photoToggle?.classList.remove("is-active");
+    }
   }
 });
 
