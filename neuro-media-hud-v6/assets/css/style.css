@@ -13,6 +13,7 @@
   --amber: #ffc85c;
   --purple: #8c6dff;
   --shadow: 0 4px 18px rgba(0, 0, 0, 0.82);
+  --hud-font: "Neuropol X", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
 }
 
 * {
@@ -29,7 +30,7 @@ body {
   place-items: center;
   background: #e8f8ff;
   color: var(--text);
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: var(--hud-font);
   line-height: 1.12;
 }
 
@@ -142,9 +143,9 @@ svg {
 }
 
 h1 {
-  font-family: "Segoe UI Light", "Segoe UI", Arial, sans-serif;
-  letter-spacing: 0.36em;
-  font-weight: 300;
+  font-family: var(--hud-font);
+  letter-spacing: 0.28em;
+  font-weight: 400;
   color: var(--blue);
   text-shadow: 0 0 18px rgba(40, 161, 252, 0.7), 0 0 3px rgba(255, 238, 170, 0.75), var(--shadow);
 }
@@ -198,10 +199,10 @@ h1 {
   padding: 8px 0 8px 28px;
   border-left: 2px solid rgba(40, 161, 252, 0.38);
   color: var(--blue);
-  font-family: "Segoe UI Light", "Segoe UI", Arial, sans-serif;
+  font-family: var(--hud-font);
   font-size: 50px;
-  font-weight: 300;
-  letter-spacing: 0.08em;
+  font-weight: 400;
+  letter-spacing: 0.03em;
   line-height: 1;
   text-shadow: 0 0 18px rgba(40, 161, 252, 0.62), var(--shadow);
 }
@@ -535,9 +536,9 @@ h1 {
 
 .stat-panel strong {
   color: var(--blue);
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: var(--hud-font);
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0;
   text-align: right;
   text-shadow: 0 0 10px rgba(40, 161, 252, 0.3), var(--shadow);
