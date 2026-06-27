@@ -100,7 +100,7 @@ const state = {
     hygiene: 88,
     energy: 91,
     fun: 55,
-    xp: 78
+    care: 88
   },
   lastSnapshot: null,
   perf: {
@@ -741,7 +741,7 @@ function statIcon(statName, stateName) {
     energy: "#icon-stat-energy",
     hygiene: "#icon-stat-hygiene",
     fun: "#icon-stat-fun",
-    xp: "#icon-stat-xp"
+    care: "#icon-stat-care"
   }[statName] || "#icon-stat-good";
 }
 
@@ -779,12 +779,6 @@ function snapshotValue(snapshot, key, fallback = "") {
   return value === undefined || value === null || value === "" ? fallback : value;
 }
 
-function xpPercent(snapshot) {
-  const xp = Math.max(0, Math.round(asNumber(snapshotValue(snapshot, "xp", 0))));
-  const perLevel = Math.max(1, Math.round(asNumber(snapshotValue(snapshot, "xpPerLevel", 2500), 2500)));
-  return Math.round(((xp % perLevel) / perLevel) * 100);
-}
-
 function profileXpFromSnapshot(snapshot) {
   const rawLevel = snapshotValue(snapshot, "level", snapshotValue(snapshot, "xpLevel", state.profile.level));
   const rawXp = snapshotValue(snapshot, "xpCurrent", snapshotValue(snapshot, "currentXp", snapshotValue(snapshot, "xp", state.profile.xpCurrent)));
@@ -798,14 +792,18 @@ function profileXpFromSnapshot(snapshot) {
 }
 
 function statsFromSnapshot(snapshot) {
+  const hygiene = clampStat(snapshotValue(snapshot, "stat.hygiene", state.stats.hygiene));
+  const sleep = clampStat(snapshotValue(snapshot, "stat.sleep", state.stats.sleep));
+  const energy = clampStat(snapshotValue(snapshot, "stat.energy", state.stats.energy));
+  const careFallback = Math.round((hygiene + sleep + energy) / 3);
   return {
     hunger: clampStat(snapshotValue(snapshot, "stat.hunger", state.stats.hunger)),
     thirst: clampStat(snapshotValue(snapshot, "stat.thirst", state.stats.thirst)),
-    sleep: clampStat(snapshotValue(snapshot, "stat.sleep", state.stats.sleep)),
-    hygiene: clampStat(snapshotValue(snapshot, "stat.hygiene", state.stats.hygiene)),
-    energy: clampStat(snapshotValue(snapshot, "stat.energy", state.stats.energy)),
+    sleep,
+    hygiene,
+    energy,
     fun: clampStat(snapshotValue(snapshot, "stat.fun", state.stats.fun)),
-    xp: clampStat(xpPercent(snapshot))
+    care: clampStat(snapshotValue(snapshot, "stat.care", snapshotValue(snapshot, "care", careFallback)))
   };
 }
 

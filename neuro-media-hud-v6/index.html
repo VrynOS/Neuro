@@ -29,7 +29,8 @@
     <symbol id="icon-stat-hygiene" viewBox="0 0 24 24"><path d="M6 11h12"></path><path d="M8 11v8"></path><path d="M12 11v8"></path><path d="M16 11v8"></path><path d="M7 8a5 5 0 0 1 10 0"></path></symbol>
     <symbol id="icon-stat-fun" viewBox="0 0 24 24"><path d="M7 9h10a4 4 0 0 1 4 4v2a3 3 0 0 1-5 2l-2-2h-4l-2 2a3 3 0 0 1-5-2v-2a4 4 0 0 1 4-4z"></path><path d="M8 13h4"></path><path d="M10 11v4"></path><path d="M16 12h.1"></path><path d="M18 14h.1"></path></symbol>
     <symbol id="icon-stat-xp" viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"></path></symbol>
-    <symbol id="icon-neugram" viewBox="0 0 24 24"><path d="M5 8h14"></path><path d="M5 12h11"></path><path d="M5 16h7"></path><path d="M4 5h16v14H4z"></path></symbol>
+    <symbol id="icon-stat-care" viewBox="0 0 24 24"><path d="M12 21s-7-4.6-7-10a4.4 4.4 0 0 1 7-3.5A4.4 4.4 0 0 1 19 11c0 5.4-7 10-7 10z"></path><path d="M9 13h6"></path><path d="M12 10v6"></path></symbol>
+    <symbol id="icon-cdf-news" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path><path d="M8 17h8"></path></symbol>
   </svg>
 
   <main class="hud-shell" data-screen="home">
@@ -77,25 +78,15 @@
         <article data-stat="energy" data-value="91"><span class="stat-icon"><svg><use href="#icon-stat-energy"></use></svg></span><span>Energy</span><strong>91%</strong></article>
         <article data-stat="hygiene" data-value="88"><span class="stat-icon"><svg><use href="#icon-stat-hygiene"></use></svg></span><span>Hygiene</span><strong>88%</strong></article>
         <article data-stat="fun" data-value="55"><span class="stat-icon"><svg><use href="#icon-stat-fun"></use></svg></span><span>Fun</span><strong>55%</strong></article>
-        <article data-stat="xp" data-value="78"><span class="stat-icon"><svg><use href="#icon-stat-xp"></use></svg></span><span>XP</span><strong>78%</strong></article>
+        <article data-stat="care" data-value="88"><span class="stat-icon"><svg><use href="#icon-stat-care"></use></svg></span><span>Care</span><strong>88%</strong></article>
       </section>
 
-      <section class="neugram" aria-label="Neugram">
-        <section class="online-panel">
-          <header><svg><use href="#icon-profile"></use></svg><strong>Neugram</strong><small>Online <b>12</b></small></header>
-          <div class="online-row">
-            <img src="assets/img/perf/avatars/avatar-04.png" alt="" loading="lazy" decoding="async">
-            <img src="assets/img/perf/avatars/avatar-02.png" alt="" loading="lazy" decoding="async">
-            <img src="assets/img/perf/avatars/avatar-09.png" alt="" loading="lazy" decoding="async">
-            <img src="assets/img/perf/avatars/avatar-10.png" alt="" loading="lazy" decoding="async">
-            <img src="assets/img/perf/avatars/avatar-07.png" alt="" loading="lazy" decoding="async">
-            <button type="button">+7</button>
-          </div>
-        </section>
-        <section class="live-feed-panel">
-          <header><svg><use href="#icon-neugram"></use></svg><strong>Camden Falls Feed</strong><small>Live</small></header>
-          <article><img src="assets/img/perf/avatars/avatar-02.png" alt="" loading="lazy" decoding="async"><span>Nova</span><p>Rare mod found near Chi-Core. Meet at the south gate.</p><time>5m</time></article>
-          <article><img src="assets/img/perf/avatars/avatar-07.png" alt="" loading="lazy" decoding="async"><span>Echo</span><p>Grid signal is clear. Eden Palms route is open.</p><time>18m</time></article>
+      <section class="cdf-updates" aria-label="Camden Falls news and updates">
+        <header><svg><use href="#icon-cdf-news"></use></svg><strong>CDF News & Updates</strong><small>Business Wire</small></header>
+        <section class="cdf-news-grid">
+          <article><span>Chi-Core Market</span><p>Night vendor stalls open. Food, mods, and quick services available.</p><time>Now</time></article>
+          <article><span>Eden Palms</span><p>Salon bookings are open for weekend avatar styling and photo sessions.</p><time>12m</time></article>
+          <article><span>Camden Transit</span><p>South gate route is clear. Business district shuttle is running.</p><time>28m</time></article>
         </section>
       </section>
     </section>
