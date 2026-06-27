@@ -1278,6 +1278,21 @@ h1 {
   line-height: 1.25;
 }
 
+.feed-image {
+  display: block;
+  width: min(100%, 360px);
+  max-height: 138px;
+  margin-top: 9px;
+  border: 1px solid rgba(40, 161, 252, 0.24);
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.24);
+}
+
+.feed-image[hidden] {
+  display: none;
+}
+
 .feed-post footer {
   display: flex;
   gap: 10px;
@@ -1317,7 +1332,7 @@ h1 {
 
 .message-compose {
   display: grid;
-  grid-template-columns: 50px minmax(0, 1fr) 62px;
+  grid-template-columns: 50px minmax(0, 1.35fr) minmax(150px, 0.85fr) 62px;
   gap: 10px;
 }
 

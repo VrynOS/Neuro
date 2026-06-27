@@ -37,6 +37,7 @@ const state = {
         handle: "@jaderain.sl",
         avatar: "03",
         message: "Sunset over Eden Palms never gets old. Grateful for this view.",
+        imageUrl: "",
         createdAt: Date.now() - 12 * 60 * 1000,
         likes: 24,
         comments: 6,
@@ -51,6 +52,7 @@ const state = {
         handle: "@kaimercer.sl",
         avatar: "07",
         message: "Neuro Tec HUD v2.3 is live. Smooth performance and new wallet tools.",
+        imageUrl: "",
         createdAt: Date.now() - 45 * 60 * 1000,
         likes: 37,
         comments: 12,
@@ -65,6 +67,7 @@ const state = {
         handle: "@lenavoss.sl",
         avatar: "10",
         message: "Chi-Core night market is open. Good music, good light, good people.",
+        imageUrl: "",
         createdAt: Date.now() - 60 * 60 * 1000,
         likes: 18,
         comments: 4,
@@ -385,8 +388,22 @@ function currentHandle() {
   return `@${String(state.profile.name || "you").toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 18) || "you"}.sl`;
 }
 
+function isUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(value || "").trim());
+}
+
+function postImageSrc(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (isUuid(raw)) return `https://secondlife.com/app/image/${raw}/2`;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return "";
+}
+
 function normalizePost(post) {
   const now = Date.now();
+  const rawCreatedAt = Number(post.createdAt || now);
+  const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
   return {
     id: String(post.id || `neuro-post-${now}-${Math.round(Math.random() * 10000)}`),
     ownerUuid: String(post.ownerUuid || currentOwnerUuid()),
@@ -394,7 +411,8 @@ function normalizePost(post) {
     handle: String(post.handle || currentHandle()),
     avatar: String(post.avatar || state.profile.avatar || "01"),
     message: String(post.message || ""),
-    createdAt: Number(post.createdAt || now),
+    imageUrl: String(post.imageUrl || post.image || ""),
+    createdAt,
     likes: Math.max(0, Math.round(asNumber(post.likes, 0))),
     comments: Math.max(0, Math.round(asNumber(post.comments, 0))),
     reposts: Math.max(0, Math.round(asNumber(post.reposts, 0))),
@@ -419,6 +437,7 @@ function renderFeed() {
       <div>
         <header><strong></strong><span></span><time></time></header>
         <p></p>
+        <img class="feed-image" alt="" hidden>
         <footer>
           <button type="button" data-feed-action="like"><svg><use href="#icon-like"></use></svg><span></span></button>
           <button type="button" data-feed-action="comment"><svg><use href="#icon-comment"></use></svg><span></span></button>
@@ -431,6 +450,13 @@ function renderFeed() {
     card.querySelector("header span").textContent = post.handle;
     card.querySelector("header time").textContent = timeAgo(post.createdAt);
     card.querySelector("p").textContent = post.message;
+    const image = card.querySelector(".feed-image");
+    const src = postImageSrc(post.imageUrl);
+    if (image && src) {
+      image.src = src;
+      image.alt = `${post.name} post image`;
+      image.hidden = false;
+    }
     const buttons = card.querySelectorAll("footer button span");
     buttons[0].textContent = post.likes;
     buttons[1].textContent = post.comments;
@@ -446,9 +472,10 @@ function sendFeedBridge(op, payload = {}) {
   sendBridge(`feed-${op}`, JSON.stringify(payload));
 }
 
-function createFeedPost(text) {
+function createFeedPost(text, imageUrl = "") {
   const post = normalizePost({
     message: text,
+    imageUrl,
     ownerUuid: currentOwnerUuid(),
     name: state.profile.name || "Neuro Resident",
     handle: currentHandle(),
@@ -464,18 +491,21 @@ function createFeedPost(text) {
 function handleFeedAction(postId, action) {
   const post = state.feed.posts.find((item) => item.id === postId);
   if (!post) return;
+  let active = true;
 
   if (action === "like") {
     post.liked = !post.liked;
+    active = post.liked;
     post.likes = Math.max(0, post.likes + (post.liked ? 1 : -1));
   } else if (action === "comment") {
     post.comments += 1;
   } else if (action === "repost") {
     post.reposted = !post.reposted;
+    active = post.reposted;
     post.reposts = Math.max(0, post.reposts + (post.reposted ? 1 : -1));
   }
 
-  sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid });
+  sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid, active });
   renderFeed();
 }
 
@@ -486,6 +516,10 @@ function refreshFeed() {
 
 function handleFeedResponse(body) {
   if (body.startsWith("FEED_OK|")) return true;
+  if (body.startsWith("FEED_OFFLINE|")) {
+    logBridge("feed server offline");
+    return true;
+  }
   if (!body.startsWith("FEED|")) return false;
   const payload = body.substring(5);
   if (!payload) return true;
@@ -713,7 +747,9 @@ function startLiveStats() {
   if (detail) detail.textContent = "SYNCING";
   sendBridge("sync");
   sendBridge("stats");
+  refreshFeed();
   window.setInterval(() => sendBridge("stats"), 5000);
+  window.setInterval(refreshFeed, 15000);
 }
 
 function setupClock() {
@@ -806,10 +842,13 @@ document.addEventListener("submit", (event) => {
   if (messageForm) {
     event.preventDefault();
     const input = messageForm.elements.message;
+    const imageInput = messageForm.elements.image;
     const text = String(input?.value || "").trim();
-    if (!text) return;
-    createFeedPost(text);
+    const image = String(imageInput?.value || "").trim();
+    if (!text && !image) return;
+    createFeedPost(text || "Shared an image.", image);
     input.value = "";
+    if (imageInput) imageInput.value = "";
   }
 });
 
