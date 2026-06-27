@@ -18,9 +18,41 @@
 
 @font-face {
   font-family: "Bai Jamjuree HUD";
-  src: url("../fonts/bai-jamjuree-bold-italic.ttf") format("truetype");
-  font-weight: 700;
+  src: url("../fonts/bai-jamjuree-extralight.ttf") format("truetype");
+  font-weight: 200;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bai Jamjuree HUD";
+  src: url("../fonts/bai-jamjuree-extralight-italic.ttf") format("truetype");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bai Jamjuree HUD";
+  src: url("../fonts/bai-jamjuree-medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bai Jamjuree HUD";
+  src: url("../fonts/bai-jamjuree-italic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bai Jamjuree HUD";
+  src: url("../fonts/bai-jamjuree-bold-italic.ttf") format("truetype");
+  font-weight: 700 900;
+  font-style: italic;
   font-display: swap;
 }
 
