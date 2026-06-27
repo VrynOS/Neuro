@@ -28,52 +28,68 @@ const state = {
     xpGoal: 30000,
     savedInHud: false
   },
-  feed: {
-    posts: [
+  messages: {
+    activeThreadId: "",
+    threads: [
       {
-        id: "neuro-post-eden-palms-001",
-        ownerUuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
-        name: "Jade Rain",
-        handle: "@jaderain.sl",
+        threadId: "dm-jade-rain",
         avatar: "03",
-        message: "Sunset over Eden Palms never gets old. Grateful for this view.",
-        imageUrl: "",
-        createdAt: Date.now() - 12 * 60 * 1000,
-        likes: 24,
-        comments: 6,
-        reposts: 3,
-        liked: false,
-        reposted: false
+        participantUuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
+        participantName: "Jade Rain",
+        participantHandle: "@jaderain.sl",
+        unread: 1,
+        messages: [
+          {
+            message_id: "msg-jade-001",
+            sender_uuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
+            receiver_uuid: "local-web-profile",
+            sender_name: "Jade Rain",
+            receiver_name: "Neuro Resident",
+            message_text: "Meet me near Eden Palms when you get a chance.",
+            timestamp: Date.now() - 2 * 60 * 1000,
+            read: false
+          }
+        ]
       },
       {
-        id: "neuro-post-update-002",
-        ownerUuid: "0d6b4a61-393b-43c9-9f96-8e6bc7858d12",
-        name: "Kai Mercer",
-        handle: "@kaimercer.sl",
+        threadId: "dm-kam",
         avatar: "07",
-        message: "Neuro Tec HUD v2.3 is live. Smooth performance and new wallet tools.",
-        imageUrl: "",
-        createdAt: Date.now() - 45 * 60 * 1000,
-        likes: 37,
-        comments: 12,
-        reposts: 8,
-        liked: false,
-        reposted: false
+        participantUuid: "6c7a2b84-4106-438d-ae74-c1ef2fb7ab56",
+        participantName: "Kam",
+        participantHandle: "@kam.sl",
+        unread: 0,
+        messages: [
+          {
+            message_id: "msg-kam-001",
+            sender_uuid: "6c7a2b84-4106-438d-ae74-c1ef2fb7ab56",
+            receiver_uuid: "local-web-profile",
+            sender_name: "Kam",
+            receiver_name: "Neuro Resident",
+            message_text: "I sent the new Chi-Core route.",
+            timestamp: Date.now() - 12 * 60 * 1000,
+            read: true
+          }
+        ]
       },
       {
-        id: "neuro-post-chicore-003",
-        ownerUuid: "6f830df5-1300-4a7c-b7e3-606929aa0a52",
-        name: "Lena Voss",
-        handle: "@lenavoss.sl",
-        avatar: "10",
-        message: "Chi-Core night market is open. Good music, good light, good people.",
-        imageUrl: "",
-        createdAt: Date.now() - 60 * 60 * 1000,
-        likes: 18,
-        comments: 4,
-        reposts: 2,
-        liked: false,
-        reposted: false
+        threadId: "dm-system",
+        avatar: "01",
+        participantUuid: "system",
+        participantName: "System",
+        participantHandle: "@system",
+        unread: 1,
+        messages: [
+          {
+            message_id: "msg-system-001",
+            sender_uuid: "system",
+            receiver_uuid: "local-web-profile",
+            sender_name: "System",
+            receiver_name: "Neuro Resident",
+            message_text: "HUD update ready.",
+            timestamp: Date.now(),
+            read: false
+          }
+        ]
       }
     ]
   },
@@ -94,7 +110,7 @@ const state = {
       profile: false,
       wallet: false,
       settings: false,
-      feed: false
+      messages: false
     },
     timers: new Map(),
     lastRefresh: "none",
@@ -182,7 +198,7 @@ function renderPerfDebug() {
   document.querySelectorAll("[data-perf-active-tab]").forEach((node) => { node.textContent = state.perf.activeTab; });
   document.querySelectorAll("[data-perf-active-timers]").forEach((node) => { node.textContent = String(activeTimerCount()); });
   document.querySelectorAll("[data-perf-last-refresh]").forEach((node) => { node.textContent = state.perf.lastRefresh; });
-  document.querySelectorAll("[data-perf-feed-loaded]").forEach((node) => { node.textContent = state.perf.loaded.feed ? "yes" : "no"; });
+  document.querySelectorAll("[data-perf-messages-loaded]").forEach((node) => { node.textContent = state.perf.loaded.messages ? "yes" : "no"; });
   document.querySelectorAll("[data-perf-bridge-active]").forEach((node) => { node.textContent = state.perf.bridgeActive ? "yes" : "no"; });
 }
 
@@ -468,326 +484,190 @@ function postImageSrc(value) {
   return "";
 }
 
-function normalizeComment(comment) {
+
+function normalizeDmMessage(message, thread) {
   const now = Date.now();
-  const rawCreatedAt = Number(comment?.createdAt || now);
-  const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
+  const rawTimestamp = Number(message?.timestamp || now);
+  const timestamp = rawTimestamp > 0 && rawTimestamp < 100000000000 ? rawTimestamp * 1000 : rawTimestamp;
   return {
-    id: String(comment?.id || `neuro-comment-${now}-${Math.round(Math.random() * 10000)}`),
-    ownerUuid: String(comment?.ownerUuid || currentOwnerUuid()),
-    name: String(comment?.name || state.profile.name || "Neuro Resident"),
-    handle: String(comment?.handle || currentHandle()),
-    message: String(comment?.message || comment?.text || ""),
-    createdAt
+    message_id: String(message?.message_id || `msg-${now}-${Math.round(Math.random() * 10000)}`),
+    sender_uuid: String(message?.sender_uuid || thread.participantUuid),
+    receiver_uuid: String(message?.receiver_uuid || currentOwnerUuid()),
+    sender_name: String(message?.sender_name || thread.participantName),
+    receiver_name: String(message?.receiver_name || state.profile.name || "Neuro Resident"),
+    message_text: String(message?.message_text || message?.text || ""),
+    timestamp,
+    read: Boolean(message?.read)
   };
 }
 
-function normalizePost(post) {
-  const now = Date.now();
-  const rawCreatedAt = Number(post.createdAt || now);
-  const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
-  const type = String(post.type || "post");
-  const commentItems = Array.isArray(post.commentItems)
-    ? post.commentItems.map(normalizeComment).filter((comment) => comment.message)
-    : [];
-  const commentCount = Math.max(
-    commentItems.length,
-    Math.round(asNumber(post.comments, 0))
-  );
+function normalizeDmThread(thread) {
+  const base = {
+    threadId: String(thread.threadId || `dm-${Date.now()}-${Math.round(Math.random() * 10000)}`),
+    avatar: String(thread.avatar || "01"),
+    participantUuid: String(thread.participantUuid || "unknown"),
+    participantName: String(thread.participantName || "Resident"),
+    participantHandle: String(thread.participantHandle || "@resident.sl")
+  };
+  const messages = Array.isArray(thread.messages) ? thread.messages : [];
+  const normalizedMessages = messages
+    .map((message) => normalizeDmMessage(message, base))
+    .filter((message) => message.message_text)
+    .sort((a, b) => a.timestamp - b.timestamp);
+  const unread = normalizedMessages.filter((message) => !message.read && message.sender_uuid !== currentOwnerUuid()).length;
   return {
-    id: String(post.id || `neuro-post-${now}-${Math.round(Math.random() * 10000)}`),
-    type,
-    originalPostId: String(post.originalPostId || post.original_post_id || ""),
-    repostOwnerUuid: String(post.repostOwnerUuid || post.repost_owner_uuid || ""),
-    repostOwnerName: String(post.repostOwnerName || post.repost_owner_name || ""),
-    originalOwnerName: String(post.originalOwnerName || post.original_owner_name || ""),
-    originalMessage: String(post.originalMessage || post.original_message || ""),
-    originalPost: post.originalPost ? normalizePost({ ...post.originalPost, type: "post" }) : null,
-    ownerUuid: String(post.ownerUuid || currentOwnerUuid()),
-    name: String(post.name || state.profile.name || "Neuro Resident"),
-    handle: String(post.handle || currentHandle()),
-    avatar: String(post.avatar || state.profile.avatar || "01"),
-    message: String(post.message || ""),
-    imageUrl: String(post.imageUrl || post.image || ""),
-    createdAt,
-    likes: Math.max(0, Math.round(asNumber(post.likes, 0))),
-    comments: commentCount,
-    commentItems,
-    commentOpen: Boolean(post.commentOpen),
-    reposts: Math.max(0, Math.round(asNumber(post.reposts, 0))),
-    liked: Boolean(post.liked),
-    reposted: Boolean(post.reposted)
+    ...base,
+    unread: Math.max(0, Math.round(asNumber(thread.unread, unread))),
+    messages: normalizedMessages
   };
 }
 
-function mergeLocalFeedState(posts) {
-  const localById = new Map(state.feed.posts.map((post) => [post.id, post]));
-  return posts.map((post) => {
-    const local = localById.get(post.id);
-    if (!local) return post;
-    const localComments = Array.isArray(local.commentItems) ? local.commentItems : [];
-    return {
-      ...post,
-      liked: Boolean(local.liked),
-      reposted: Boolean(local.reposted),
-      commentOpen: Boolean(local.commentOpen),
-      commentItems: post.commentItems.length ? post.commentItems : localComments,
-      comments: Math.max(post.comments, local.comments || 0, localComments.length),
-      originalPost: post.originalPost || local.originalPost || null
-    };
-  });
-}
-
-function originalForRepost(post) {
-  const original = post.type === "repost" && post.originalPost ? post.originalPost : post;
-  return normalizePost({
-    ...original,
-    type: "post",
-    reposted: false,
-    commentOpen: false
-  });
-}
-
-function createRepostEntry(originalPost) {
-  const original = originalForRepost(originalPost);
-  const ownerName = state.profile.name || "Neuro Resident";
-  const repostId = `repost-${Date.now()}-${Math.round(Math.random() * 10000)}`;
-  return normalizePost({
-    id: repostId,
-    repost_id: repostId,
-    type: "repost",
-    originalPostId: original.id,
-    original_post_id: original.id,
-    repostOwnerUuid: currentOwnerUuid(),
-    repost_owner_uuid: currentOwnerUuid(),
-    repostOwnerName: ownerName,
-    repost_owner_name: ownerName,
-    originalOwnerName: original.name,
-    original_owner_name: original.name,
-    originalMessage: original.message,
-    original_message: original.message,
-    timestamp: Date.now(),
-    originalPost: original,
-    ownerUuid: currentOwnerUuid(),
-    name: ownerName,
-    handle: currentHandle(),
-    avatar: state.profile.avatar,
-    message: `${ownerName} reposted ${original.name}`,
-    createdAt: Date.now()
-  });
-}
-
-function renderFeed() {
-  if (!state.perf.loaded.feed || state.perf.activeTab !== "profile") return;
-  const thread = document.querySelector("[data-message-thread]");
-  if (!thread) return;
-
-  thread.replaceChildren();
-  state.feed.posts.slice(0, 12).forEach((rawPost) => {
-    const post = normalizePost(rawPost);
-    const card = document.createElement("article");
-    card.className = post.type === "repost" ? "feed-post feed-repost" : "feed-post";
-    card.dataset.postId = post.id;
-    card.dataset.ownerUuid = post.ownerUuid;
-    card.innerHTML = `
-      <img alt="">
-      <div class="feed-post-body">
-        <header><strong></strong><span></span><time></time></header>
-        <p></p>
-        <div class="repost-original" hidden>
-          <strong></strong>
-          <span></span>
-          <p></p>
-        </div>
-        <img class="feed-image" alt="" hidden>
-        <footer>
-          <button type="button" data-feed-action="like" aria-label="Like post"><svg><use href="#icon-like"></use></svg><span></span></button>
-          <button type="button" data-feed-action="comment" aria-label="Open comments"><svg><use href="#icon-comment"></use></svg><span></span></button>
-          <button type="button" data-feed-action="repost" aria-label="Repost"><svg><use href="#icon-repost"></use></svg><span></span></button>
-        </footer>
-      </div>`;
-    card.querySelector("img").src = avatarPath(post.avatar);
-    card.querySelector("img").alt = post.name;
-    card.querySelector("header strong").textContent = post.name;
-    card.querySelector("header span").textContent = `${post.handle} ·`;
-    card.querySelector("header time").textContent = timeAgo(post.createdAt);
-    card.querySelector("p").textContent = post.message;
-    const originalBox = card.querySelector(".repost-original");
-    if (post.type === "repost") {
-      const original = post.originalPost || originalForRepost({
-        id: post.originalPostId,
-        name: post.originalOwnerName || "Original Resident",
-        message: post.originalMessage
-      });
-      originalBox.hidden = false;
-      originalBox.querySelector("strong").textContent = original.name;
-      originalBox.querySelector("span").textContent = `${original.handle} · ${timeAgo(original.createdAt)}`;
-      originalBox.querySelector("p").textContent = original.message;
-      card.querySelector("footer").hidden = true;
-    }
-    const image = card.querySelector(".feed-image");
-    const src = postImageSrc(post.imageUrl);
-    if (image && src) {
-      image.src = src;
-      image.alt = `${post.name} post image`;
-      image.hidden = false;
-      card.classList.add("has-media");
-    }
-    const buttons = card.querySelectorAll("footer button span");
-    buttons[0].textContent = post.likes;
-    buttons[1].textContent = post.comments;
-    buttons[2].textContent = post.reposts;
-    const likeButton = card.querySelector('[data-feed-action="like"]');
-    const commentButton = card.querySelector('[data-feed-action="comment"]');
-    const repostButton = card.querySelector('[data-feed-action="repost"]');
-    likeButton.classList.toggle("is-active", post.liked);
-    likeButton.setAttribute("aria-pressed", String(post.liked));
-    commentButton.classList.toggle("is-active", post.commentOpen);
-    commentButton.setAttribute("aria-expanded", String(post.commentOpen));
-    repostButton.classList.toggle("is-active", post.reposted);
-    repostButton.setAttribute("aria-pressed", String(post.reposted));
-    thread.append(card);
-    if (!post.commentOpen) return;
-    const commentsPanel = document.createElement("div");
-    commentsPanel.className = "feed-comments";
-    commentsPanel.dataset.commentPostId = post.id;
-    commentsPanel.innerHTML = `
-      <div data-comment-list></div>
-      <form data-comment-form>
-        <input type="text" name="comment" maxlength="180" autocomplete="off" placeholder="Add a comment...">
-        <button type="submit">Send</button>
-      </form>`;
-    const commentsList = commentsPanel.querySelector("[data-comment-list]");
-    if (post.commentItems.length) {
-      post.commentItems.forEach((comment) => {
-        const row = document.createElement("div");
-        row.className = "feed-comment";
-        row.innerHTML = "<header><strong></strong><span></span></header><p></p>";
-        row.querySelector("strong").textContent = comment.name;
-        row.querySelector("span").textContent = timeAgo(comment.createdAt);
-        row.querySelector("p").textContent = comment.message;
-        commentsList.append(row);
-      });
-    } else {
-      const empty = document.createElement("p");
-      empty.className = "comment-empty";
-      empty.textContent = post.comments > 0 ? `${post.comments} comments synced. New visible comments will appear here.` : "No comments yet.";
-      commentsList.append(empty);
-    }
-    thread.append(commentsPanel);
-  });
-}
-
-function sendFeedBridge(op, payload = {}) {
-  if (!liveBridge) return;
-  sendBridge(`feed-${op}`, JSON.stringify(payload));
-}
-
-function scrollFeedTop() {
-  const thread = document.querySelector("[data-message-thread]");
-  if (thread) thread.scrollTop = 0;
-}
-
-function createFeedPost(text, imageUrl = "") {
-  const post = normalizePost({
-    message: text,
-    imageUrl,
-    ownerUuid: currentOwnerUuid(),
-    name: state.profile.name || "Neuro Resident",
-    handle: currentHandle(),
-    avatar: state.profile.avatar,
-    createdAt: Date.now()
-  });
-
-  state.feed.posts.unshift(post);
-  sendFeedBridge("post", post);
-  renderFeed();
-  scrollFeedTop();
-}
-
-function handleFeedAction(postId, action) {
-  const post = state.feed.posts.find((item) => item.id === postId);
-  if (!post) return;
-  let active = true;
-
-  if (action === "like") {
-    post.liked = !post.liked;
-    active = post.liked;
-    post.likes = Math.max(0, post.likes + (post.liked ? 1 : -1));
-  } else if (action === "comment") {
-    post.commentOpen = !post.commentOpen;
-    renderFeed();
-    return;
-  } else if (action === "repost") {
-    if (post.reposted) return;
-    post.reposted = true;
-    active = true;
-    post.reposts = Math.max(0, post.reposts + 1);
-    const repost = createRepostEntry(post);
-    state.feed.posts.unshift(repost);
-    sendFeedBridge(action, {
-      postId,
-      ownerUuid: post.ownerUuid,
-      active,
-      repost,
-      originalPost: originalForRepost(post)
-    });
-    renderFeed();
-    scrollFeedTop();
-    return;
-  }
-
-  sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid, active });
-  renderFeed();
-}
-
-function addFeedComment(postId, text) {
-  const post = state.feed.posts.find((item) => item.id === postId);
-  if (!post) return;
-  const comment = normalizeComment({
-    ownerUuid: currentOwnerUuid(),
-    name: state.profile.name || "Neuro Resident",
-    handle: currentHandle(),
-    message: text,
-    createdAt: Date.now()
-  });
-  post.commentItems = Array.isArray(post.commentItems) ? post.commentItems : [];
-  post.commentItems.push(comment);
-  post.comments = Math.max(post.comments + 1, post.commentItems.length);
-  post.commentOpen = true;
-  sendFeedBridge("comment", { postId, ownerUuid: post.ownerUuid, comment });
-  renderFeed();
-}
-
-function refreshFeed() {
-  state.perf.loaded.feed = true;
-  sendFeedBridge("refresh");
-  setLastRefresh("feed refresh");
-  renderFeed();
-}
-
-function handleFeedResponse(body) {
-  if (body.startsWith("FEED_OK|")) return true;
-  if (body.startsWith("FEED_OFFLINE|")) {
-    logBridge("feed server offline");
-    return true;
-  }
-  if (!body.startsWith("FEED|")) return false;
-  const payload = body.substring(5);
-  if (!payload) return true;
-
+function saveMessagesLocal() {
   try {
-    const posts = JSON.parse(payload);
-    if (Array.isArray(posts)) {
-      state.feed.posts = mergeLocalFeedState(posts.map(normalizePost));
-      state.perf.loaded.feed = true;
-      setLastRefresh("feed response");
-      renderFeed();
+    localStorage.setItem("neuroMessages", JSON.stringify(state.messages.threads));
+  } catch {
+    logBridge("messages local save blocked");
+  }
+}
+
+function loadMessagesLocal() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("neuroMessages") || "[]");
+    if (Array.isArray(saved) && saved.length) {
+      state.messages.threads = saved.map(normalizeDmThread);
+    } else {
+      state.messages.threads = state.messages.threads.map(normalizeDmThread);
+      saveMessagesLocal();
     }
   } catch {
-    logBridge("bad feed payload");
+    state.messages.threads = state.messages.threads.map(normalizeDmThread);
   }
-  return true;
+}
+
+function lastDmMessage(thread) {
+  return thread.messages[thread.messages.length - 1] || null;
+}
+
+function sortedDmThreads() {
+  return state.messages.threads
+    .slice()
+    .sort((a, b) => Number(lastDmMessage(b)?.timestamp || 0) - Number(lastDmMessage(a)?.timestamp || 0));
+}
+
+function activeDmThread() {
+  return state.messages.threads.find((thread) => thread.threadId === state.messages.activeThreadId) || null;
+}
+
+function setMessagesTitle(text) {
+  const title = document.querySelector(".messages-headbar span");
+  if (title) title.textContent = text;
+}
+
+function renderMessageInbox() {
+  if (!state.perf.loaded.messages || state.perf.activeTab !== "profile") return;
+  const inbox = document.querySelector("[data-message-inbox]");
+  const threadView = document.querySelector("[data-dm-thread]");
+  const compose = document.querySelector("[data-dm-form]");
+  const back = document.querySelector("[data-message-back]");
+  if (!inbox) return;
+
+  state.messages.activeThreadId = "";
+  setMessagesTitle("Neuro Messages");
+  inbox.hidden = false;
+  if (threadView) threadView.hidden = true;
+  if (compose) compose.hidden = true;
+  if (back) back.hidden = true;
+  inbox.replaceChildren();
+
+  sortedDmThreads().forEach((thread) => {
+    const last = lastDmMessage(thread);
+    const row = document.createElement("button");
+    row.type = "button";
+    row.className = "dm-row";
+    row.dataset.messageThread = thread.threadId;
+    row.innerHTML = `
+      <img alt="">
+      <span class="dm-row-copy">
+        <header><strong></strong><time></time></header>
+        <small></small>
+      </span>
+      <i hidden></i>`;
+    row.querySelector("img").src = avatarPath(thread.avatar);
+    row.querySelector("img").alt = thread.participantName;
+    row.querySelector("strong").textContent = thread.participantName;
+    row.querySelector("time").textContent = last ? timeAgo(last.timestamp) : "now";
+    row.querySelector("small").textContent = last?.message_text || "No messages yet.";
+    const unread = row.querySelector("i");
+    if (thread.unread > 0) {
+      unread.hidden = false;
+      unread.textContent = thread.unread > 9 ? "9+" : String(thread.unread);
+    }
+    inbox.append(row);
+  });
+}
+
+function renderMessageThread() {
+  const thread = activeDmThread();
+  const inbox = document.querySelector("[data-message-inbox]");
+  const threadView = document.querySelector("[data-dm-thread]");
+  const compose = document.querySelector("[data-dm-form]");
+  const back = document.querySelector("[data-message-back]");
+  if (!thread || !threadView) return;
+
+  setMessagesTitle(thread.participantName);
+  if (inbox) inbox.hidden = true;
+  threadView.hidden = false;
+  if (compose) compose.hidden = thread.participantUuid === "system";
+  if (back) back.hidden = false;
+  threadView.replaceChildren();
+
+  thread.messages.forEach((message) => {
+    const row = document.createElement("article");
+    const mine = message.sender_uuid === currentOwnerUuid();
+    row.className = mine ? "dm-message self" : "dm-message";
+    row.innerHTML = "<header><strong></strong><time></time></header><p></p>";
+    row.querySelector("strong").textContent = mine ? "You" : message.sender_name;
+    row.querySelector("time").textContent = timeAgo(message.timestamp);
+    row.querySelector("p").textContent = message.message_text;
+    threadView.append(row);
+  });
+  threadView.scrollTop = threadView.scrollHeight;
+}
+
+function openMessageThread(threadId) {
+  const thread = state.messages.threads.find((item) => item.threadId === threadId);
+  if (!thread) return;
+  state.messages.activeThreadId = thread.threadId;
+  thread.unread = 0;
+  thread.messages.forEach((message) => {
+    if (message.sender_uuid !== currentOwnerUuid()) message.read = true;
+  });
+  saveMessagesLocal();
+  renderMessageThread();
+}
+
+function closeMessageThread() {
+  state.messages.activeThreadId = "";
+  renderMessageInbox();
+}
+
+function sendPrivateMessage(text) {
+  const thread = activeDmThread();
+  if (!thread || thread.participantUuid === "system") return;
+  const message = normalizeDmMessage({
+    message_id: `msg-${Date.now()}-${Math.round(Math.random() * 10000)}`,
+    sender_uuid: currentOwnerUuid(),
+    receiver_uuid: thread.participantUuid,
+    sender_name: state.profile.name || "Neuro Resident",
+    receiver_name: thread.participantName,
+    message_text: text,
+    timestamp: Date.now(),
+    read: true
+  }, thread);
+  thread.messages.push(message);
+  saveMessagesLocal();
+  renderMessageThread();
+  if (liveBridge) sendBridge("dm-send", JSON.stringify({ thread_id: thread.threadId, ...message }));
 }
 
 function loadHome() {
@@ -799,13 +679,12 @@ function loadHome() {
 
 function loadProfile() {
   state.perf.loaded.profile = true;
-  state.perf.loaded.feed = true;
+  state.perf.loaded.messages = true;
   renderProfile();
-  renderFeed();
+  loadMessagesLocal();
+  if (state.messages.activeThreadId) renderMessageThread();
+  else renderMessageInbox();
   requestStoredProfile();
-  if (liveBridge) {
-    refreshFeed();
-  }
 }
 
 function loadWallet() {
@@ -1091,28 +970,15 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const feedAction = event.target.closest("[data-feed-action]");
-  if (feedAction) {
-    const post = feedAction.closest("[data-post-id]");
-    if (post) handleFeedAction(post.dataset.postId, feedAction.dataset.feedAction);
+  const messageRow = event.target.closest("[data-message-thread]");
+  if (messageRow) {
+    openMessageThread(messageRow.dataset.messageThread);
     return;
   }
 
-  const feedRefresh = event.target.closest("[data-feed-refresh]");
-  if (feedRefresh) {
-    refreshFeed();
-    return;
-  }
-
-  const photoToggle = event.target.closest("[data-photo-toggle]");
-  if (photoToggle) {
-    const form = photoToggle.closest("[data-message-form]");
-    const panel = form?.querySelector("[data-photo-panel]");
-    if (panel) {
-      panel.hidden = !panel.hidden;
-      photoToggle.classList.toggle("is-active", !panel.hidden);
-      if (!panel.hidden) panel.querySelector("input")?.focus();
-    }
+  const messageBack = event.target.closest("[data-message-back]");
+  if (messageBack) {
+    closeMessageThread();
     return;
   }
 
@@ -1136,34 +1002,13 @@ document.addEventListener("submit", (event) => {
     return;
   }
 
-  const commentForm = event.target.closest("[data-comment-form]");
-  if (commentForm) {
+  const dmForm = event.target.closest("[data-dm-form]");
+  if (dmForm) {
     event.preventDefault();
-    const panel = commentForm.closest("[data-comment-post-id]");
-    const input = commentForm.elements.comment;
+    const input = dmForm.elements.message;
     const text = String(input?.value || "").trim();
-    if (panel && text) addFeedComment(panel.dataset.commentPostId, text);
+    if (text) sendPrivateMessage(text);
     if (input) input.value = "";
-    return;
-  }
-
-  const messageForm = event.target.closest("[data-message-form]");
-  if (messageForm) {
-    event.preventDefault();
-    const input = messageForm.elements.message;
-    const imageInput = messageForm.elements.image;
-    const text = String(input?.value || "").trim();
-    const image = String(imageInput?.value || "").trim();
-    if (!text && !image) return;
-    createFeedPost(text || "Shared an image.", image);
-    input.value = "";
-    if (imageInput) {
-      imageInput.value = "";
-      const panel = messageForm.querySelector("[data-photo-panel]");
-      const photoToggle = messageForm.querySelector("[data-photo-toggle]");
-      if (panel) panel.hidden = true;
-      photoToggle?.classList.remove("is-active");
-    }
   }
 });
 
@@ -1179,7 +1024,6 @@ window.addEventListener("message", (event) => {
   pendingBridge.delete(tick);
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
   if (handleProfileResponse(body)) return;
-  if (handleFeedResponse(body)) return;
   if (handleWalletResponse(body)) return;
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
