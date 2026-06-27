@@ -1155,24 +1155,6 @@ h1 {
   font-weight: 420;
 }
 
-.feed-head button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 34px;
-  padding: 0 14px;
-  border: 1px solid rgba(40, 161, 252, 0.34);
-  border-radius: 4px;
-  background: rgba(0, 10, 18, 0.5);
-  color: var(--text);
-  cursor: pointer;
-}
-
-.feed-head button svg {
-  width: 18px;
-  height: 18px;
-}
-
 .messages-head small {
   color: var(--green);
   font-size: 18px;
@@ -1688,8 +1670,7 @@ body.perf-lite .stat-panel strong {
 body.perf-lite .brand-mark img,
 body.perf-lite .zodiac-mark,
 body.perf-lite .level-mark svg,
-body.perf-lite .pulse-line,
-body.perf-lite .feed-image {
+body.perf-lite .pulse-line {
   filter: none;
 }
 
@@ -1699,7 +1680,6 @@ body.perf-lite .hud-shell {
 
 body.perf-lite .nav-button,
 body.perf-lite .profile-edit,
-body.perf-lite .feed-post,
 body.perf-lite .wallet-list article,
 body.perf-lite .profile-grid article {
   box-shadow: none;
