@@ -675,11 +675,27 @@ h1 {
 
 .screen-wallet h2,
 .screen-settings h2 {
-  margin-bottom: 28px;
+  margin-bottom: 12px;
   text-align: center;
   color: var(--blue);
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.wallet-status {
+  margin: 0 0 20px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 20px;
+  text-shadow: var(--shadow);
+}
+
+.wallet-status.is-live {
+  color: var(--green);
+}
+
+.wallet-status.is-waiting {
+  color: var(--amber);
 }
 
 .wallet-list,
@@ -708,6 +724,10 @@ h1 {
   background: transparent;
   color: var(--blue);
   cursor: pointer;
+}
+
+.wallet-list strong {
+  color: var(--green);
 }
 
 .wide-action,

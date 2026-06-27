@@ -8,6 +8,12 @@ const state = {
     checking: false,
     savings: false
   },
+  wallet: {
+    checking: null,
+    savings: null,
+    live: false,
+    retryTimer: 0
+  },
   profile: {
     title: "Resident",
     name: "Neuro Resident",
@@ -65,6 +71,71 @@ function sendBridge(op, text = "") {
   window.parent.postMessage(`${BRIDGE_PREFIX}${query}`, "*");
   if (op !== "stats") logBridge(`sent: ${op}`);
   return tick;
+}
+
+function gcMoney(value) {
+  const amount = Number.parseInt(value, 10);
+  if (!Number.isFinite(amount)) return "Syncing";
+  return `GC ${amount.toLocaleString("en-US")}`;
+}
+
+function renderWalletStatus(text, live = false) {
+  const status = document.querySelector("[data-wallet-status]");
+  if (!status) return;
+  status.textContent = text;
+  status.classList.toggle("is-live", live);
+  status.classList.toggle("is-waiting", !live);
+}
+
+function renderWallet() {
+  Object.entries({
+    checking: state.wallet.checking,
+    savings: state.wallet.savings
+  }).forEach(([name, value]) => {
+    const balance = document.querySelector(`[data-balance="${name}"]`);
+    if (!balance) return;
+    const text = gcMoney(value);
+    balance.dataset.original = text;
+    balance.textContent = state.hiddenBalances[name] ? "Hidden" : text;
+  });
+
+  renderWalletStatus(state.wallet.live ? "Live wallet synced from Second Life" : "Waiting for Second Life wallet bridge", state.wallet.live);
+}
+
+function requestWalletBalance() {
+  if (!liveBridge) {
+    renderWalletStatus("Open in Second Life to sync live G-Coin balances", false);
+    return;
+  }
+  renderWalletStatus("Requesting live G-Coin balance...", false);
+  sendBridge("wallet-balance");
+}
+
+function handleWalletResponse(body) {
+  if (body.startsWith("WALLET|")) {
+    const parts = body.split("|");
+    state.wallet.checking = Number.parseInt(parts[1], 10);
+    state.wallet.savings = Number.parseInt(parts[2], 10);
+    state.wallet.live = true;
+    renderWallet();
+    return true;
+  }
+
+  if (body.startsWith("WALLET_SYNC_REQUESTED")) {
+    renderWalletStatus("Wallet sync requested. Waiting for G-Coin reply...", false);
+    window.clearTimeout(state.wallet.retryTimer);
+    state.wallet.retryTimer = window.setTimeout(() => {
+      if (document.querySelector("#screen-wallet")?.classList.contains("is-active")) sendBridge("wallet-balance");
+    }, 1200);
+    return true;
+  }
+
+  if (body.startsWith("WALLET_")) {
+    renderWalletStatus(body.replaceAll("_", " "), false);
+    return true;
+  }
+
+  return false;
 }
 
 function loadSavedProfile() {
@@ -175,6 +246,7 @@ function showScreen(name) {
   });
 
   document.querySelector(".hud-shell")?.setAttribute("data-screen", name);
+  if (name === "wallet") requestWalletBalance();
 }
 
 function toggleBalance(name) {
@@ -411,6 +483,12 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const walletRefresh = event.target.closest("[data-wallet-refresh]");
+  if (walletRefresh) {
+    requestWalletBalance();
+    return;
+  }
+
   const eyeButton = event.target.closest("[data-wallet-eye]");
   if (eyeButton) {
     toggleBalance(eyeButton.dataset.walletEye);
@@ -447,6 +525,7 @@ window.addEventListener("message", (event) => {
   const op = pendingBridge.get(tick) || tick;
   pendingBridge.delete(tick);
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
+  if (handleWalletResponse(body)) return;
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
   }
@@ -459,6 +538,7 @@ document.querySelectorAll("[data-balance]").forEach((balance) => {
 setupStats();
 loadSavedProfile();
 renderProfile();
+renderWallet();
 setupClock();
 renderStats(state.stats);
 startLiveStats();

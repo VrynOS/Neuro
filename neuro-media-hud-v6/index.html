@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-2">
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-wallet-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -101,15 +101,16 @@
 
     <section class="screen screen-wallet" id="screen-wallet">
       <h2>G Coin Wallet</h2>
+      <p class="wallet-status" data-wallet-status>Waiting for Second Life wallet bridge</p>
       <section class="wallet-list">
-        <article><div><span>Checking</span><small>Eye to hide</small></div><button type="button" data-wallet-eye="checking">Eye</button><strong data-balance="checking">GC 3,310</strong></article>
-        <article><div><span>Savings</span><small>Eye to hide</small></div><button type="button" data-wallet-eye="savings">Eye</button><strong data-balance="savings">GC 12,500</strong></article>
+        <article><div><span>Checking</span><small>Live G-Coin account</small></div><button type="button" data-wallet-eye="checking">Hide</button><strong data-balance="checking">Syncing</strong></article>
+        <article><div><span>Savings</span><small>Live G-Coin account</small></div><button type="button" data-wallet-eye="savings">Hide</button><strong data-balance="savings">Syncing</strong></article>
       </section>
-      <button class="wide-action" type="button" data-command="wallet">Balance / Refresh</button>
+      <button class="wide-action" type="button" data-wallet-refresh>Balance / Refresh</button>
       <section class="wallet-actions">
         <button type="button" data-command="wallet-request">Request</button>
         <button type="button" data-command="wallet-transfer">Transfer</button>
-        <button type="button" data-command="wallet-transactions">Transactions</button>
+        <button type="button" data-command="wallet-send">Send</button>
       </section>
     </section>
 
@@ -206,6 +207,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-profile-2"></script>
+  <script src="assets/js/app.js?v=neuro-wallet-1"></script>
 </body>
 </html>
