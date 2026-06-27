@@ -22,7 +22,8 @@ const state = {
     location: "Not Set",
     avatar: "01",
     favoriteColor: "#28a1fc",
-    zodiac: "sagittarius"
+    zodiac: "sagittarius",
+    savedInHud: false
   },
   stats: {
     hunger: 82,
@@ -141,10 +142,29 @@ function handleWalletResponse(body) {
 function loadSavedProfile() {
   try {
     const saved = JSON.parse(window.localStorage.getItem("neuroProfile") || "{}");
-    state.profile = { ...state.profile, ...saved };
+    applySavedProfile(saved, false);
   } catch {
     window.localStorage.removeItem("neuroProfile");
   }
+}
+
+function persistProfileLocal() {
+  try {
+    window.localStorage.setItem("neuroProfile", JSON.stringify(state.profile));
+  } catch {
+    // Second Life media can deny browser storage; the LSL gateway is the durable save path.
+  }
+}
+
+function applySavedProfile(profile, fromHud = false) {
+  if (!profile || typeof profile !== "object") return;
+  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac"];
+  allowed.forEach((key) => {
+    if (profile[key] !== undefined && profile[key] !== null && profile[key] !== "") {
+      state.profile[key] = profile[key];
+    }
+  });
+  if (fromHud) state.profile.savedInHud = true;
 }
 
 function renderProfile() {
@@ -172,6 +192,12 @@ function renderProfile() {
   document.querySelectorAll("[data-zodiac-mark]").forEach((node) => {
     node.src = zodiacPath(zodiac);
     node.alt = zodiacLabel;
+  });
+
+  document.querySelectorAll("[data-profile-story]").forEach((node) => {
+    const title = state.profile.title || "Resident";
+    const location = state.profile.location && state.profile.location !== "Not Set" ? state.profile.location : "Location unset";
+    node.textContent = `${title} / ${location}`;
   });
 
   document.querySelectorAll("[data-avatar-choice]").forEach((button) => {
@@ -216,9 +242,30 @@ function saveProfileFromForm(form) {
   });
 
   state.profile = next;
-  window.localStorage.setItem("neuroProfile", JSON.stringify(state.profile));
+  persistProfileLocal();
   renderProfile();
+  if (liveBridge) sendBridge("profile-save", JSON.stringify(state.profile));
   closeProfileEditor();
+}
+
+function requestStoredProfile() {
+  if (liveBridge) sendBridge("profile-load");
+}
+
+function handleProfileResponse(body) {
+  if (!body.startsWith("PROFILE|")) return false;
+
+  const payload = body.substring(8);
+  if (!payload || payload === "{}") return true;
+
+  try {
+    applySavedProfile(JSON.parse(payload), true);
+    persistProfileLocal();
+    renderProfile();
+  } catch {
+    logBridge("bad profile payload");
+  }
+  return true;
 }
 
 function sendLocalMessage(text) {
@@ -382,6 +429,8 @@ function renderStats(stats) {
 }
 
 function applyProfileSnapshot(snapshot) {
+  if (state.profile.savedInHud) return;
+
   const updates = {
     title: snapshotValue(snapshot, "title", state.profile.title) || state.profile.title,
     name: snapshotValue(snapshot, "displayName", state.profile.name) || state.profile.name,
@@ -525,6 +574,7 @@ window.addEventListener("message", (event) => {
   const op = pendingBridge.get(tick) || tick;
   pendingBridge.delete(tick);
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
+  if (handleProfileResponse(body)) return;
   if (handleWalletResponse(body)) return;
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
@@ -541,4 +591,5 @@ renderProfile();
 renderWallet();
 setupClock();
 renderStats(state.stats);
+requestStoredProfile();
 startLiveStats();
