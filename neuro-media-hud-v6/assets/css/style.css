@@ -1347,6 +1347,37 @@ h1 {
   transform: scale(0.96);
 }
 
+.feed-repost {
+  border-color: rgba(79, 255, 187, 0.24);
+  background: rgba(0, 15, 18, 0.42);
+}
+
+.repost-original {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(40, 161, 252, 0.2);
+  border-radius: 6px;
+  background: rgba(0, 8, 14, 0.42);
+}
+
+.repost-original[hidden] {
+  display: none;
+}
+
+.repost-original strong {
+  color: var(--blue);
+  font-size: 14px;
+}
+
+.repost-original p {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.25;
+}
+
 .feed-comments {
   display: block;
   max-width: 100% !important;

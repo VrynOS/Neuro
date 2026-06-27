@@ -418,6 +418,7 @@ function normalizePost(post) {
   const now = Date.now();
   const rawCreatedAt = Number(post.createdAt || now);
   const createdAt = rawCreatedAt > 0 && rawCreatedAt < 100000000000 ? rawCreatedAt * 1000 : rawCreatedAt;
+  const type = String(post.type || "post");
   const commentItems = Array.isArray(post.commentItems)
     ? post.commentItems.map(normalizeComment).filter((comment) => comment.message)
     : [];
@@ -427,6 +428,13 @@ function normalizePost(post) {
   );
   return {
     id: String(post.id || `neuro-post-${now}-${Math.round(Math.random() * 10000)}`),
+    type,
+    originalPostId: String(post.originalPostId || post.original_post_id || ""),
+    repostOwnerUuid: String(post.repostOwnerUuid || post.repost_owner_uuid || ""),
+    repostOwnerName: String(post.repostOwnerName || post.repost_owner_name || ""),
+    originalOwnerName: String(post.originalOwnerName || post.original_owner_name || ""),
+    originalMessage: String(post.originalMessage || post.original_message || ""),
+    originalPost: post.originalPost ? normalizePost({ ...post.originalPost, type: "post" }) : null,
     ownerUuid: String(post.ownerUuid || currentOwnerUuid()),
     name: String(post.name || state.profile.name || "Neuro Resident"),
     handle: String(post.handle || currentHandle()),
@@ -456,8 +464,48 @@ function mergeLocalFeedState(posts) {
       reposted: Boolean(local.reposted),
       commentOpen: Boolean(local.commentOpen),
       commentItems: post.commentItems.length ? post.commentItems : localComments,
-      comments: Math.max(post.comments, local.comments || 0, localComments.length)
+      comments: Math.max(post.comments, local.comments || 0, localComments.length),
+      originalPost: post.originalPost || local.originalPost || null
     };
+  });
+}
+
+function originalForRepost(post) {
+  const original = post.type === "repost" && post.originalPost ? post.originalPost : post;
+  return normalizePost({
+    ...original,
+    type: "post",
+    reposted: false,
+    commentOpen: false
+  });
+}
+
+function createRepostEntry(originalPost) {
+  const original = originalForRepost(originalPost);
+  const ownerName = state.profile.name || "Neuro Resident";
+  const repostId = `repost-${Date.now()}-${Math.round(Math.random() * 10000)}`;
+  return normalizePost({
+    id: repostId,
+    repost_id: repostId,
+    type: "repost",
+    originalPostId: original.id,
+    original_post_id: original.id,
+    repostOwnerUuid: currentOwnerUuid(),
+    repost_owner_uuid: currentOwnerUuid(),
+    repostOwnerName: ownerName,
+    repost_owner_name: ownerName,
+    originalOwnerName: original.name,
+    original_owner_name: original.name,
+    originalMessage: original.message,
+    original_message: original.message,
+    timestamp: Date.now(),
+    originalPost: original,
+    ownerUuid: currentOwnerUuid(),
+    name: ownerName,
+    handle: currentHandle(),
+    avatar: state.profile.avatar,
+    message: `${ownerName} reposted ${original.name}`,
+    createdAt: Date.now()
   });
 }
 
@@ -469,7 +517,7 @@ function renderFeed() {
   state.feed.posts.slice(0, 12).forEach((rawPost) => {
     const post = normalizePost(rawPost);
     const card = document.createElement("article");
-    card.className = "feed-post";
+    card.className = post.type === "repost" ? "feed-post feed-repost" : "feed-post";
     card.dataset.postId = post.id;
     card.dataset.ownerUuid = post.ownerUuid;
     card.innerHTML = `
@@ -477,6 +525,10 @@ function renderFeed() {
       <div class="feed-post-body">
         <header><strong></strong><span></span><time></time></header>
         <p></p>
+        <div class="repost-original" hidden>
+          <strong></strong>
+          <p></p>
+        </div>
         <img class="feed-image" alt="" hidden>
         <footer>
           <button type="button" data-feed-action="like" aria-label="Like post"><svg><use href="#icon-like"></use></svg><span></span></button>
@@ -490,6 +542,18 @@ function renderFeed() {
     card.querySelector("header span").textContent = post.handle;
     card.querySelector("header time").textContent = timeAgo(post.createdAt);
     card.querySelector("p").textContent = post.message;
+    const originalBox = card.querySelector(".repost-original");
+    if (post.type === "repost") {
+      const original = post.originalPost || originalForRepost({
+        id: post.originalPostId,
+        name: post.originalOwnerName || "Original Resident",
+        message: post.originalMessage
+      });
+      originalBox.hidden = false;
+      originalBox.querySelector("strong").textContent = original.name;
+      originalBox.querySelector("p").textContent = original.message;
+      card.querySelector("footer").hidden = true;
+    }
     const image = card.querySelector(".feed-image");
     const src = postImageSrc(post.imageUrl);
     if (image && src) {
@@ -577,9 +641,21 @@ function handleFeedAction(postId, action) {
     renderFeed();
     return;
   } else if (action === "repost") {
-    post.reposted = !post.reposted;
-    active = post.reposted;
-    post.reposts = Math.max(0, post.reposts + (post.reposted ? 1 : -1));
+    if (post.reposted) return;
+    post.reposted = true;
+    active = true;
+    post.reposts = Math.max(0, post.reposts + 1);
+    const repost = createRepostEntry(post);
+    state.feed.posts.unshift(repost);
+    sendFeedBridge(action, {
+      postId,
+      ownerUuid: post.ownerUuid,
+      active,
+      repost,
+      originalPost: originalForRepost(post)
+    });
+    renderFeed();
+    return;
   }
 
   sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid, active });
