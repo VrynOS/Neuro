@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-2">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -125,20 +125,17 @@
               <small data-profile-field="location">Not Set</small>
             </div>
             <div class="profile-zodiac">
-              <span class="zodiac-mark" data-zodiac-mark aria-hidden="true"></span>
-              <b data-profile-field="zodiac">Sagittarius</b>
+              <img class="zodiac-mark" src="assets/img/zodiac/sagittarius.png" alt="" data-zodiac-mark>
             </div>
           </div>
 
           <div class="profile-actions">
-            <button class="profile-edit" type="button" data-profile-edit-open><svg><use href="#icon-edit"></use></svg>Edit Profile</button>
-            <button class="profile-edit" type="button" data-command="profile"><svg><use href="#icon-id"></use></svg>Show Profile</button>
+            <button class="profile-edit" type="button" data-profile-edit-open><svg><use href="#icon-edit"></use></svg>Edit</button>
+            <button class="profile-edit" type="button" data-command="edit-profile"><svg><use href="#icon-id"></use></svg>LSL Setup</button>
           </div>
 
           <section class="profile-grid">
-            <article><span>Favorite Color</span><strong data-profile-field="favoriteColor">#28a1fc</strong></article>
-            <article><span>Zodiac</span><strong data-profile-field="zodiac">Sagittarius</strong></article>
-            <article><span>Profile Status</span><strong data-profile-ready>Ready</strong></article>
+            <article><span>Profile Status</span><strong data-profile-status>Offline</strong></article>
           </section>
         </section>
 
@@ -146,22 +143,15 @@
           <header class="messages-head">
             <div>
               <span>Messages</span>
-              <strong data-active-friend>Nova</strong>
+              <strong>Second Life</strong>
             </div>
-            <small>Online 5</small>
+            <small data-bridge-status>Offline</small>
           </header>
-          <div class="friend-strip" aria-label="Online friends">
-            <button class="friend-chip is-active" type="button" data-friend="Nova"><img src="assets/img/avatars/avatar-02.png" alt=""><span>Nova</span></button>
-            <button class="friend-chip" type="button" data-friend="Echo"><img src="assets/img/avatars/avatar-07.png" alt=""><span>Echo</span></button>
-            <button class="friend-chip" type="button" data-friend="Lira"><img src="assets/img/avatars/avatar-09.png" alt=""><span>Lira</span></button>
-            <button class="friend-chip" type="button" data-friend="Mika"><img src="assets/img/avatars/avatar-04.png" alt=""><span>Mika</span></button>
-          </div>
           <section class="message-thread" data-message-thread>
-            <article class="friend"><span>Nova</span><p>Meet me by the social deck when your HUD syncs.</p></article>
-            <article class="self"><span>You</span><p>On my way. Checking profile first.</p></article>
+            <article class="system"><span>SL Bridge</span><p>Second Life messages will appear here when the LSL bridge sends them.</p></article>
           </section>
           <form class="message-compose" data-message-form>
-            <input type="text" name="message" autocomplete="off" placeholder="Message online friend">
+            <input type="text" name="message" autocomplete="off" placeholder="Send message through HUD bridge">
             <button type="submit" aria-label="Send message"><svg><use href="#icon-send"></use></svg></button>
           </form>
         </section>
@@ -180,7 +170,7 @@
               <label>Title<input name="title" type="text" maxlength="24"></label>
               <label>Name<input name="name" type="text" maxlength="32"></label>
               <label>Age<input name="age" type="text" maxlength="16"></label>
-              <label>Sex<input name="sex" type="text" maxlength="16"></label>
+              <label>Sex<select name="sex"><option>Not Set</option><option>Female</option><option>Male</option><option>Nonbinary</option></select></label>
               <label>Location<select name="location"><option>Not Set</option><option>Chi-Core</option><option>Eden Palms</option></select></label>
               <label class="color-field">Favorite Color<input name="favoriteColor" type="color" value="#28a1fc"></label>
               <label>Zodiac<select name="zodiac"><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
@@ -216,6 +206,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-profile-1"></script>
+  <script src="assets/js/app.js?v=neuro-profile-2"></script>
 </body>
 </html>

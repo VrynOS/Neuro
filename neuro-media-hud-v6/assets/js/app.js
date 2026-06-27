@@ -46,21 +46,6 @@ const zodiacLabels = {
   aquarius: "Aquarius",
   pisces: "Pisces"
 };
-const zodiacGlyphs = {
-  aries: "♈",
-  taurus: "♉",
-  gemini: "♊",
-  cancer: "♋",
-  leo: "♌",
-  virgo: "♍",
-  libra: "♎",
-  scorpio: "♏",
-  sagittarius: "♐",
-  capricorn: "♑",
-  aquarius: "♒",
-  pisces: "♓"
-};
-
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
   if (!log) return;
@@ -114,21 +99,23 @@ function renderProfile() {
   });
 
   document.querySelectorAll("[data-zodiac-mark]").forEach((node) => {
-    node.textContent = zodiacGlyphs[zodiac] || zodiacGlyphs.sagittarius;
-    node.style.webkitMaskImage = "none";
-    node.style.maskImage = "none";
+    node.src = zodiacPath(zodiac);
+    node.alt = zodiacLabel;
   });
 
   document.querySelectorAll("[data-avatar-choice]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.avatarChoice === state.profile.avatar);
   });
 
-  const ready = ["title", "name", "age", "sex", "location"].every((key) => {
-    const value = String(state.profile[key] || "").trim();
-    return value && value !== "Not Set";
+  renderConnectionStatus(liveBridge ? "Online" : "Offline");
+}
+
+function renderConnectionStatus(status) {
+  document.querySelectorAll("[data-profile-status], [data-bridge-status]").forEach((node) => {
+    node.textContent = status;
+    node.classList.toggle("is-online", status === "Online");
+    node.classList.toggle("is-offline", status !== "Online");
   });
-  const readyNode = document.querySelector("[data-profile-ready]");
-  if (readyNode) readyNode.textContent = ready ? "Ready" : "Setup Needed";
 }
 
 function openProfileEditor() {
@@ -167,6 +154,8 @@ function sendLocalMessage(text) {
   const thread = document.querySelector("[data-message-thread]");
   if (!thread) return;
 
+  if (liveBridge) sendBridge("message", text);
+
   const message = document.createElement("article");
   message.className = "self";
   message.innerHTML = `<span>You</span><p></p>`;
@@ -174,14 +163,6 @@ function sendLocalMessage(text) {
   thread.append(message);
 
   while (thread.children.length > 4) thread.firstElementChild?.remove();
-}
-
-function selectFriend(name) {
-  document.querySelectorAll("[data-friend]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.friend === name);
-  });
-  const active = document.querySelector("[data-active-friend]");
-  if (active) active.textContent = name;
 }
 
 function showScreen(name) {
@@ -418,12 +399,6 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const friend = event.target.closest("[data-friend]");
-  if (friend) {
-    selectFriend(friend.dataset.friend);
-    return;
-  }
-
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
@@ -464,6 +439,7 @@ document.addEventListener("submit", (event) => {
 window.addEventListener("message", (event) => {
   const data = String(event.data || "");
   if (!data.startsWith("NEURO_GATEWAY_ACK|")) return;
+  renderConnectionStatus("Online");
   const parts = data.split("|");
   const tick = parts[1] || "ack";
   const status = parts[2] || "?";
