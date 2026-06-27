@@ -13,7 +13,15 @@
   --amber: #ffc85c;
   --purple: #8c6dff;
   --shadow: 0 4px 18px rgba(0, 0, 0, 0.82);
-  --hud-font: "Ravenscroft", "Neuropol X", "Neuropol X Free", "NeuropolXRg-Regular", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
+  --hud-font: "Bai Jamjuree HUD", "Ravenscroft", "Neuropol X", "Neuropol X Free", "NeuropolXRg-Regular", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
+}
+
+@font-face {
+  font-family: "Bai Jamjuree HUD";
+  src: url("../fonts/bai-jamjuree-bold-italic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
