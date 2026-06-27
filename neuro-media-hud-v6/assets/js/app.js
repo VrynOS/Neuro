@@ -28,6 +28,52 @@ const state = {
     xpGoal: 30000,
     savedInHud: false
   },
+  feed: {
+    posts: [
+      {
+        id: "neuro-post-eden-palms-001",
+        ownerUuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
+        name: "Jade Rain",
+        handle: "@jaderain.sl",
+        avatar: "03",
+        message: "Sunset over Eden Palms never gets old. Grateful for this view.",
+        createdAt: Date.now() - 12 * 60 * 1000,
+        likes: 24,
+        comments: 6,
+        reposts: 3,
+        liked: false,
+        reposted: false
+      },
+      {
+        id: "neuro-post-update-002",
+        ownerUuid: "0d6b4a61-393b-43c9-9f96-8e6bc7858d12",
+        name: "Kai Mercer",
+        handle: "@kaimercer.sl",
+        avatar: "07",
+        message: "Neuro Tec HUD v2.3 is live. Smooth performance and new wallet tools.",
+        createdAt: Date.now() - 45 * 60 * 1000,
+        likes: 37,
+        comments: 12,
+        reposts: 8,
+        liked: false,
+        reposted: false
+      },
+      {
+        id: "neuro-post-chicore-003",
+        ownerUuid: "6f830df5-1300-4a7c-b7e3-606929aa0a52",
+        name: "Lena Voss",
+        handle: "@lenavoss.sl",
+        avatar: "10",
+        message: "Chi-Core night market is open. Good music, good light, good people.",
+        createdAt: Date.now() - 60 * 60 * 1000,
+        likes: 18,
+        comments: 4,
+        reposts: 2,
+        liked: false,
+        reposted: false
+      }
+    ]
+  },
   stats: {
     hunger: 82,
     thirst: 64,
@@ -57,18 +103,18 @@ const zodiacLabels = {
   pisces: "Pisces"
 };
 const zodiacMeta = {
-  aries: { element: "Fire", traits: "Bold \u2022 Driven \u2022 Direct", line: "Moves first. Learns by doing." },
-  taurus: { element: "Earth", traits: "Grounded \u2022 Loyal \u2022 Steady", line: "Built for patience. Drawn to comfort." },
-  gemini: { element: "Air", traits: "Curious \u2022 Social \u2022 Quick", line: "Reads the room. Follows the spark." },
-  cancer: { element: "Water", traits: "Protective \u2022 Warm \u2022 Intuitive", line: "Feels deeply. Guards what matters." },
-  leo: { element: "Fire", traits: "Radiant \u2022 Proud \u2022 Creative", line: "Made to be seen. Led by heart." },
-  virgo: { element: "Earth", traits: "Precise \u2022 Helpful \u2022 Focused", line: "Finds the pattern. Refines the path." },
-  libra: { element: "Air", traits: "Balanced \u2022 Charming \u2022 Fair", line: "Seeks harmony. Shapes the room." },
-  scorpio: { element: "Water", traits: "Intense \u2022 Loyal \u2022 Determined", line: "Driven by purpose. Guided by intuition." },
-  sagittarius: { element: "Fire", traits: "Adventurous \u2022 Honest \u2022 Free", line: "Follows distance. Carries truth." },
-  capricorn: { element: "Earth", traits: "Disciplined \u2022 Ambitious \u2022 Patient", line: "Climbs with intent. Builds to last." },
-  aquarius: { element: "Air", traits: "Original \u2022 Visionary \u2022 Independent", line: "Thinks forward. Moves different." },
-  pisces: { element: "Water", traits: "Dreaming \u2022 Gentle \u2022 Empathic", line: "Feels the unseen. Softens the edge." }
+  aries: { element: "Fire", traits: "Bold \u2022 Driven \u2022 Fearless", line: "First through the door. Built for ignition." },
+  taurus: { element: "Earth", traits: "Grounded \u2022 Loyal \u2022 Sensual", line: "Steady under pressure. Drawn to beauty and comfort." },
+  gemini: { element: "Air", traits: "Curious \u2022 Social \u2022 Quick", line: "Reads the room fast. Carries two angles at once." },
+  cancer: { element: "Water", traits: "Protective \u2022 Intuitive \u2022 Tender", line: "Soft heart, strong shell. Home is the anchor." },
+  leo: { element: "Fire", traits: "Radiant \u2022 Creative \u2022 Proud", line: "Leads with presence. Powered by heart." },
+  virgo: { element: "Earth", traits: "Precise \u2022 Helpful \u2022 Observant", line: "Finds the pattern. Fixes what others miss." },
+  libra: { element: "Air", traits: "Balanced \u2022 Charming \u2022 Diplomatic", line: "Turns tension into grace. Seeks the elegant answer." },
+  scorpio: { element: "Water", traits: "Intense \u2022 Loyal \u2022 Private", line: "Deep waters, sharp instincts. Trust is earned." },
+  sagittarius: { element: "Fire", traits: "Adventurous \u2022 Honest \u2022 Free", line: "Chases distance and truth. Needs room to move." },
+  capricorn: { element: "Earth", traits: "Disciplined \u2022 Ambitious \u2022 Patient", line: "Climbs with intent. Builds the thing that lasts." },
+  aquarius: { element: "Air", traits: "Original \u2022 Visionary \u2022 Independent", line: "Future-facing mind. Refuses the default path." },
+  pisces: { element: "Water", traits: "Dreamy \u2022 Empathic \u2022 Artistic", line: "Feels the unseen. Turns emotion into signal." }
 };
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
@@ -167,15 +213,20 @@ function loadSavedProfile() {
 
 function persistProfileLocal() {
   try {
-    window.localStorage.setItem("neuroProfile", JSON.stringify(state.profile));
+    window.localStorage.setItem("neuroProfile", JSON.stringify(profileSavePayload()));
   } catch {
     // Second Life media can deny browser storage; the LSL gateway is the durable save path.
   }
 }
 
+function profileSavePayload() {
+  const { title, name, age, sex, location, avatar, favoriteColor, zodiac } = state.profile;
+  return { title, name, age, sex, location, avatar, favoriteColor, zodiac };
+}
+
 function applySavedProfile(profile, fromHud = false) {
   if (!profile || typeof profile !== "object") return;
-  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac", "level", "xpCurrent", "xpGoal"];
+  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac"];
   allowed.forEach((key) => {
     if (profile[key] !== undefined && profile[key] !== null && profile[key] !== "") {
       state.profile[key] = profile[key];
@@ -184,11 +235,21 @@ function applySavedProfile(profile, fromHud = false) {
   if (fromHud) state.profile.savedInHud = true;
 }
 
+function profileXp() {
+  const level = Math.max(1, Math.round(asNumber(state.profile.level, 1)));
+  const current = Math.max(0, Math.round(asNumber(state.profile.xpCurrent, 0)));
+  const goal = Math.max(1, Math.round(asNumber(state.profile.xpGoal, 1)));
+  const needed = Math.max(0, goal - current);
+  const percent = Math.max(0, Math.min(100, Math.round((current / goal) * 100)));
+  return { level, current, goal, needed, percent, verified: level >= 10 };
+}
+
 function renderProfile() {
   const accent = state.profile.favoriteColor || "#28a1fc";
   const zodiac = state.profile.zodiac || "sagittarius";
   const zodiacLabel = zodiacLabels[zodiac] || zodiacLabels.sagittarius;
   const zodiacInfo = zodiacMeta[zodiac] || zodiacMeta.sagittarius;
+  const xp = profileXp();
 
   document.querySelectorAll("[data-profile-field]").forEach((node) => {
     const key = node.dataset.profileField;
@@ -222,12 +283,20 @@ function renderProfile() {
   document.querySelectorAll("[data-zodiac-element]").forEach((node) => { node.textContent = zodiacInfo.element; });
   document.querySelectorAll("[data-zodiac-traits]").forEach((node) => { node.textContent = zodiacInfo.traits; });
   document.querySelectorAll("[data-zodiac-line]").forEach((node) => { node.textContent = zodiacInfo.line; });
-  document.querySelectorAll("[data-profile-level]").forEach((node) => { node.textContent = state.profile.level; });
-  document.querySelectorAll("[data-profile-xp-current]").forEach((node) => { node.textContent = Number(state.profile.xpCurrent || 0).toLocaleString("en-US"); });
-  document.querySelectorAll("[data-profile-xp-goal]").forEach((node) => { node.textContent = Number(state.profile.xpGoal || 1).toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-level]").forEach((node) => { node.textContent = xp.level; });
+  document.querySelectorAll("[data-profile-xp-current]").forEach((node) => { node.textContent = xp.current.toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-xp-goal]").forEach((node) => { node.textContent = xp.goal.toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-xp-needed]").forEach((node) => { node.textContent = xp.needed.toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-xp-percent]").forEach((node) => { node.textContent = `${xp.percent}%`; });
+  document.querySelectorAll("[data-profile-verified-note]").forEach((node) => {
+    node.textContent = xp.verified ? "Verified Member" : "Unlocks at Level 10";
+  });
+  document.querySelectorAll("[data-verified-badge]").forEach((node) => {
+    node.hidden = !xp.verified;
+    node.classList.toggle("is-unlocked", xp.verified);
+  });
   document.querySelectorAll("[data-profile-xp-bar]").forEach((node) => {
-    const percent = Math.max(0, Math.min(100, (Number(state.profile.xpCurrent || 0) / Math.max(1, Number(state.profile.xpGoal || 1))) * 100));
-    node.style.width = `${percent}%`;
+    node.style.width = `${xp.percent}%`;
   });
 
   document.querySelectorAll("[data-avatar-choice]").forEach((button) => {
@@ -274,7 +343,7 @@ function saveProfileFromForm(form) {
   state.profile = next;
   persistProfileLocal();
   renderProfile();
-  if (liveBridge) sendBridge("profile-save", JSON.stringify(state.profile));
+  if (liveBridge) sendBridge("profile-save", JSON.stringify(profileSavePayload()));
   closeProfileEditor();
 }
 
@@ -298,21 +367,139 @@ function handleProfileResponse(body) {
   return true;
 }
 
-function sendLocalMessage(text) {
+function timeAgo(time) {
+  const seconds = Math.max(1, Math.round((Date.now() - Number(time || Date.now())) / 1000));
+  if (seconds < 60) return "now";
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.round(hours / 24)}d`;
+}
+
+function currentOwnerUuid() {
+  return String(snapshotValue(state.lastSnapshot, "ownerUuid", snapshotValue(state.lastSnapshot, "avatarUuid", "local-web-profile")));
+}
+
+function currentHandle() {
+  return `@${String(state.profile.name || "you").toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 18) || "you"}.sl`;
+}
+
+function normalizePost(post) {
+  const now = Date.now();
+  return {
+    id: String(post.id || `neuro-post-${now}-${Math.round(Math.random() * 10000)}`),
+    ownerUuid: String(post.ownerUuid || currentOwnerUuid()),
+    name: String(post.name || state.profile.name || "Neuro Resident"),
+    handle: String(post.handle || currentHandle()),
+    avatar: String(post.avatar || state.profile.avatar || "01"),
+    message: String(post.message || ""),
+    createdAt: Number(post.createdAt || now),
+    likes: Math.max(0, Math.round(asNumber(post.likes, 0))),
+    comments: Math.max(0, Math.round(asNumber(post.comments, 0))),
+    reposts: Math.max(0, Math.round(asNumber(post.reposts, 0))),
+    liked: Boolean(post.liked),
+    reposted: Boolean(post.reposted)
+  };
+}
+
+function renderFeed() {
   const thread = document.querySelector("[data-message-thread]");
   if (!thread) return;
 
-  if (liveBridge) sendBridge("message", text);
+  thread.replaceChildren();
+  state.feed.posts.slice(0, 12).forEach((rawPost) => {
+    const post = normalizePost(rawPost);
+    const card = document.createElement("article");
+    card.className = "feed-post";
+    card.dataset.postId = post.id;
+    card.dataset.ownerUuid = post.ownerUuid;
+    card.innerHTML = `
+      <img alt="">
+      <div>
+        <header><strong></strong><span></span><time></time></header>
+        <p></p>
+        <footer>
+          <button type="button" data-feed-action="like"><svg><use href="#icon-like"></use></svg><span></span></button>
+          <button type="button" data-feed-action="comment"><svg><use href="#icon-comment"></use></svg><span></span></button>
+          <button type="button" data-feed-action="repost"><svg><use href="#icon-repost"></use></svg><span></span></button>
+        </footer>
+      </div>`;
+    card.querySelector("img").src = avatarPath(post.avatar);
+    card.querySelector("img").alt = post.name;
+    card.querySelector("header strong").textContent = post.name;
+    card.querySelector("header span").textContent = post.handle;
+    card.querySelector("header time").textContent = timeAgo(post.createdAt);
+    card.querySelector("p").textContent = post.message;
+    const buttons = card.querySelectorAll("footer button span");
+    buttons[0].textContent = post.likes;
+    buttons[1].textContent = post.comments;
+    buttons[2].textContent = post.reposts;
+    card.querySelector('[data-feed-action="like"]').classList.toggle("is-active", post.liked);
+    card.querySelector('[data-feed-action="repost"]').classList.toggle("is-active", post.reposted);
+    thread.append(card);
+  });
+}
 
-  const message = document.createElement("article");
-  message.className = "feed-post";
-  message.innerHTML = `<img alt=""><div><header><strong></strong><span>@you.sl</span><time>now</time></header><p></p><footer><span>0</span><span>0</span><span>Share</span></footer></div>`;
-  message.querySelector("img").src = avatarPath(state.profile.avatar);
-  message.querySelector("strong").textContent = state.profile.name || "You";
-  message.querySelector("p").textContent = text;
-  thread.append(message);
+function sendFeedBridge(op, payload = {}) {
+  if (!liveBridge) return;
+  sendBridge(`feed-${op}`, JSON.stringify(payload));
+}
 
-  while (thread.children.length > 3) thread.firstElementChild?.remove();
+function createFeedPost(text) {
+  const post = normalizePost({
+    message: text,
+    ownerUuid: currentOwnerUuid(),
+    name: state.profile.name || "Neuro Resident",
+    handle: currentHandle(),
+    avatar: state.profile.avatar,
+    createdAt: Date.now()
+  });
+
+  state.feed.posts.unshift(post);
+  sendFeedBridge("post", post);
+  renderFeed();
+}
+
+function handleFeedAction(postId, action) {
+  const post = state.feed.posts.find((item) => item.id === postId);
+  if (!post) return;
+
+  if (action === "like") {
+    post.liked = !post.liked;
+    post.likes = Math.max(0, post.likes + (post.liked ? 1 : -1));
+  } else if (action === "comment") {
+    post.comments += 1;
+  } else if (action === "repost") {
+    post.reposted = !post.reposted;
+    post.reposts = Math.max(0, post.reposts + (post.reposted ? 1 : -1));
+  }
+
+  sendFeedBridge(action, { postId, ownerUuid: post.ownerUuid });
+  renderFeed();
+}
+
+function refreshFeed() {
+  sendFeedBridge("refresh");
+  renderFeed();
+}
+
+function handleFeedResponse(body) {
+  if (body.startsWith("FEED_OK|")) return true;
+  if (!body.startsWith("FEED|")) return false;
+  const payload = body.substring(5);
+  if (!payload) return true;
+
+  try {
+    const posts = JSON.parse(payload);
+    if (Array.isArray(posts)) {
+      state.feed.posts = posts.map(normalizePost);
+      renderFeed();
+    }
+  } catch {
+    logBridge("bad feed payload");
+  }
+  return true;
 }
 
 function showScreen(name) {
@@ -403,6 +590,18 @@ function xpPercent(snapshot) {
   return Math.round(((xp % perLevel) / perLevel) * 100);
 }
 
+function profileXpFromSnapshot(snapshot) {
+  const rawLevel = snapshotValue(snapshot, "level", snapshotValue(snapshot, "xpLevel", state.profile.level));
+  const rawXp = snapshotValue(snapshot, "xpCurrent", snapshotValue(snapshot, "currentXp", snapshotValue(snapshot, "xp", state.profile.xpCurrent)));
+  const perLevel = Math.max(1, Math.round(asNumber(snapshotValue(snapshot, "xpPerLevel", 2500), 2500)));
+  const level = Math.max(1, Math.round(asNumber(rawLevel, state.profile.level)));
+  const totalXp = Math.max(0, Math.round(asNumber(rawXp, state.profile.xpCurrent)));
+  const current = Math.max(0, Math.round(asNumber(snapshotValue(snapshot, "xpIntoLevel", totalXp % perLevel), totalXp % perLevel)));
+  const goal = Math.max(1, Math.round(asNumber(snapshotValue(snapshot, "xpGoal", snapshotValue(snapshot, "xpNext", perLevel)), perLevel)));
+
+  return { level, xpCurrent: current, xpGoal: goal };
+}
+
 function statsFromSnapshot(snapshot) {
   return {
     hunger: clampStat(snapshotValue(snapshot, "stat.hunger", state.stats.hunger)),
@@ -475,11 +674,17 @@ function applyProfileSnapshot(snapshot) {
   renderProfile();
 }
 
+function applyXpSnapshot(snapshot) {
+  state.profile = { ...state.profile, ...profileXpFromSnapshot(snapshot) };
+  renderProfile();
+}
+
 function applySnapshot(snapshot) {
   if (!snapshot || snapshot.token !== "CDF_WORLD_V1") return;
   state.lastSnapshot = snapshot;
   renderStats(statsFromSnapshot(snapshot));
   applyProfileSnapshot(snapshot);
+  applyXpSnapshot(snapshot);
 }
 
 function handleStatsResponse(body) {
@@ -564,6 +769,19 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const feedAction = event.target.closest("[data-feed-action]");
+  if (feedAction) {
+    const post = feedAction.closest("[data-post-id]");
+    if (post) handleFeedAction(post.dataset.postId, feedAction.dataset.feedAction);
+    return;
+  }
+
+  const feedRefresh = event.target.closest("[data-feed-refresh]");
+  if (feedRefresh) {
+    refreshFeed();
+    return;
+  }
+
   const walletRefresh = event.target.closest("[data-wallet-refresh]");
   if (walletRefresh) {
     requestWalletBalance();
@@ -590,7 +808,7 @@ document.addEventListener("submit", (event) => {
     const input = messageForm.elements.message;
     const text = String(input?.value || "").trim();
     if (!text) return;
-    sendLocalMessage(text);
+    createFeedPost(text);
     input.value = "";
   }
 });
@@ -607,6 +825,7 @@ window.addEventListener("message", (event) => {
   pendingBridge.delete(tick);
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
   if (handleProfileResponse(body)) return;
+  if (handleFeedResponse(body)) return;
   if (handleWalletResponse(body)) return;
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
@@ -620,6 +839,7 @@ document.querySelectorAll("[data-balance]").forEach((balance) => {
 setupStats();
 loadSavedProfile();
 renderProfile();
+renderFeed();
 renderWallet();
 setupClock();
 renderStats(state.stats);

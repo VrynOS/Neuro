@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-feed-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-live-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -18,6 +18,10 @@
     <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16z"></path><path d="M13 7l4 4"></path></symbol>
     <symbol id="icon-id" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"></path><path d="M8 10h4"></path><path d="M8 14h8"></path></symbol>
     <symbol id="icon-send" viewBox="0 0 24 24"><path d="M3 11 21 3l-7 18-3-8z"></path><path d="M11 13 21 3"></path></symbol>
+    <symbol id="icon-comment" viewBox="0 0 24 24"><path d="M5 5h14v10H8l-3 4z"></path></symbol>
+    <symbol id="icon-like" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-3 4.5 4.5 0 0 1 8 3c0 6-8 11-8 11z"></path></symbol>
+    <symbol id="icon-repost" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"></path><path d="M3 11V8a2 2 0 0 1 2-2h16"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v3a2 2 0 0 1-2 2H3"></path></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 6v6h-6"></path><path d="M4 18v-6h6"></path><path d="M19 12a7 7 0 0 0-12-5l-3 3"></path><path d="M5 12a7 7 0 0 0 12 5l3-3"></path></symbol>
     <symbol id="icon-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18h1.5a2.5 2.5 0 0 0 1.8-4.2 2 2 0 0 1 1.4-3.4H18a3 3 0 0 0 3-3A7.4 7.4 0 0 0 12 3z"></path><path d="M7.5 10h.1"></path><path d="M9.5 6.8h.1"></path><path d="M14 6.5h.1"></path></symbol>
     <symbol id="icon-stat-good" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></symbol>
     <symbol id="icon-stat-low" viewBox="0 0 24 24"><path d="M12 4v9"></path><path d="M12 18h.1"></path><path d="M4 20h16L12 4z"></path></symbol>
@@ -121,7 +125,7 @@
             <div class="profile-avatar-frame"><img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display></div>
             <div class="profile-copy">
               <span data-profile-field="title">Resident</span>
-              <strong><span data-profile-field="name">Neuro Resident</span><i class="verified-badge" aria-label="Verified"><svg><use href="#icon-stat-good"></use></svg></i></strong>
+              <strong><span data-profile-field="name">Neuro Resident</span><i class="verified-badge" aria-label="Verified member" data-verified-badge><svg><use href="#icon-stat-good"></use></svg></i></strong>
               <small><span data-profile-field="age">Adult</span> / <span data-profile-field="sex">Not Set</span></small>
               <small>Role: <b data-profile-field="title">Resident</b></small>
               <small>District: <b data-profile-field="location">Not Set</b></small>
@@ -133,7 +137,7 @@
             <div>
               <div class="level-row"><span>Level <b data-profile-level>22</b></span><span><b data-profile-xp-current>22,840</b> / <b data-profile-xp-goal>30,000</b> XP</span></div>
               <i><em data-profile-xp-bar></em></i>
-              <small>Verified Member &bull; Unlocked at Level 10</small>
+              <small><b data-profile-xp-needed>7,160</b> XP to next level &bull; <span data-profile-verified-note>Verified Member</span> &bull; <span data-profile-xp-percent>76%</span></small>
             </div>
           </section>
 
@@ -165,38 +169,14 @@
             <div>
               <span>Neuro Feed</span>
             </div>
-            <button type="button">Latest</button>
+            <button type="button" data-feed-refresh><svg><use href="#icon-refresh"></use></svg>Refresh</button>
           </header>
           <section class="message-thread" data-message-thread>
-            <article class="feed-post">
-              <img src="assets/img/avatars/avatar-03.png" alt="">
-              <div>
-                <header><strong>Jade Rain</strong><span>@jaderain.sl</span><time>12m</time></header>
-                <p>Sunset over Eden Palms never gets old. Grateful for this view.</p>
-                <footer><span>24</span><span>6</span><span>Share</span></footer>
-              </div>
-            </article>
-            <article class="feed-post">
-              <img src="assets/img/avatars/avatar-07.png" alt="">
-              <div>
-                <header><strong>Kai Mercer</strong><span>@kaimercer.sl</span><time>45m</time></header>
-                <p>Neuro Tec HUD v2.3 is live. Smooth performance and new wallet tools.</p>
-                <footer><span>37</span><span>12</span><span>Share</span></footer>
-              </div>
-            </article>
-            <article class="feed-post">
-              <img src="assets/img/avatars/avatar-10.png" alt="">
-              <div>
-                <header><strong>Lena Voss</strong><span>@lenavoss.sl</span><time>1h</time></header>
-                <p>Chi-Core night market is open. Good music, good light, good people.</p>
-                <footer><span>18</span><span>4</span><span>Share</span></footer>
-              </div>
-            </article>
           </section>
           <form class="message-compose" data-message-form>
             <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
-            <input type="text" name="message" autocomplete="off" placeholder="Share something with the Neuro community...">
-            <button type="submit" aria-label="Send message"><svg><use href="#icon-send"></use></svg></button>
+            <input type="text" name="message" autocomplete="off" placeholder="Post to the Neuro community...">
+            <button type="submit" aria-label="Post"><svg><use href="#icon-send"></use></svg></button>
           </form>
         </section>
 
@@ -250,6 +230,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-profile-feed-1"></script>
+  <script src="assets/js/app.js?v=neuro-profile-live-1"></script>
 </body>
 </html>
