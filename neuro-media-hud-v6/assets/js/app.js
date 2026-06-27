@@ -527,6 +527,7 @@ function renderFeed() {
         <p></p>
         <div class="repost-original" hidden>
           <strong></strong>
+          <span></span>
           <p></p>
         </div>
         <img class="feed-image" alt="" hidden>
@@ -539,7 +540,7 @@ function renderFeed() {
     card.querySelector("img").src = avatarPath(post.avatar);
     card.querySelector("img").alt = post.name;
     card.querySelector("header strong").textContent = post.name;
-    card.querySelector("header span").textContent = post.handle;
+    card.querySelector("header span").textContent = `${post.handle} ·`;
     card.querySelector("header time").textContent = timeAgo(post.createdAt);
     card.querySelector("p").textContent = post.message;
     const originalBox = card.querySelector(".repost-original");
@@ -551,6 +552,7 @@ function renderFeed() {
       });
       originalBox.hidden = false;
       originalBox.querySelector("strong").textContent = original.name;
+      originalBox.querySelector("span").textContent = `${original.handle} · ${timeAgo(original.createdAt)}`;
       originalBox.querySelector("p").textContent = original.message;
       card.querySelector("footer").hidden = true;
     }
@@ -560,6 +562,7 @@ function renderFeed() {
       image.src = src;
       image.alt = `${post.name} post image`;
       image.hidden = false;
+      card.classList.add("has-media");
     }
     const buttons = card.querySelectorAll("footer button span");
     buttons[0].textContent = post.likes;
@@ -590,7 +593,7 @@ function renderFeed() {
       post.commentItems.forEach((comment) => {
         const row = document.createElement("div");
         row.className = "feed-comment";
-        row.innerHTML = "<strong></strong><span></span><p></p>";
+        row.innerHTML = "<header><strong></strong><span></span></header><p></p>";
         row.querySelector("strong").textContent = comment.name;
         row.querySelector("span").textContent = timeAgo(comment.createdAt);
         row.querySelector("p").textContent = comment.message;
@@ -611,6 +614,11 @@ function sendFeedBridge(op, payload = {}) {
   sendBridge(`feed-${op}`, JSON.stringify(payload));
 }
 
+function scrollFeedTop() {
+  const thread = document.querySelector("[data-message-thread]");
+  if (thread) thread.scrollTop = 0;
+}
+
 function createFeedPost(text, imageUrl = "") {
   const post = normalizePost({
     message: text,
@@ -625,6 +633,7 @@ function createFeedPost(text, imageUrl = "") {
   state.feed.posts.unshift(post);
   sendFeedBridge("post", post);
   renderFeed();
+  scrollFeedTop();
 }
 
 function handleFeedAction(postId, action) {
@@ -655,6 +664,7 @@ function handleFeedAction(postId, action) {
       originalPost: originalForRepost(post)
     });
     renderFeed();
+    scrollFeedTop();
     return;
   }
 

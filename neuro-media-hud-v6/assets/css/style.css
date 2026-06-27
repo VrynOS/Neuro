@@ -1132,9 +1132,9 @@ h1 {
 .messages-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 10px;
+  gap: 12px;
   min-height: 0;
-  padding: 18px;
+  padding: 16px;
 }
 
 .messages-head {
@@ -1193,10 +1193,26 @@ h1 {
 .message-thread {
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 12px;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(40, 161, 252, 0.34) transparent;
+}
+
+.message-thread::-webkit-scrollbar {
+  width: 5px;
+}
+
+.message-thread::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message-thread::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(40, 161, 252, 0.32);
 }
 
 .message-thread article {
@@ -1233,20 +1249,25 @@ h1 {
 
 .feed-post {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-columns: 46px minmax(0, 1fr);
   align-items: start;
-  gap: 12px;
+  gap: 11px;
   max-width: 100% !important;
-  min-height: 176px;
-  padding: 12px;
-  border: 1px solid rgba(40, 161, 252, 0.22);
+  min-height: 132px;
+  padding: 12px 12px 11px;
+  border: 1px solid rgba(40, 161, 252, 0.18);
   border-radius: 8px;
-  background: rgba(0, 10, 18, 0.36);
+  background: rgba(0, 9, 16, 0.52);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.feed-post.has-media {
+  min-height: 214px;
 }
 
 .feed-post > img {
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
   border: 1px solid rgba(40, 161, 252, 0.34);
   border-radius: 50%;
   object-fit: cover;
@@ -1259,36 +1280,45 @@ h1 {
 .feed-post header {
   display: flex;
   align-items: center;
-  gap: 9px;
+  flex-wrap: wrap;
+  gap: 7px;
   min-width: 0;
+  line-height: 1;
 }
 
 .feed-post header strong {
   color: var(--text);
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 800;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .feed-post header span,
 .feed-post header time {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .feed-post p {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
   color: var(--text);
-  font-size: 17px;
-  line-height: 1.25;
+  font-size: 15px;
+  line-height: 1.28;
 }
 
 .feed-image {
   display: block;
-  width: min(100%, 360px);
-  max-height: 138px;
-  margin-top: 9px;
+  width: min(100%, 286px);
+  aspect-ratio: 16 / 8.5;
+  max-height: 108px;
+  margin-top: 10px;
   border: 1px solid rgba(40, 161, 252, 0.24);
   border-radius: 6px;
   object-fit: cover;
+  object-position: center;
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.24);
 }
 
@@ -1298,16 +1328,17 @@ h1 {
 
 .feed-post footer {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 11px;
 }
 
 .feed-post footer button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 30px;
-  padding: 0 10px;
+  min-height: 28px;
+  padding: 0 9px;
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 999px;
   background: rgba(2, 19, 31, 0.52);
@@ -1348,18 +1379,20 @@ h1 {
 }
 
 .feed-repost {
-  border-color: rgba(79, 255, 187, 0.24);
-  background: rgba(0, 15, 18, 0.42);
+  min-height: 126px;
+  border-color: rgba(79, 255, 187, 0.22);
+  background: rgba(0, 13, 16, 0.54);
 }
 
 .repost-original {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   margin-top: 10px;
-  padding: 10px;
-  border: 1px solid rgba(40, 161, 252, 0.2);
+  padding: 9px 10px;
+  border: 1px solid rgba(40, 161, 252, 0.18);
+  border-left: 3px solid rgba(79, 255, 187, 0.62);
   border-radius: 6px;
-  background: rgba(0, 8, 14, 0.42);
+  background: rgba(0, 8, 14, 0.5);
 }
 
 .repost-original[hidden] {
@@ -1367,29 +1400,49 @@ h1 {
 }
 
 .repost-original strong {
-  color: var(--blue);
+  color: var(--text);
   font-size: 14px;
 }
 
+.repost-original span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .repost-original p {
-  margin: 0;
+  margin: 2px 0 0;
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.25;
+  font-size: 13px;
+  line-height: 1.28;
 }
 
 .feed-comments {
   display: block;
   max-width: 100% !important;
-  min-height: 114px;
-  max-height: 190px;
+  min-height: 92px;
+  max-height: 160px;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0;
-  padding: 10px;
+  padding: 10px 11px;
   border: 1px solid rgba(40, 161, 252, 0.18);
   border-radius: 6px;
-  background: rgba(0, 8, 14, 0.36);
+  background: rgba(0, 8, 14, 0.46);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(40, 161, 252, 0.28) transparent;
+}
+
+.feed-comments::-webkit-scrollbar {
+  width: 4px;
+}
+
+.feed-comments::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed-comments::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(40, 161, 252, 0.28);
 }
 
 .feed-comments[hidden] {
@@ -1404,8 +1457,7 @@ h1 {
 
 .feed-comment {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 3px 8px;
+  gap: 4px;
   max-width: 100% !important;
   min-height: 0;
   padding: 0;
@@ -1413,23 +1465,28 @@ h1 {
   background: transparent;
 }
 
+.feed-comment header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
 .feed-comment strong {
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .feed-comment span {
   align-self: end;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .feed-comment p,
 .comment-empty {
-  grid-column: 1 / -1;
   margin: 0;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.25;
 }
 
@@ -1439,7 +1496,7 @@ h1 {
 
 .feed-comments form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 62px;
+  grid-template-columns: minmax(0, 1fr) 58px;
   gap: 8px;
 }
 
@@ -1468,13 +1525,15 @@ h1 {
 
 .message-compose {
   display: grid;
-  grid-template-columns: 50px minmax(0, 1fr) 52px 62px;
-  gap: 10px;
+  grid-template-columns: 42px minmax(0, 1fr) 44px 50px;
+  align-items: center;
+  gap: 8px;
+  padding-top: 2px;
 }
 
 .message-compose img {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.36);
   border-radius: 50%;
   object-fit: cover;
@@ -1484,14 +1543,14 @@ h1 {
 .profile-editor input,
 .profile-editor select {
   min-width: 0;
-  min-height: 52px;
+  min-height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
   background: rgba(0, 8, 14, 0.62);
   color: var(--text);
   font: inherit;
-  font-size: 21px;
-  padding: 0 14px;
+  font-size: 17px;
+  padding: 0 12px;
 }
 
 .message-compose button,
@@ -1505,8 +1564,8 @@ h1 {
 }
 
 .message-compose button svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .message-compose button.is-active {
