@@ -787,25 +787,25 @@ h1 {
 .profile-card {
   --profile-accent: var(--blue);
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
-  gap: 10px;
+  grid-template-rows: auto auto auto auto auto;
+  gap: 8px;
   min-height: 0;
-  padding: 20px;
+  padding: 18px;
 }
 
 .profile-identity {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  gap: 14px 18px;
+  grid-template-columns: 166px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
   align-content: center;
-  min-height: 0;
+  min-height: 166px;
 }
 
 .profile-avatar-frame {
   display: grid;
   place-items: center;
-  width: 190px;
+  width: 166px;
   aspect-ratio: 1;
   border: 2px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 4px;
@@ -824,7 +824,7 @@ h1 {
 .profile-copy {
   display: grid;
   align-content: center;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
   text-shadow: var(--shadow);
 }
@@ -840,31 +840,129 @@ h1 {
 }
 
 .profile-copy strong {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   overflow: hidden;
   color: var(--text);
-  font-size: 36px;
+  font-size: 34px;
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.profile-copy strong > span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  text-overflow: ellipsis;
+}
+
+.verified-badge {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #eaf8ff;
+  box-shadow: 0 0 14px rgba(40, 161, 252, 0.8);
+}
+
+.verified-badge svg {
+  width: 18px;
+  height: 18px;
+  filter: none;
+}
+
 .profile-copy small {
   color: var(--muted);
-  font-size: 22px;
+  font-size: 20px;
+}
+
+.profile-copy small b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.profile-level {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 74px;
+  padding: 10px 16px;
+  border: 1px solid rgba(40, 161, 252, 0.24);
+  border-radius: 6px;
+  background: rgba(0, 10, 18, 0.42);
+}
+
+.level-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 52px;
+  color: var(--blue);
+}
+
+.level-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.level-row b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.profile-level i {
+  display: block;
+  height: 8px;
+  margin: 7px 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.profile-level em {
+  display: block;
+  width: 76%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), color-mix(in srgb, var(--profile-accent), white 12%));
+  box-shadow: 0 0 12px rgba(40, 161, 252, 0.68);
+}
+
+.profile-level small {
+  color: var(--muted);
+  font-size: 15px;
 }
 
 .profile-zodiac {
   grid-column: 1 / -1;
   position: relative;
   display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
-  align-items: center;
-  gap: 16px;
-  min-height: 92px;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  min-height: 120px;
   padding: 12px 16px;
   border: 1px solid rgba(40, 161, 252, 0.2);
+  border-radius: 6px;
   background:
-    radial-gradient(circle at 41px 50%, color-mix(in srgb, var(--profile-accent), transparent 80%), transparent 58px),
+    radial-gradient(circle at 54px 77px, color-mix(in srgb, var(--profile-accent), transparent 80%), transparent 68px),
     linear-gradient(90deg, rgba(0, 8, 14, 0.6), rgba(0, 18, 30, 0.38));
   overflow: hidden;
 }
@@ -878,12 +976,31 @@ h1 {
   pointer-events: none;
 }
 
+.profile-zodiac h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--blue);
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.zodiac-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
 .zodiac-orbit {
   position: relative;
   display: grid;
   place-items: center;
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   border: 1px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 50%;
   background: rgba(0, 8, 14, 0.5);
@@ -894,8 +1011,8 @@ h1 {
 
 .zodiac-mark {
   display: block;
-  width: 46px;
-  height: 46px;
+  width: 62px;
+  height: 62px;
   object-fit: contain;
   filter:
     drop-shadow(0 0 2px var(--profile-accent))
@@ -906,24 +1023,33 @@ h1 {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 7px;
+  gap: 4px;
   min-width: 0;
 }
 
-.zodiac-copy span {
-  color: var(--blue);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 18px;
+.zodiac-copy strong {
+  color: var(--text);
+  font-size: 21px;
   font-weight: 800;
 }
 
+.zodiac-copy span,
 .zodiac-copy small {
   overflow: hidden;
-  color: var(--muted);
-  font-size: 21px;
+  color: var(--text);
+  font-size: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.zodiac-copy span b {
+  color: var(--profile-accent);
+  font-weight: 600;
+}
+
+.zodiac-copy small {
+  color: var(--muted);
+  font-style: italic;
 }
 
 .profile-actions {
@@ -998,7 +1124,7 @@ h1 {
 .messages-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: 10px;
   min-height: 0;
   padding: 18px;
 }
@@ -1021,6 +1147,16 @@ h1 {
   font-weight: 420;
 }
 
+.feed-head button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(40, 161, 252, 0.34);
+  border-radius: 4px;
+  background: rgba(0, 10, 18, 0.5);
+  color: var(--text);
+  cursor: pointer;
+}
+
 .messages-head small {
   color: var(--green);
   font-size: 18px;
@@ -1040,7 +1176,7 @@ h1 {
 
 .message-thread {
   display: grid;
-  align-content: end;
+  align-content: start;
   gap: 10px;
   min-height: 0;
   overflow: hidden;
@@ -1078,10 +1214,71 @@ h1 {
   font-size: 20px;
 }
 
+.feed-post {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  max-width: 100% !important;
+  min-height: 124px;
+  padding: 12px;
+  border: 1px solid rgba(40, 161, 252, 0.22);
+  border-radius: 8px;
+  background: rgba(0, 10, 18, 0.36);
+}
+
+.feed-post > img {
+  width: 56px;
+  height: 56px;
+  border: 1px solid rgba(40, 161, 252, 0.34);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.feed-post header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.feed-post header strong {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.feed-post header span,
+.feed-post header time {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.feed-post p {
+  margin: 7px 0 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.feed-post footer {
+  display: flex;
+  gap: 26px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 .message-compose {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 62px;
+  grid-template-columns: 50px minmax(0, 1fr) 62px;
   gap: 10px;
+}
+
+.message-compose img {
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(40, 161, 252, 0.36);
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .message-compose input,

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-save-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=neuro-profile-feed-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -121,18 +121,34 @@
             <div class="profile-avatar-frame"><img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display></div>
             <div class="profile-copy">
               <span data-profile-field="title">Resident</span>
-              <strong data-profile-field="name">Neuro Resident</strong>
+              <strong><span data-profile-field="name">Neuro Resident</span><i class="verified-badge" aria-label="Verified"><svg><use href="#icon-stat-good"></use></svg></i></strong>
               <small><span data-profile-field="age">Adult</span> / <span data-profile-field="sex">Not Set</span></small>
-              <small data-profile-field="location">Not Set</small>
-            </div>
-            <div class="profile-zodiac">
-              <span class="zodiac-orbit"><img class="zodiac-mark" src="assets/img/zodiac/sagittarius.png" alt="" data-zodiac-mark></span>
-              <div class="zodiac-copy">
-                <span>Signal Mark</span>
-                <small data-profile-story>Resident / Not Set</small>
-              </div>
+              <small>Role: <b data-profile-field="title">Resident</b></small>
+              <small>District: <b data-profile-field="location">Not Set</b></small>
             </div>
           </div>
+
+          <section class="profile-level">
+            <span class="level-mark"><svg><use href="#icon-stat-xp"></use></svg></span>
+            <div>
+              <div class="level-row"><span>Level <b data-profile-level>22</b></span><span><b data-profile-xp-current>22,840</b> / <b data-profile-xp-goal>30,000</b> XP</span></div>
+              <i><em data-profile-xp-bar></em></i>
+              <small>Verified Member &bull; Unlocked at Level 10</small>
+            </div>
+          </section>
+
+          <section class="profile-zodiac">
+            <h3>Zodiac Sign</h3>
+            <div class="zodiac-body">
+              <span class="zodiac-orbit"><img class="zodiac-mark" src="assets/img/zodiac/sagittarius.png" alt="" data-zodiac-mark></span>
+              <div class="zodiac-copy">
+                <strong data-zodiac-name>Sagittarius</strong>
+                <span>Element: <b data-zodiac-element>Fire</b></span>
+                <span>Traits: <b data-zodiac-traits>Adventurous &bull; Honest &bull; Free</b></span>
+                <small data-zodiac-line>Driven by motion. Guided by truth.</small>
+              </div>
+            </div>
+          </section>
 
           <div class="profile-actions">
             <button class="profile-edit" type="button" data-profile-edit-open><svg><use href="#icon-edit"></use></svg>Edit</button>
@@ -144,19 +160,42 @@
           </section>
         </section>
 
-        <section class="messages-panel" aria-label="Profile messages">
-          <header class="messages-head">
+        <section class="messages-panel neuro-feed" aria-label="Neuro feed">
+          <header class="messages-head feed-head">
             <div>
-              <span>Messages</span>
-              <strong>Second Life</strong>
+              <span>Neuro Feed</span>
             </div>
-            <small data-bridge-status>Offline</small>
+            <button type="button">Latest</button>
           </header>
           <section class="message-thread" data-message-thread>
-            <article class="system"><span>SL Bridge</span><p>Second Life messages will appear here when the LSL bridge sends them.</p></article>
+            <article class="feed-post">
+              <img src="assets/img/avatars/avatar-03.png" alt="">
+              <div>
+                <header><strong>Jade Rain</strong><span>@jaderain.sl</span><time>12m</time></header>
+                <p>Sunset over Eden Palms never gets old. Grateful for this view.</p>
+                <footer><span>24</span><span>6</span><span>Share</span></footer>
+              </div>
+            </article>
+            <article class="feed-post">
+              <img src="assets/img/avatars/avatar-07.png" alt="">
+              <div>
+                <header><strong>Kai Mercer</strong><span>@kaimercer.sl</span><time>45m</time></header>
+                <p>Neuro Tec HUD v2.3 is live. Smooth performance and new wallet tools.</p>
+                <footer><span>37</span><span>12</span><span>Share</span></footer>
+              </div>
+            </article>
+            <article class="feed-post">
+              <img src="assets/img/avatars/avatar-10.png" alt="">
+              <div>
+                <header><strong>Lena Voss</strong><span>@lenavoss.sl</span><time>1h</time></header>
+                <p>Chi-Core night market is open. Good music, good light, good people.</p>
+                <footer><span>18</span><span>4</span><span>Share</span></footer>
+              </div>
+            </article>
           </section>
           <form class="message-compose" data-message-form>
-            <input type="text" name="message" autocomplete="off" placeholder="Send message through HUD bridge">
+            <img src="assets/img/avatars/avatar-01.png" alt="" data-avatar-display>
+            <input type="text" name="message" autocomplete="off" placeholder="Share something with the Neuro community...">
             <button type="submit" aria-label="Send message"><svg><use href="#icon-send"></use></svg></button>
           </form>
         </section>
@@ -211,6 +250,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-profile-save-1"></script>
+  <script src="assets/js/app.js?v=neuro-profile-feed-1"></script>
 </body>
 </html>

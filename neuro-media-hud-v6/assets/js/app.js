@@ -23,6 +23,9 @@ const state = {
     avatar: "01",
     favoriteColor: "#28a1fc",
     zodiac: "sagittarius",
+    level: 22,
+    xpCurrent: 22840,
+    xpGoal: 30000,
     savedInHud: false
   },
   stats: {
@@ -52,6 +55,20 @@ const zodiacLabels = {
   capricorn: "Capricorn",
   aquarius: "Aquarius",
   pisces: "Pisces"
+};
+const zodiacMeta = {
+  aries: { element: "Fire", traits: "Bold \u2022 Driven \u2022 Direct", line: "Moves first. Learns by doing." },
+  taurus: { element: "Earth", traits: "Grounded \u2022 Loyal \u2022 Steady", line: "Built for patience. Drawn to comfort." },
+  gemini: { element: "Air", traits: "Curious \u2022 Social \u2022 Quick", line: "Reads the room. Follows the spark." },
+  cancer: { element: "Water", traits: "Protective \u2022 Warm \u2022 Intuitive", line: "Feels deeply. Guards what matters." },
+  leo: { element: "Fire", traits: "Radiant \u2022 Proud \u2022 Creative", line: "Made to be seen. Led by heart." },
+  virgo: { element: "Earth", traits: "Precise \u2022 Helpful \u2022 Focused", line: "Finds the pattern. Refines the path." },
+  libra: { element: "Air", traits: "Balanced \u2022 Charming \u2022 Fair", line: "Seeks harmony. Shapes the room." },
+  scorpio: { element: "Water", traits: "Intense \u2022 Loyal \u2022 Determined", line: "Driven by purpose. Guided by intuition." },
+  sagittarius: { element: "Fire", traits: "Adventurous \u2022 Honest \u2022 Free", line: "Follows distance. Carries truth." },
+  capricorn: { element: "Earth", traits: "Disciplined \u2022 Ambitious \u2022 Patient", line: "Climbs with intent. Builds to last." },
+  aquarius: { element: "Air", traits: "Original \u2022 Visionary \u2022 Independent", line: "Thinks forward. Moves different." },
+  pisces: { element: "Water", traits: "Dreaming \u2022 Gentle \u2022 Empathic", line: "Feels the unseen. Softens the edge." }
 };
 function logBridge(line) {
   const log = document.querySelector("#bridge-log");
@@ -158,7 +175,7 @@ function persistProfileLocal() {
 
 function applySavedProfile(profile, fromHud = false) {
   if (!profile || typeof profile !== "object") return;
-  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac"];
+  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac", "level", "xpCurrent", "xpGoal"];
   allowed.forEach((key) => {
     if (profile[key] !== undefined && profile[key] !== null && profile[key] !== "") {
       state.profile[key] = profile[key];
@@ -171,6 +188,7 @@ function renderProfile() {
   const accent = state.profile.favoriteColor || "#28a1fc";
   const zodiac = state.profile.zodiac || "sagittarius";
   const zodiacLabel = zodiacLabels[zodiac] || zodiacLabels.sagittarius;
+  const zodiacInfo = zodiacMeta[zodiac] || zodiacMeta.sagittarius;
 
   document.querySelectorAll("[data-profile-field]").forEach((node) => {
     const key = node.dataset.profileField;
@@ -198,6 +216,18 @@ function renderProfile() {
     const title = state.profile.title || "Resident";
     const location = state.profile.location && state.profile.location !== "Not Set" ? state.profile.location : "Location unset";
     node.textContent = `${title} / ${location}`;
+  });
+
+  document.querySelectorAll("[data-zodiac-name]").forEach((node) => { node.textContent = zodiacLabel; });
+  document.querySelectorAll("[data-zodiac-element]").forEach((node) => { node.textContent = zodiacInfo.element; });
+  document.querySelectorAll("[data-zodiac-traits]").forEach((node) => { node.textContent = zodiacInfo.traits; });
+  document.querySelectorAll("[data-zodiac-line]").forEach((node) => { node.textContent = zodiacInfo.line; });
+  document.querySelectorAll("[data-profile-level]").forEach((node) => { node.textContent = state.profile.level; });
+  document.querySelectorAll("[data-profile-xp-current]").forEach((node) => { node.textContent = Number(state.profile.xpCurrent || 0).toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-xp-goal]").forEach((node) => { node.textContent = Number(state.profile.xpGoal || 1).toLocaleString("en-US"); });
+  document.querySelectorAll("[data-profile-xp-bar]").forEach((node) => {
+    const percent = Math.max(0, Math.min(100, (Number(state.profile.xpCurrent || 0) / Math.max(1, Number(state.profile.xpGoal || 1))) * 100));
+    node.style.width = `${percent}%`;
   });
 
   document.querySelectorAll("[data-avatar-choice]").forEach((button) => {
@@ -275,12 +305,14 @@ function sendLocalMessage(text) {
   if (liveBridge) sendBridge("message", text);
 
   const message = document.createElement("article");
-  message.className = "self";
-  message.innerHTML = `<span>You</span><p></p>`;
+  message.className = "feed-post";
+  message.innerHTML = `<img alt=""><div><header><strong></strong><span>@you.sl</span><time>now</time></header><p></p><footer><span>0</span><span>0</span><span>Share</span></footer></div>`;
+  message.querySelector("img").src = avatarPath(state.profile.avatar);
+  message.querySelector("strong").textContent = state.profile.name || "You";
   message.querySelector("p").textContent = text;
   thread.append(message);
 
-  while (thread.children.length > 4) thread.firstElementChild?.remove();
+  while (thread.children.length > 3) thread.firstElementChild?.remove();
 }
 
 function showScreen(name) {
