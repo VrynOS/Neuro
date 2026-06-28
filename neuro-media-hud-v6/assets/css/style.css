@@ -1444,7 +1444,7 @@ h1 {
   display: none;
   height: 100%;
   min-height: 0;
-  padding: 18px;
+  padding: 12px;
   overflow: hidden;
 }
 
@@ -1454,8 +1454,8 @@ h1 {
 
 .profile-layout {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 16px;
+  grid-template-columns: minmax(380px, 0.88fr) minmax(0, 1.12fr);
+  gap: 12px;
   height: 100%;
   min-height: 0;
 }
@@ -1473,25 +1473,25 @@ h1 {
 .profile-card {
   --profile-accent: var(--blue);
   display: grid;
-  grid-template-rows: auto auto auto auto auto;
-  gap: 8px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 7px;
   min-height: 0;
-  padding: 18px;
+  padding: 12px;
 }
 
 .profile-identity {
   display: grid;
-  grid-template-columns: 166px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 13px;
   align-items: center;
   align-content: center;
-  min-height: 166px;
+  min-height: 132px;
 }
 
 .profile-avatar-frame {
   display: grid;
   place-items: center;
-  width: 166px;
+  width: 132px;
   aspect-ratio: 1;
   border: 2px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 4px;
@@ -1510,7 +1510,7 @@ h1 {
 .profile-copy {
   display: grid;
   align-content: center;
-  gap: 5px;
+  gap: 3px;
   min-width: 0;
   text-shadow: var(--shadow);
 }
@@ -1521,8 +1521,34 @@ h1 {
   color: var(--blue);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
+}
+
+.profile-title-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.profile-status-light {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ff4f58;
+  box-shadow: 0 0 12px rgba(255, 79, 88, 0.74);
+}
+
+.profile-status-light.is-online {
+  background: var(--green);
+  box-shadow: 0 0 12px rgba(46, 242, 143, 0.76);
+}
+
+.profile-status-light.is-offline {
+  background: #ff4f58;
+  box-shadow: 0 0 12px rgba(255, 79, 88, 0.74);
 }
 
 .profile-copy strong {
@@ -1531,7 +1557,7 @@ h1 {
   gap: 10px;
   overflow: hidden;
   color: var(--text);
-  font-size: 34px;
+  font-size: 31px;
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1576,7 +1602,7 @@ h1 {
 
 .profile-copy small {
   color: var(--muted);
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .profile-copy small b {
@@ -1586,11 +1612,11 @@ h1 {
 
 .profile-level {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
   align-items: center;
-  min-height: 74px;
-  padding: 10px 16px;
+  min-height: 56px;
+  padding: 7px 12px;
   border: 1px solid rgba(40, 161, 252, 0.24);
   border-radius: 6px;
   background: var(--glass-card);
@@ -1599,8 +1625,8 @@ h1 {
 .level-mark {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 52px;
+  width: 34px;
+  height: 42px;
   color: var(--blue);
 }
 
@@ -1614,7 +1640,7 @@ h1 {
   justify-content: space-between;
   gap: 12px;
   color: var(--muted);
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .level-row b {
@@ -1624,8 +1650,8 @@ h1 {
 
 .profile-level i {
   display: block;
-  height: 8px;
-  margin: 7px 0;
+  height: 7px;
+  margin: 5px 0;
   border-radius: 999px;
   background: var(--glass-field);
   overflow: hidden;
@@ -1642,7 +1668,7 @@ h1 {
 
 .profile-level small {
   color: var(--muted);
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .profile-zodiac {
@@ -1650,9 +1676,9 @@ h1 {
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
-  min-height: 120px;
-  padding: 12px 16px;
+  gap: 7px;
+  min-height: 142px;
+  padding: 10px 12px;
   border: 1px solid rgba(40, 161, 252, 0.2);
   border-radius: 6px;
   background:
@@ -1684,8 +1710,8 @@ h1 {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
 }
 
@@ -1693,8 +1719,8 @@ h1 {
   position: relative;
   display: grid;
   place-items: center;
-  width: 90px;
-  height: 90px;
+  width: 72px;
+  height: 72px;
   border: 1px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 50%;
   background: var(--glass-field);
@@ -1705,8 +1731,8 @@ h1 {
 
 .zodiac-mark {
   display: block;
-  width: 62px;
-  height: 62px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
   filter:
     drop-shadow(0 0 2px var(--profile-accent))
@@ -1717,7 +1743,7 @@ h1 {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -1729,11 +1755,12 @@ h1 {
 
 .zodiac-copy span,
 .zodiac-copy small {
-  overflow: hidden;
+  overflow: visible;
   color: var(--text);
-  font-size: 19px;
+  font-size: 18px;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.18;
 }
 
 .zodiac-copy span b {
@@ -1749,8 +1776,8 @@ h1 {
 .profile-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 9px;
-  width: 86%;
+  gap: 6px;
+  width: 92%;
   justify-self: center;
 }
 
@@ -1758,18 +1785,18 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  min-height: 42px;
+  gap: 7px;
+  min-height: 32px;
   min-width: 0;
   margin-top: 0;
-  padding: 0 14px;
+  padding: 0 10px;
   border: 1px solid var(--blue-soft);
   border-radius: 2%;
   background:
     var(--glass-sheen),
     var(--glass-surface-strong);
   color: var(--blue);
-  font-size: 19px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, filter 160ms ease;
@@ -1794,20 +1821,20 @@ h1 {
 }
 
 .profile-edit svg {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
 }
 
 .profile-grid {
   align-content: end;
-  gap: 8px;
+  gap: 6px;
 }
 
 .profile-grid article {
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 48px;
-  padding: 0 16px;
-  font-size: 22px;
+  min-height: 38px;
+  padding: 0 12px;
+  font-size: 19px;
 }
 
 .profile-grid strong {
@@ -1818,9 +1845,9 @@ h1 {
 .messages-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: 9px;
   min-height: 0;
-  padding: 16px;
+  padding: 12px;
 }
 
 .messages-head {
@@ -1837,26 +1864,26 @@ h1 {
 
 .messages-head strong {
   color: var(--text);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 420;
 }
 
 .messages-head small {
   color: var(--green);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
 .messages-headbar button {
-  min-height: 40px;
+  min-height: 34px;
   padding: 0 14px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
   background: var(--glass-field);
   color: var(--blue);
   font: inherit;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   text-transform: uppercase;
   cursor: pointer;

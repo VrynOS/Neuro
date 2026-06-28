@@ -836,6 +836,11 @@ function renderConnectionStatus(status) {
     node.classList.toggle("is-online", status === "Online");
     node.classList.toggle("is-offline", status !== "Online");
   });
+  document.querySelectorAll("[data-profile-status-light]").forEach((node) => {
+    node.classList.toggle("is-online", status === "Online");
+    node.classList.toggle("is-offline", status !== "Online");
+    node.setAttribute("aria-label", status);
+  });
 }
 
 function openProfileEditor() {
