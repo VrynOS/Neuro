@@ -121,6 +121,9 @@ const state = {
     statsTimer: 0,
     clockTimer: 0
   },
+  health: {
+    activeGroups: {}
+  },
   clock: {
     lastMinuteKey: "",
     minuteToneIndex: 0
@@ -564,29 +567,44 @@ function healthDetailGroups(section) {
   return healthRows(groups[section] || groups.cycle);
 }
 
-function renderHealthDetail(section = "cycle") {
+function renderHealthDetail(section = "cycle", groupIndex = state.health.activeGroups[section] || 0) {
   const title = document.querySelector("[data-health-detail-title]");
   const purpose = document.querySelector("[data-health-detail-purpose]");
+  const subnav = document.querySelector("[data-health-subsections]");
   const target = document.querySelector("[data-health-detail]");
+  const groups = healthDetailGroups(section);
+  const activeIndex = Math.min(Math.max(Number(groupIndex) || 0, 0), groups.length - 1);
+  state.health.activeGroups[section] = activeIndex;
   if (title) title.textContent = healthSectionLabels[section] || healthSectionLabels.cycle;
   if (purpose) purpose.textContent = healthSectionPurposes[section] || healthSectionPurposes.cycle;
+  if (subnav) {
+    subnav.replaceChildren();
+    groups.forEach((group, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.healthSubsection = String(index);
+      button.dataset.healthSectionKey = section;
+      button.classList.toggle("is-active", index === activeIndex);
+      button.textContent = group.title.replace(/^Cycle /, "").replace(/ Tab$/, "");
+      subnav.append(button);
+    });
+  }
   if (!target) return;
   target.replaceChildren();
-  healthDetailGroups(section).forEach((group) => {
-    const article = document.createElement("section");
-    article.className = "health-detail-group";
-    const heading = document.createElement("h3");
-    heading.textContent = group.title;
-    article.append(heading);
-    group.rows.forEach(([label, value]) => {
-      const row = document.createElement("p");
-      row.innerHTML = "<span></span><strong></strong>";
-      row.querySelector("span").textContent = label;
-      row.querySelector("strong").textContent = String(value);
-      article.append(row);
-    });
-    target.append(article);
+  const group = groups[activeIndex] || groups[0];
+  const article = document.createElement("section");
+  article.className = "health-detail-group";
+  const heading = document.createElement("h3");
+  heading.textContent = group.title;
+  article.append(heading);
+  group.rows.forEach(([label, value]) => {
+    const row = document.createElement("p");
+    row.innerHTML = "<span></span><strong></strong>";
+    row.querySelector("span").textContent = label;
+    row.querySelector("strong").textContent = String(value);
+    article.append(row);
   });
+  target.append(article);
 }
 
 function renderHealth() {
@@ -1391,6 +1409,13 @@ document.addEventListener("click", (event) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
     renderHealthDetail(healthSectionButton.dataset.healthSection);
+    return;
+  }
+
+  const healthSubsectionButton = event.target.closest("[data-health-subsection]");
+  if (healthSubsectionButton) {
+    const section = healthSubsectionButton.dataset.healthSectionKey || document.querySelector("[data-health-section].is-active")?.dataset.healthSection || "cycle";
+    renderHealthDetail(section, Number(healthSubsectionButton.dataset.healthSubsection));
     return;
   }
 

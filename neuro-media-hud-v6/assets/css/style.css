@@ -1011,7 +1011,7 @@ h1 {
   grid-column: 1;
   grid-row: 2;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
 }
 
 .health-detail header {
@@ -1023,7 +1023,7 @@ h1 {
 
 .health-detail header small {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.25;
 }
 
@@ -1040,15 +1040,15 @@ h1 {
 .health-stat-grid p,
 .health-detail-group p {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 22px;
+  gap: 16px;
+  min-height: 36px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.2;
+  font-size: 19px;
+  line-height: 1.25;
 }
 
 .health-stat-grid strong,
@@ -1056,16 +1056,27 @@ h1 {
   color: var(--text);
   font-weight: 500;
   text-align: right;
-  max-width: 52%;
+  max-width: 60%;
 }
 
-.health-section-buttons {
+.health-section-buttons,
+.health-subsection-buttons {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
-.health-section-buttons button {
+.health-section-buttons {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.health-subsection-buttons {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  border-bottom: 1px solid rgba(40, 161, 252, 0.16);
+  padding: 10px 0;
+}
+
+.health-section-buttons button,
+.health-subsection-buttons button {
   min-height: 46px;
   border: 1px solid var(--glass-border);
   border-radius: 6px;
@@ -1077,7 +1088,13 @@ h1 {
   cursor: pointer;
 }
 
-.health-section-buttons button.is-active {
+.health-subsection-buttons button {
+  min-height: 38px;
+  font-size: 15px;
+}
+
+.health-section-buttons button.is-active,
+.health-subsection-buttons button.is-active {
   border-color: rgba(40, 161, 252, 0.72);
   color: var(--blue);
   box-shadow: 0 0 16px rgba(40, 161, 252, 0.22), inset 0 0 18px rgba(40, 161, 252, 0.1);
@@ -1085,7 +1102,7 @@ h1 {
 
 .health-detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 10px;
   min-height: 0;
@@ -1098,13 +1115,13 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
   background: var(--glass-card);
-  padding: 10px;
+  padding: 14px;
 }
 
 .health-detail-group h3 {
-  margin: 0 0 6px;
+  margin: 0 0 10px;
   color: var(--green);
-  font-size: 15px;
+  font-size: 21px;
   font-weight: 600;
   text-transform: uppercase;
 }
