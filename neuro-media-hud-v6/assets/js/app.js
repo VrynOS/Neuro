@@ -32,6 +32,8 @@ const state = {
   },
   messages: {
     activeThreadId: "",
+    live: false,
+    loading: false,
     threads: [
       {
         threadId: "dm-jade-rain",
@@ -911,7 +913,7 @@ function timeAgo(time) {
 }
 
 function currentOwnerUuid() {
-  return String(snapshotValue(state.lastSnapshot, "ownerUuid", snapshotValue(state.lastSnapshot, "avatarUuid", "local-web-profile")));
+  return String(query.get("avatar") || snapshotValue(state.lastSnapshot, "ownerUuid", snapshotValue(state.lastSnapshot, "avatarUuid", "local-web-profile")));
 }
 
 function currentHandle() {
@@ -943,7 +945,7 @@ function normalizeDmMessage(message, thread) {
     receiver_name: String(message?.receiver_name || state.profile.name || "Neuro Resident"),
     message_text: String(message?.message_text || message?.text || ""),
     timestamp,
-    read: Boolean(message?.read)
+    read: message?.read === true || message?.read === 1 || message?.read === "1" || message?.read === "true"
   };
 }
 
@@ -988,6 +990,45 @@ function loadMessagesLocal() {
   } catch {
     state.messages.threads = state.messages.threads.map(normalizeDmThread);
   }
+}
+
+function requestDmInbox(force = false) {
+  if (!liveBridge || state.messages.loading) return;
+  if (!force && state.messages.live) return;
+  state.messages.loading = true;
+  if (!state.messages.live) {
+    state.messages.threads = [];
+    if (state.perf.loaded.messages) renderMessageInbox();
+    renderNotificationCount();
+  }
+  sendBridge("dm-inbox", JSON.stringify({ avatar_name: state.profile.name || "Neuro Resident" }));
+  setLastRefresh("messages requested");
+}
+
+function handleDmResponse(body) {
+  if (body.startsWith("DM_OFFLINE|")) {
+    state.messages.loading = false;
+    addLocalNotification("Messages Offline", "Neuro Messages server did not answer.", "System");
+    return true;
+  }
+  if (!body.startsWith("DM|")) return false;
+
+  state.messages.loading = false;
+  try {
+    const payload = body.substring(3) || "[]";
+    const threads = JSON.parse(payload);
+    state.messages.threads = Array.isArray(threads) ? threads.map(normalizeDmThread) : [];
+    state.messages.live = true;
+    saveMessagesLocal();
+    if (state.perf.loaded.messages) {
+      if (state.messages.activeThreadId && activeDmThread()) renderMessageThread();
+      else renderMessageInbox();
+    }
+    renderNotificationCount();
+  } catch {
+    logBridge("bad messages payload");
+  }
+  return true;
 }
 
 function lastDmMessage(thread) {
@@ -1050,6 +1091,13 @@ function renderMessageInbox() {
     }
     inbox.append(row);
   });
+
+  if (!inbox.children.length) {
+    const empty = document.createElement("article");
+    empty.className = "dm-empty";
+    empty.innerHTML = "<strong>No avatar messages yet.</strong><small>Open this HUD around other Neuro users to start private chats.</small>";
+    inbox.append(empty);
+  }
 }
 
 function unreadNotificationCount() {
@@ -1226,6 +1274,7 @@ function toggleSettingsMenu() {
 function toggleNotificationMenu() {
   const menu = document.querySelector("[data-notification-menu]");
   loadMessagesLocal();
+  requestDmInbox(false);
   renderNotificationCount();
   setNotificationMenu(Boolean(menu?.hidden));
   if (liveBridge) sendBridge("notify");
@@ -1270,6 +1319,7 @@ function openMessageThread(threadId) {
   saveMessagesLocal();
   renderMessageThread();
   renderNotificationCount();
+  if (liveBridge) sendBridge("dm-read", JSON.stringify({ participant_uuid: thread.participantUuid }));
 }
 
 function closeMessageThread() {
@@ -1294,7 +1344,10 @@ function sendPrivateMessage(text) {
   saveMessagesLocal();
   renderMessageThread();
   renderNotificationCount();
-  if (liveBridge) sendBridge("dm-send", JSON.stringify({ thread_id: thread.threadId, ...message }));
+  if (liveBridge) {
+    sendBridge("dm-send", JSON.stringify({ thread_id: thread.threadId, ...message }));
+    setLastRefresh("message sent");
+  }
 }
 
 function openNotifications() {
@@ -1311,6 +1364,7 @@ function clearNotificationThread(threadId) {
   });
   saveMessagesLocal();
   renderNotificationCount();
+  if (liveBridge) sendBridge("dm-read", JSON.stringify({ participant_uuid: thread.participantUuid }));
 }
 
 function clearAllNotifications() {
@@ -1328,6 +1382,11 @@ function clearAllNotifications() {
   saveMessagesLocal();
   renderNotificationCount();
   renderNotificationMenu();
+  if (liveBridge) {
+    state.messages.threads.forEach((thread) => {
+      sendBridge("dm-read", JSON.stringify({ participant_uuid: thread.participantUuid }));
+    });
+  }
 }
 
 function loadHome() {
@@ -1342,6 +1401,7 @@ function loadProfile() {
   state.perf.loaded.messages = true;
   renderProfile();
   loadMessagesLocal();
+  requestDmInbox(true);
   if (state.messages.activeThreadId) renderMessageThread();
   else renderMessageInbox();
   renderNotificationCount();
@@ -1888,6 +1948,7 @@ window.addEventListener("message", (event) => {
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
   if (handleProfileResponse(body)) return;
   if (handleWalletResponse(body)) return;
+  if (handleDmResponse(body)) return;
   if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
   }
