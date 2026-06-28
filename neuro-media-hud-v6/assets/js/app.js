@@ -122,7 +122,8 @@ const state = {
     clockTimer: 0
   },
   health: {
-    activeGroups: {}
+    activeGroups: {},
+    activeMaleSection: "care"
   },
   clock: {
     lastMinuteKey: "",
@@ -144,6 +145,18 @@ const healthSectionPurposes = {
   selfCare: "Tracks personal care, wellness, salon care, lotion, and multivitamins.",
   birthControl: "Shows birth control status, last taken, and time left.",
   planB: "Shows emergency use status, last taken, effects, and side effects."
+};
+
+const maleHealthSectionLabels = {
+  care: "Care",
+  fitness: "Fitness",
+  records: "Records"
+};
+
+const maleHealthSectionPurposes = {
+  care: "Tracks hygiene and wellness care.",
+  fitness: "Tracks workouts, gym use, stamina, and body conditioning.",
+  records: "Shows recent health activity and care history."
 };
 
 const cycleActions = {
@@ -447,6 +460,10 @@ function isFemaleAvatar() {
   return String(state.profile.sex || "").trim().toLowerCase() === "female";
 }
 
+function isMaleAvatar() {
+  return String(state.profile.sex || "").trim().toLowerCase() === "male";
+}
+
 function hasKnownAvatarSex() {
   const sex = String(state.profile.sex || "").trim().toLowerCase();
   return sex !== "" && sex !== "not set" && sex !== "unknown";
@@ -662,26 +679,129 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
   target.append(article);
 }
 
+function maleHealthDetailRows(section) {
+  const groups = {
+    care: [
+      ["Shower", ["male.care.shower", "care.shower", "selfCare.shower"], "Not Done"],
+      ["Lotion", ["male.care.lotion", "care.lotion", "selfCare.lotion"], "Not Used"],
+      ["Daily Vitamin", ["male.care.dailyVitamin", "care.dailyVitamin", "selfCare.multivitamin"], "Not Taken"],
+      ["Haircut / Hair Done", ["male.care.hair", "care.hair", "selfCare.hair"], "Not Done"],
+      ["Last Care", ["male.care.lastCare", "care.lastCare", "selfCare.lastCare"], "None"],
+      ["Next Care Due", ["male.care.nextDue", "care.nextDue", "selfCare.nextDue"], "Now"],
+      ["Care XP", ["male.care.xp", "care.xp", "selfCare.careItemXP"], "0"]
+    ],
+    fitness: [
+      ["Workout Status", ["fitness.status", "male.fitness.status"], "Inactive"],
+      ["Last Workout", ["fitness.lastWorkout", "male.fitness.lastWorkout"], "None"],
+      ["Workout Type", ["fitness.workoutType", "male.fitness.workoutType"], "None"],
+      ["Stamina", ["fitness.stamina", "male.fitness.stamina"], "0"],
+      ["Body Conditioning", ["fitness.bodyConditioning", "male.fitness.bodyConditioning"], "0"],
+      ["Fitness XP", ["fitness.xp", "male.fitness.xp"], "0"],
+      ["Last Gym Visit", ["fitness.lastGymVisit", "male.fitness.lastGymVisit"], "None"],
+      ["Gym Machine Used", ["fitness.gymMachine", "male.fitness.gymMachine"], "None"],
+      ["Workout Timer", ["fitness.workoutTimer", "male.fitness.workoutTimer"], "0"]
+    ],
+    records: [
+      ["Last Shower", ["records.lastShower", "male.records.lastShower", "male.care.lastShower"], "None"],
+      ["Last Lotion Used", ["records.lastLotion", "male.records.lastLotion", "male.care.lastLotion"], "None"],
+      ["Last Vitamin Taken", ["records.lastVitamin", "male.records.lastVitamin", "male.care.lastVitamin"], "None"],
+      ["Last Hair Service", ["records.lastHair", "male.records.lastHair", "male.care.lastHair"], "None"],
+      ["Last Workout", ["records.lastWorkout", "male.records.lastWorkout", "fitness.lastWorkout"], "None"],
+      ["Last Gym Visit", ["records.lastGymVisit", "male.records.lastGymVisit", "fitness.lastGymVisit"], "None"],
+      ["Last Fitness XP", ["records.lastFitnessXP", "male.records.lastFitnessXP", "fitness.lastXP"], "0"]
+    ]
+  };
+  return (groups[section] || groups.care).map(([label, keys, fallback]) => [label, healthValue(keys, fallback)]);
+}
+
+function renderMaleHealthDetail(section = state.health.activeMaleSection || "care") {
+  const key = maleHealthSectionLabels[section] ? section : "care";
+  state.health.activeMaleSection = key;
+  const title = document.querySelector("[data-male-health-title]");
+  const purpose = document.querySelector("[data-male-health-purpose]");
+  const target = document.querySelector("[data-male-health-detail]");
+  if (title) title.textContent = maleHealthSectionLabels[key];
+  if (purpose) purpose.textContent = maleHealthSectionPurposes[key];
+  if (!target) return;
+  target.replaceChildren();
+  const article = document.createElement("section");
+  article.className = "health-detail-group";
+  const heading = document.createElement("h3");
+  heading.textContent = maleHealthSectionLabels[key];
+  article.append(heading);
+  maleHealthDetailRows(key).forEach(([label, value]) => {
+    const row = document.createElement("p");
+    row.innerHTML = "<span></span><strong></strong>";
+    row.querySelector("span").textContent = label;
+    row.querySelector("strong").textContent = String(value);
+    article.append(row);
+  });
+  target.append(article);
+}
+
+function renderMaleHealth() {
+  const xp = profileXp();
+  renderKeyValueRows(document.querySelector("[data-male-core-stats]"), [
+    ["Hunger", state.stats.hunger],
+    ["Thirst", state.stats.thirst],
+    ["Sleep", state.stats.sleep],
+    ["Hygiene", state.stats.hygiene],
+    ["Energy", state.stats.energy],
+    ["Fun", state.stats.fun],
+    ["XP", `${xp.current.toLocaleString("en-US")}/${xp.goal.toLocaleString("en-US")}`]
+  ]);
+  renderKeyValueRows(document.querySelector("[data-male-health-summary]"), [
+    ["Care", healthValue(["male.care.score", "care.score", "selfCare.score"], "0/100")],
+    ["Fitness", healthValue(["fitness.status", "male.fitness.status"], "Inactive")],
+    ["Last Activity", healthValue(["health.lastActivity", "male.lastActivity", "fitness.lastWorkout"], "None")]
+  ]);
+
+  const buttons = document.querySelector("[data-male-health-buttons]");
+  if (buttons && !buttons.children.length) {
+    Object.entries(maleHealthSectionLabels).forEach(([key, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.maleHealthSection = key;
+      button.textContent = label;
+      buttons.append(button);
+    });
+  }
+  buttons?.querySelectorAll("[data-male-health-section]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.maleHealthSection === state.health.activeMaleSection);
+  });
+  renderMaleHealthDetail(state.health.activeMaleSection);
+}
+
 function renderHealth() {
   const female = isFemaleAvatar();
+  const male = isMaleAvatar();
   const knownSex = hasKnownAvatarSex();
   const statusCard = document.querySelector("[data-health-status-card]");
   const statusTitle = document.querySelector("[data-health-status-title]");
   const statusMessage = document.querySelector("[data-health-status-message]");
 
-  if (statusCard) statusCard.hidden = female;
-  if (!female) {
-    if (statusTitle) statusTitle.textContent = knownSex ? "Female Health Hidden" : "Loading Health";
+  if (statusCard) statusCard.hidden = female || male;
+  if (!female && !male) {
+    if (statusTitle) statusTitle.textContent = knownSex ? "Health Hidden" : "Loading Health";
     if (statusMessage) {
       statusMessage.textContent = knownSex
-        ? "Female health systems are only visible when avatar sex is Female."
-        : "Checking avatar profile. Health sections will appear when Neuro receives Female as the avatar sex.";
+        ? "Health sections are hidden until avatar sex is Male or Female."
+        : "Checking avatar profile. Health sections will appear when Neuro receives avatar sex.";
     }
   }
 
   document.querySelectorAll("[data-female-health]").forEach((node) => {
     node.hidden = !female;
   });
+
+  document.querySelectorAll("[data-male-health]").forEach((node) => {
+    node.hidden = !male;
+  });
+
+  if (male) {
+    renderMaleHealth();
+    return;
+  }
 
   if (!female) return;
 
@@ -1480,6 +1600,13 @@ document.addEventListener("click", (event) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
     renderHealthDetail(healthSectionButton.dataset.healthSection);
+    return;
+  }
+
+  const maleHealthButton = event.target.closest("[data-male-health-section]");
+  if (maleHealthButton) {
+    state.health.activeMaleSection = maleHealthButton.dataset.maleHealthSection || "care";
+    renderMaleHealth();
     return;
   }
 

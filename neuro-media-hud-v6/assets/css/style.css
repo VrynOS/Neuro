@@ -1015,6 +1015,124 @@ h1 {
   line-height: 1.35;
 }
 
+.male-health {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.male-health[hidden] {
+  display: none;
+}
+
+.male-health > header strong {
+  color: var(--blue);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.male-health-overview {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 12px;
+}
+
+.male-health-overview > div {
+  min-width: 0;
+  border: 1px solid rgba(40, 161, 252, 0.16);
+  border-radius: 7px;
+  background: var(--glass-card);
+  padding: 12px;
+}
+
+.male-health-overview h2 {
+  margin: 0 0 8px;
+}
+
+.male-health-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+}
+
+.male-health-stat-grid p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 28px;
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.male-health-stat-grid strong {
+  color: var(--text);
+  font-weight: 500;
+  text-align: right;
+}
+
+.male-health-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.male-health-buttons button {
+  min-height: 46px;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  background: var(--glass-surface-strong);
+  color: var(--green);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.male-health-buttons button.is-active {
+  border-color: rgba(40, 161, 252, 0.72);
+  color: var(--blue);
+  box-shadow: 0 0 16px rgba(40, 161, 252, 0.22), inset 0 0 18px rgba(40, 161, 252, 0.1);
+}
+
+.male-health-detail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+
+.male-health-detail header {
+  display: grid;
+  gap: 4px;
+  border-bottom: 1px solid rgba(40, 161, 252, 0.16);
+  padding-bottom: 8px;
+}
+
+.male-health-detail header span {
+  color: var(--blue);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.male-health-detail header small {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.male-health-detail-grid {
+  display: grid;
+  align-content: start;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 10px;
+}
+
 .health-card h2,
 .health-detail header span {
   margin: 0 0 10px;

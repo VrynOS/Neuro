@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=health-page-8">
+  <link rel="stylesheet" href="assets/css/style.css?v=health-page-9">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -126,6 +126,27 @@
         <article class="health-card health-status" data-health-status-card>
           <strong data-health-status-title>Loading Health</strong>
           <span data-health-status-message>Checking avatar profile and Neuro health permissions.</span>
+        </article>
+
+        <article class="health-card male-health" data-male-health>
+          <header>
+            <strong>Neuro Health - Male</strong>
+          </header>
+          <section class="male-health-overview">
+            <div>
+              <h2>Core Stats</h2>
+              <div class="male-health-stat-grid" data-male-core-stats></div>
+            </div>
+            <div>
+              <h2>Male Health</h2>
+              <div class="male-health-stat-grid" data-male-health-summary></div>
+            </div>
+          </section>
+          <nav class="male-health-buttons" data-male-health-buttons></nav>
+          <section class="male-health-detail">
+            <header><span data-male-health-title>Care</span><small data-male-health-purpose>Tracks hygiene and wellness care.</small></header>
+            <div class="male-health-detail-grid" data-male-health-detail></div>
+          </section>
         </article>
 
         <article class="health-card health-sections" data-female-health>
@@ -261,6 +282,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=health-page-8"></script>
+  <script src="assets/js/app.js?v=health-page-9"></script>
 </body>
 </html>
