@@ -803,6 +803,14 @@ function openProfileEditor() {
 
   editor.hidden = false;
   renderProfile();
+  window.setTimeout(() => {
+    const first = form.elements.name || form.elements.title;
+    if (first) {
+      first.removeAttribute("readonly");
+      first.focus({ preventScroll: true });
+      first.select?.();
+    }
+  }, 80);
 }
 
 function closeProfileEditor() {
@@ -1847,6 +1855,16 @@ function setupClock() {
 
   tick();
 }
+
+document.addEventListener("pointerdown", (event) => {
+  const field = event.target.closest("[data-profile-form] input, [data-profile-form] select, [data-profile-form] textarea");
+  if (field) event.stopPropagation();
+}, true);
+
+document.addEventListener("keydown", (event) => {
+  const field = event.target.closest("[data-profile-form] input, [data-profile-form] select, [data-profile-form] textarea");
+  if (field) event.stopPropagation();
+}, true);
 
 document.addEventListener("click", (event) => {
   const editOpen = event.target.closest("[data-profile-edit-open]");

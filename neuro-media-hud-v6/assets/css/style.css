@@ -2467,6 +2467,9 @@ h1 {
 .message-compose input,
 .profile-editor input,
 .profile-editor select {
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
   min-width: 0;
   min-height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.28);
@@ -2476,6 +2479,14 @@ h1 {
   font: inherit;
   font-size: 17px;
   padding: 0 12px;
+}
+
+.profile-editor input:focus,
+.profile-editor select:focus {
+  border-color: rgba(79, 255, 187, 0.72);
+  outline: 2px solid rgba(79, 255, 187, 0.22);
+  outline-offset: 2px;
+  box-shadow: 0 0 16px rgba(79, 255, 187, 0.18);
 }
 
 .message-compose button,
