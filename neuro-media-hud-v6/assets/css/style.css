@@ -298,11 +298,11 @@ h1 {
 }
 
 .nav-button > span:last-child {
-  color: rgba(5, 10, 15, 0.96);
+  color: var(--green);
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.52),
+    0 1px 0 rgba(255, 255, 255, 0.28),
     0 -1px 0 rgba(0, 0, 0, 0.62),
-    0 0 10px rgba(255, 255, 255, 0.16);
+    0 0 10px rgba(46, 242, 143, 0.26);
 }
 
 .nav-button:hover,
@@ -334,8 +334,8 @@ h1 {
 }
 
 .nav-button.is-active > span:last-child {
-  color: var(--green);
-  text-shadow: 0 0 12px rgba(46, 242, 143, 0.56), var(--shadow);
+  color: var(--blue);
+  text-shadow: 0 0 14px rgba(40, 161, 252, 0.72), var(--shadow);
 }
 
 .nav-button.is-active::after {
@@ -345,8 +345,8 @@ h1 {
   right: 26%;
   bottom: -2px;
   height: 3px;
-  background: var(--green);
-  box-shadow: 0 0 16px rgba(46, 242, 143, 0.86);
+  background: var(--blue);
+  box-shadow: 0 0 16px rgba(40, 161, 252, 0.86);
 }
 
 .nav-icon,
