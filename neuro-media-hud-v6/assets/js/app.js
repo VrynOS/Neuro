@@ -740,16 +740,6 @@ function renderMaleHealthDetail(section = state.health.activeMaleSection || "car
 }
 
 function renderMaleHealth() {
-  const xp = profileXp();
-  renderKeyValueRows(document.querySelector("[data-male-core-stats]"), [
-    ["Hunger", state.stats.hunger],
-    ["Thirst", state.stats.thirst],
-    ["Sleep", state.stats.sleep],
-    ["Hygiene", state.stats.hygiene],
-    ["Energy", state.stats.energy],
-    ["Fun", state.stats.fun],
-    ["XP", `${xp.current.toLocaleString("en-US")}/${xp.goal.toLocaleString("en-US")}`]
-  ]);
   renderKeyValueRows(document.querySelector("[data-male-health-summary]"), [
     ["Care", healthValue(["male.care.score", "care.score", "selfCare.score"], "0/100")],
     ["Fitness", healthValue(["fitness.status", "male.fitness.status"], "Inactive")],
