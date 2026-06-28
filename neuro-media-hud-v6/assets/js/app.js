@@ -447,6 +447,11 @@ function isFemaleAvatar() {
   return String(state.profile.sex || "").trim().toLowerCase() === "female";
 }
 
+function hasKnownAvatarSex() {
+  const sex = String(state.profile.sex || "").trim().toLowerCase();
+  return sex !== "" && sex !== "not set" && sex !== "unknown";
+}
+
 function healthValue(keys, fallback = "") {
   const value = firstSnapshotValue(state.lastSnapshot || {}, Array.isArray(keys) ? keys : [keys], fallback);
   if (value === undefined || value === null || value === "" || value === "JSON_INVALID") return fallback;
@@ -659,6 +664,20 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
 
 function renderHealth() {
   const female = isFemaleAvatar();
+  const knownSex = hasKnownAvatarSex();
+  const statusCard = document.querySelector("[data-health-status-card]");
+  const statusTitle = document.querySelector("[data-health-status-title]");
+  const statusMessage = document.querySelector("[data-health-status-message]");
+
+  if (statusCard) statusCard.hidden = female;
+  if (!female) {
+    if (statusTitle) statusTitle.textContent = knownSex ? "Female Health Hidden" : "Loading Health";
+    if (statusMessage) {
+      statusMessage.textContent = knownSex
+        ? "Female health systems are only visible when avatar sex is Female."
+        : "Checking avatar profile. Health sections will appear when Neuro receives Female as the avatar sex.";
+    }
+  }
 
   document.querySelectorAll("[data-female-health]").forEach((node) => {
     node.hidden = !female;
@@ -723,8 +742,8 @@ function saveProfileFromForm(form) {
   closeProfileEditor();
 }
 
-function requestStoredProfile() {
-  if (liveBridge && state.perf.loaded.profile) {
+function requestStoredProfile(force = false) {
+  if (liveBridge && (force || state.perf.loaded.profile)) {
     sendBridge("profile-load");
     setLastRefresh("profile loaded");
   }
@@ -740,6 +759,7 @@ function handleProfileResponse(body) {
     applySavedProfile(JSON.parse(payload), true);
     persistProfileLocal();
     renderProfile();
+    if (state.perf.loaded.health) renderHealth();
   } catch {
     logBridge("bad profile payload");
   }
@@ -1084,6 +1104,7 @@ function loadWallet() {
 function loadHealth() {
   state.perf.loaded.health = true;
   renderHealth();
+  requestStoredProfile(true);
   if (liveBridge) {
     sendBridge("stats");
     setLastRefresh("health requested");

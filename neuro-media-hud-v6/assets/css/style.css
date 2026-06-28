@@ -991,6 +991,30 @@ h1 {
   display: none;
 }
 
+.health-status {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  min-height: 100%;
+  text-align: center;
+}
+
+.health-status strong {
+  color: var(--blue);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.health-status span {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.35;
+}
+
 .health-card h2,
 .health-detail header span {
   margin: 0 0 10px;
