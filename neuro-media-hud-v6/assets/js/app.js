@@ -739,7 +739,7 @@ function renderMaleHealthDetail(section = state.health.activeMaleSection || "car
 
 function renderMaleHealth() {
   renderKeyValueRows(document.querySelector("[data-male-health-summary]"), [
-    ["Care", healthValue(["male.care.score", "care.score", "selfCare.score"], "0/100")],
+    ["Care", `${state.stats.care}/100`],
     ["Fitness", healthValue(["fitness.status", "male.fitness.status"], "Inactive")],
     ["Last Activity", healthValue(["health.lastActivity", "male.lastActivity", "fitness.lastWorkout"], "None")]
   ]);
