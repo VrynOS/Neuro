@@ -172,21 +172,21 @@ svg {
 .brand {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 18px;
 }
 
 .brand-mark {
-  width: 92px;
-  height: 64px;
+  width: 84px;
+  height: 72px;
   display: grid;
   place-items: center;
 }
 
 .brand-mark img {
-  width: 92px;
-  height: 64px;
+  width: 84px;
+  height: 72px;
   object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(40, 161, 252, 0.58)) drop-shadow(0 0 22px rgba(255, 238, 172, 0.2));
+  filter: drop-shadow(0 0 10px rgba(46, 242, 143, 0.44)) drop-shadow(0 0 18px rgba(40, 161, 252, 0.16));
 }
 
 h1 {
