@@ -13,6 +13,13 @@
   --amber: #ffc85c;
   --purple: #8c6dff;
   --shadow: 0 4px 18px rgba(0, 0, 0, 0.82);
+  --glass-border: rgba(40, 161, 252, 0.24);
+  --glass-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 30%);
+  --glass-surface: linear-gradient(180deg, rgba(6, 24, 36, 0.7), rgba(0, 10, 18, 0.76));
+  --glass-surface-strong: linear-gradient(180deg, rgba(4, 17, 27, 0.82), rgba(0, 6, 12, 0.86));
+  --glass-card: rgba(2, 15, 24, 0.68);
+  --glass-field: rgba(0, 8, 14, 0.7);
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), inset 0 0 24px rgba(40, 161, 252, 0.055), 0 0 20px rgba(0, 0, 0, 0.34);
   --hud-font: "Bai Jamjuree HUD", "Ravenscroft", "Neuropol X", "Neuropol X Free", "NeuropolXRg-Regular", "Neuropol", "Orbitron", "Segoe UI", Arial, sans-serif;
 }
 
@@ -227,10 +234,10 @@ h1 {
   border-radius: 2%;
   color: var(--green);
   background:
-    radial-gradient(circle at 28% 20%, rgba(255, 255, 255, 0.6), transparent 17%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 42%),
-    linear-gradient(180deg, rgba(20, 56, 82, 0.76), rgba(2, 16, 28, 0.82));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), inset 0 -22px 32px rgba(0, 0, 0, 0.44), 0 0 18px rgba(46, 242, 143, 0.16);
+    radial-gradient(circle at 28% 20%, rgba(255, 255, 255, 0.3), transparent 17%),
+    var(--glass-sheen),
+    var(--glass-surface-strong);
+  box-shadow: var(--glass-shadow), 0 0 18px rgba(46, 242, 143, 0.16);
   cursor: pointer;
 }
 
@@ -275,7 +282,8 @@ h1 {
   border: 1px solid rgba(46, 242, 143, 0.36);
   border-radius: 6px;
   background:
-    linear-gradient(180deg, rgba(7, 28, 34, 0.96), rgba(0, 10, 18, 0.98));
+    var(--glass-sheen),
+    var(--glass-surface-strong);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.42), 0 0 18px rgba(46, 242, 143, 0.12);
 }
 
@@ -310,7 +318,7 @@ h1 {
 
 .notification-menu header button {
   border: 1px solid rgba(40, 161, 252, 0.28);
-  background: rgba(40, 161, 252, 0.08);
+  background: var(--glass-field);
   color: var(--blue);
   font: inherit;
   font-size: 13px;
@@ -331,7 +339,7 @@ h1 {
   gap: 10px;
   min-height: 58px;
   border: 1px solid rgba(40, 161, 252, 0.18);
-  background: rgba(1, 12, 20, 0.8);
+  background: var(--glass-card);
   color: var(--text);
   text-align: left;
   cursor: pointer;
@@ -340,7 +348,7 @@ h1 {
 
 .notification-item.is-unread {
   border-color: rgba(46, 242, 143, 0.42);
-  background: rgba(7, 34, 28, 0.8);
+  background: linear-gradient(180deg, rgba(7, 34, 28, 0.78), rgba(0, 11, 14, 0.84));
 }
 
 .notification-item img {
@@ -473,10 +481,10 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.36);
   border-radius: 2%;
   background:
-    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.34), transparent 18%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.26), transparent 36%),
-    linear-gradient(180deg, rgba(22, 56, 80, 0.72), rgba(0, 9, 18, 0.78));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), inset 0 -18px 28px rgba(0, 0, 0, 0.52), 0 0 16px rgba(40, 161, 252, 0.14);
+    radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.2), transparent 18%),
+    var(--glass-sheen),
+    var(--glass-surface-strong);
+  box-shadow: var(--glass-shadow), 0 0 16px rgba(40, 161, 252, 0.14);
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
@@ -528,7 +536,7 @@ h1 {
   background:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.44), transparent 18%),
     linear-gradient(135deg, rgba(40, 161, 252, 0.42), transparent 42%),
-    linear-gradient(180deg, rgba(17, 68, 111, 0.78), rgba(0, 16, 30, 0.82));
+    var(--glass-surface-strong);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 0 26px rgba(40, 161, 252, 0.26), 0 0 24px rgba(40, 161, 252, 0.42);
 }
 
@@ -561,7 +569,7 @@ h1 {
   border: 1px solid var(--blue-dim);
   border-radius: 2%;
   padding: 8px;
-  background: rgba(40, 161, 252, 0.08);
+  background: var(--glass-field);
   box-shadow: inset 0 0 14px rgba(40, 161, 252, 0.12);
 }
 
@@ -596,12 +604,9 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.2);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(6, 24, 36, 0.68), rgba(0, 10, 18, 0.72));
+    var(--glass-surface);
   backdrop-filter: blur(12px) saturate(1.22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.13),
-    inset 0 0 26px rgba(40, 161, 252, 0.055),
-    0 0 20px rgba(0, 0, 0, 0.34);
+  box-shadow: var(--glass-shadow);
 }
 
 .body-status {
@@ -828,7 +833,7 @@ h1 {
   border-radius: 7px;
   border: 1px solid rgba(40, 161, 252, 0.16);
   padding: 7px;
-  background: rgba(40, 161, 252, 0.08);
+  background: var(--glass-field);
   box-shadow: inset 0 0 14px rgba(40, 161, 252, 0.16), 0 0 12px rgba(40, 161, 252, 0.18);
 }
 
@@ -901,7 +906,7 @@ h1 {
   padding: 10px 12px;
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
-  background: rgba(2, 15, 24, 0.66);
+  background: var(--glass-card);
 }
 
 .cdf-news-grid article span {
@@ -1047,9 +1052,9 @@ h1 {
 .profile-editor {
   border: 1px solid rgba(40, 161, 252, 0.22);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(5, 22, 34, 0.72), rgba(0, 10, 18, 0.76));
+  background: var(--glass-surface);
   backdrop-filter: blur(16px) saturate(1.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 26px rgba(40, 161, 252, 0.06), 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--glass-shadow);
 }
 
 .profile-card {
@@ -1078,7 +1083,7 @@ h1 {
   border: 2px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 4px;
   overflow: hidden;
-  background: rgba(2, 12, 18, 0.86);
+  background: var(--glass-field);
   box-shadow: 0 0 28px color-mix(in srgb, var(--profile-accent), transparent 66%);
 }
 
@@ -1175,7 +1180,7 @@ h1 {
   padding: 10px 16px;
   border: 1px solid rgba(40, 161, 252, 0.24);
   border-radius: 6px;
-  background: rgba(0, 10, 18, 0.42);
+  background: var(--glass-card);
 }
 
 .level-mark {
@@ -1209,7 +1214,7 @@ h1 {
   height: 8px;
   margin: 7px 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--glass-field);
   overflow: hidden;
 }
 
@@ -1239,7 +1244,7 @@ h1 {
   border-radius: 6px;
   background:
     radial-gradient(circle at 54px 77px, color-mix(in srgb, var(--profile-accent), transparent 80%), transparent 68px),
-    linear-gradient(90deg, rgba(0, 8, 14, 0.6), rgba(0, 18, 30, 0.38));
+    var(--glass-surface);
   overflow: hidden;
 }
 
@@ -1279,7 +1284,7 @@ h1 {
   height: 90px;
   border: 1px solid color-mix(in srgb, var(--profile-accent), white 18%);
   border-radius: 50%;
-  background: rgba(0, 8, 14, 0.5);
+  background: var(--glass-field);
   box-shadow:
     inset 0 0 18px color-mix(in srgb, var(--profile-accent), transparent 82%),
     0 0 20px color-mix(in srgb, var(--profile-accent), transparent 70%);
@@ -1348,8 +1353,8 @@ h1 {
   border: 1px solid var(--blue-soft);
   border-radius: 2%;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.02) 32%),
-    linear-gradient(180deg, rgba(30, 56, 76, 0.92), rgba(1, 9, 15, 0.94));
+    var(--glass-sheen),
+    var(--glass-surface-strong);
   color: var(--blue);
   font-size: 19px;
   text-transform: uppercase;
@@ -1435,7 +1440,7 @@ h1 {
   padding: 0 14px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
-  background: rgba(0, 10, 18, 0.52);
+  background: var(--glass-field);
   color: var(--blue);
   font: inherit;
   font-size: 14px;
@@ -1489,7 +1494,7 @@ h1 {
   padding: 10px 12px;
   border: 1px solid rgba(40, 161, 252, 0.18);
   border-radius: 8px;
-  background: rgba(0, 9, 16, 0.5);
+  background: var(--glass-card);
   color: var(--text);
   text-align: left;
   cursor: pointer;
@@ -1499,7 +1504,7 @@ h1 {
 .messages-headbar button:hover,
 .dm-compose button:hover {
   border-color: rgba(40, 161, 252, 0.48);
-  background: rgba(2, 20, 34, 0.62);
+  background: linear-gradient(180deg, rgba(8, 30, 44, 0.76), rgba(0, 11, 18, 0.8));
 }
 
 .dm-row img {
@@ -1572,13 +1577,13 @@ h1 {
   padding: 10px 12px;
   border: 1px solid rgba(40, 161, 252, 0.2);
   border-radius: 8px;
-  background: rgba(0, 9, 16, 0.54);
+  background: var(--glass-card);
 }
 
 .dm-message.self {
   justify-self: end;
   border-color: rgba(79, 255, 187, 0.28);
-  background: rgba(20, 90, 74, 0.28);
+  background: linear-gradient(180deg, rgba(16, 70, 60, 0.46), rgba(0, 14, 18, 0.72));
 }
 
 .dm-message p {
@@ -1600,7 +1605,7 @@ h1 {
   min-height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
-  background: rgba(0, 8, 14, 0.62);
+  background: var(--glass-field);
   color: var(--text);
   font: inherit;
   font-size: 15px;
@@ -1613,7 +1618,7 @@ h1 {
   min-height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
-  background: rgba(0, 10, 18, 0.58);
+  background: var(--glass-field);
   color: var(--blue);
   cursor: pointer;
 }
@@ -1663,19 +1668,19 @@ h1 {
   padding: 10px 13px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  background: rgba(0, 8, 14, 0.42);
+  background: var(--glass-card);
 }
 
 .message-thread article.self {
   justify-self: end;
   border-color: rgba(40, 161, 252, 0.34);
-  background: rgba(40, 161, 252, 0.12);
+  background: linear-gradient(180deg, rgba(13, 49, 72, 0.62), rgba(0, 10, 18, 0.74));
 }
 
 .message-thread article.system {
   max-width: 100%;
   border-color: rgba(40, 161, 252, 0.22);
-  background: rgba(40, 161, 252, 0.07);
+  background: linear-gradient(180deg, rgba(10, 35, 50, 0.62), rgba(0, 8, 14, 0.76));
 }
 
 .message-thread span {
@@ -1714,7 +1719,7 @@ h1 {
   min-height: 42px;
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
-  background: rgba(0, 8, 14, 0.62);
+  background: var(--glass-field);
   color: var(--text);
   font: inherit;
   font-size: 17px;
@@ -1726,7 +1731,7 @@ h1 {
 .avatar-picker button {
   border: 1px solid rgba(40, 161, 252, 0.28);
   border-radius: 4px;
-  background: rgba(0, 10, 18, 0.58);
+  background: var(--glass-field);
   color: var(--blue);
   cursor: pointer;
 }
@@ -1862,7 +1867,7 @@ h1 {
   padding: 10px;
   border: 1px solid rgba(40, 161, 252, 0.18);
   border-radius: 6px;
-  background: rgba(0, 8, 14, 0.44);
+  background: var(--glass-card);
 }
 
 .perf-panel span {
@@ -1883,7 +1888,7 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.38);
   border-radius: 10px;
   color: #69ecff;
-  background: rgba(0, 0, 0, 0.34);
+  background: var(--glass-field);
   white-space: pre-wrap;
   font-size: 20px;
 }
