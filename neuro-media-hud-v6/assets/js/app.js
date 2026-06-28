@@ -589,21 +589,10 @@ function renderHealthDetail(section = "cycle") {
 
 function renderHealth() {
   const female = isFemaleAvatar();
-  const xp = profileXp();
   const owner = document.querySelector("[data-health-owner]");
   const note = document.querySelector("[data-health-sex-note]");
   if (owner) owner.textContent = `${state.profile.name || "XinjXi"}'s 'Neuron'`;
   if (note) note.textContent = female ? "Female health systems available." : "Female health options hidden because avatar sex is not Female.";
-
-  renderKeyValueRows(document.querySelector("[data-health-core]"), [
-    ["Hunger", state.stats.hunger],
-    ["Thirst", state.stats.thirst],
-    ["Sleep", state.stats.sleep],
-    ["Hygiene", state.stats.hygiene],
-    ["Energy", state.stats.energy],
-    ["Fun", state.stats.fun],
-    ["XP", `${xp.current.toLocaleString("en-US")}/${xp.goal.toLocaleString("en-US")}`]
-  ]);
 
   document.querySelectorAll("[data-female-health]").forEach((node) => {
     node.hidden = !female;
