@@ -2095,6 +2095,7 @@ h1 {
 }
 
 .neuro-messages {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 8px;
   padding: 12px 0 10px;
   border-color: rgba(255, 255, 255, 0.06);
@@ -2128,11 +2129,15 @@ h1 {
 }
 
 .message-search {
+  grid-row: 2;
+  align-self: start;
   display: grid;
   grid-template-columns: 74px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
-  min-height: 46px;
+  min-height: 0;
+  height: 46px;
+  max-height: 46px;
   margin: 0 16px 4px;
   padding: 0 14px;
   border: 1px solid rgba(255, 255, 255, 0.11);
@@ -2192,8 +2197,18 @@ h1 {
 }
 
 .neuro-messages .message-inbox {
+  grid-row: 3;
   gap: 0;
+  min-height: 0;
   padding: 0 0 0 16px;
+}
+
+.neuro-messages .dm-thread {
+  grid-row: 2 / 4;
+}
+
+.neuro-messages .dm-compose {
+  grid-row: 4;
 }
 
 .neuro-messages .dm-row {
