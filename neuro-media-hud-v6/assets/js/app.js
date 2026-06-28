@@ -632,7 +632,7 @@ function renderNotificationMenu() {
   if (!list) return;
   list.replaceChildren();
 
-  sortedDmThreads().slice(0, 5).forEach((thread) => {
+  sortedDmThreads().filter((thread) => thread.unread > 0).slice(0, 5).forEach((thread) => {
     const last = lastDmMessage(thread);
     const item = document.createElement("button");
     item.type = "button";
