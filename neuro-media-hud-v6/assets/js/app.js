@@ -34,72 +34,17 @@ const state = {
     activeThreadId: "",
     live: false,
     loading: false,
-    threads: [
-      {
-        threadId: "dm-jade-rain",
-        avatar: "03",
-        participantUuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
-        participantName: "Jade Rain",
-        participantHandle: "@jaderain.sl",
-        unread: 1,
-        messages: [
-          {
-            message_id: "msg-jade-001",
-            sender_uuid: "7e0c6dd7-681b-4a28-9d60-293f7623b201",
-            receiver_uuid: "local-web-profile",
-            sender_name: "Jade Rain",
-            receiver_name: "Neuro Resident",
-            message_text: "Meet me near Eden Palms when you get a chance.",
-            timestamp: Date.now() - 2 * 60 * 1000,
-            read: false
-          }
-        ]
-      },
-      {
-        threadId: "dm-kam",
-        avatar: "07",
-        participantUuid: "6c7a2b84-4106-438d-ae74-c1ef2fb7ab56",
-        participantName: "Kam",
-        participantHandle: "@kam.sl",
-        unread: 0,
-        messages: [
-          {
-            message_id: "msg-kam-001",
-            sender_uuid: "6c7a2b84-4106-438d-ae74-c1ef2fb7ab56",
-            receiver_uuid: "local-web-profile",
-            sender_name: "Kam",
-            receiver_name: "Neuro Resident",
-            message_text: "I sent the new Chi-Core route.",
-            timestamp: Date.now() - 12 * 60 * 1000,
-            read: true
-          }
-        ]
-      },
-      {
-        threadId: "dm-system",
-        avatar: "01",
-        participantUuid: "system",
-        participantName: "System",
-        participantHandle: "@system",
-        unread: 1,
-        messages: [
-          {
-            message_id: "msg-system-001",
-            sender_uuid: "system",
-            receiver_uuid: "local-web-profile",
-            sender_name: "System",
-            receiver_name: "Neuro Resident",
-            message_text: "HUD update ready.",
-            timestamp: Date.now(),
-            read: false
-          }
-        ]
-      }
-    ]
+    query: "",
+    offline: false,
+    threads: []
   },
   notifications: {
     items: [],
     dismissedStats: []
+  },
+  webState: {
+    liveLoaded: false,
+    saveTimer: 0
   },
   stats: {
     hunger: 82,
@@ -291,6 +236,7 @@ function masterRefresh(button = null) {
     window.setTimeout(() => button.classList.remove("is-refreshing"), 460);
   }
   if (liveBridge) {
+    saveWebStateNow();
     sendBridge("refresh");
     return;
   }
@@ -912,6 +858,26 @@ function timeAgo(time) {
   return `${Math.round(hours / 24)}d`;
 }
 
+function messageListDate(time) {
+  const value = Number(time || 0);
+  if (!value) return "";
+  const date = new Date(value);
+  const now = new Date();
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  if (startDate === startToday) {
+    return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(date);
+  }
+  if (startDate === startToday - 86400000) return "Yesterday";
+  return new Intl.DateTimeFormat("en-US", { month: "numeric", day: "numeric", year: "2-digit" }).format(date);
+}
+
+function initialsFor(name) {
+  const parts = String(name || "Resident").trim().split(/\s+/).filter(Boolean);
+  const letters = parts.slice(0, 2).map((part) => part[0]).join("");
+  return letters.toUpperCase() || "R";
+}
+
 function currentOwnerUuid() {
   return String(query.get("avatar") || snapshotValue(state.lastSnapshot, "ownerUuid", snapshotValue(state.lastSnapshot, "avatarUuid", "local-web-profile")));
 }
@@ -950,12 +916,14 @@ function normalizeDmMessage(message, thread) {
 }
 
 function normalizeDmThread(thread) {
+  const participantUuid = String(thread.participantUuid || thread.participant_uuid || "unknown");
+  const participantName = String(thread.participantName || thread.participant_name || thread.name || "Resident");
   const base = {
-    threadId: String(thread.threadId || `dm-${Date.now()}-${Math.round(Math.random() * 10000)}`),
+    threadId: String(thread.threadId || thread.thread_id || `dm-${participantUuid}`),
     avatar: String(thread.avatar || "01"),
-    participantUuid: String(thread.participantUuid || "unknown"),
-    participantName: String(thread.participantName || "Resident"),
-    participantHandle: String(thread.participantHandle || "@resident.sl")
+    participantUuid,
+    participantName,
+    participantHandle: String(thread.participantHandle || thread.participant_handle || `@${participantUuid.slice(0, 8)}`)
   };
   const messages = Array.isArray(thread.messages) ? thread.messages : [];
   const normalizedMessages = messages
@@ -979,16 +947,19 @@ function saveMessagesLocal() {
 }
 
 function loadMessagesLocal() {
+  if (liveBridge) {
+    state.messages.threads = [];
+    return;
+  }
   try {
     const saved = JSON.parse(localStorage.getItem("neuroMessages") || "[]");
     if (Array.isArray(saved) && saved.length) {
       state.messages.threads = saved.map(normalizeDmThread);
     } else {
-      state.messages.threads = state.messages.threads.map(normalizeDmThread);
-      saveMessagesLocal();
+      state.messages.threads = [];
     }
   } catch {
-    state.messages.threads = state.messages.threads.map(normalizeDmThread);
+    state.messages.threads = [];
   }
 }
 
@@ -1008,12 +979,15 @@ function requestDmInbox(force = false) {
 function handleDmResponse(body) {
   if (body.startsWith("DM_OFFLINE|")) {
     state.messages.loading = false;
+    state.messages.offline = true;
     addLocalNotification("Messages Offline", "Neuro Messages server did not answer.", "System");
+    if (state.perf.loaded.messages) renderMessageInbox();
     return true;
   }
   if (!body.startsWith("DM|")) return false;
 
   state.messages.loading = false;
+  state.messages.offline = false;
   try {
     const payload = body.substring(3) || "[]";
     const threads = JSON.parse(payload);
@@ -1056,34 +1030,51 @@ function renderMessageInbox() {
   const threadView = document.querySelector("[data-dm-thread]");
   const compose = document.querySelector("[data-dm-form]");
   const back = document.querySelector("[data-message-back]");
+  const search = document.querySelector(".message-search");
   if (!inbox) return;
 
   state.messages.activeThreadId = "";
-  setMessagesTitle("Neuro Messages");
+  setMessagesTitle("Messages");
   inbox.hidden = false;
   if (threadView) threadView.hidden = true;
   if (compose) compose.hidden = true;
   if (back) back.hidden = true;
+  if (search) search.hidden = false;
   inbox.replaceChildren();
 
-  sortedDmThreads().forEach((thread) => {
+  const needle = state.messages.query.trim().toLowerCase();
+  const threads = sortedDmThreads().filter((thread) => {
+    if (!needle) return true;
+    const last = lastDmMessage(thread);
+    return [
+      thread.participantName,
+      thread.participantHandle,
+      last?.message_text
+    ].join(" ").toLowerCase().includes(needle);
+  });
+
+  threads.forEach((thread) => {
     const last = lastDmMessage(thread);
     const row = document.createElement("button");
     row.type = "button";
-    row.className = "dm-row";
+    row.className = thread.unread > 0 ? "dm-row is-unread" : "dm-row";
     row.dataset.messageThread = thread.threadId;
     row.innerHTML = `
-      <img alt="">
+      <span class="dm-avatar"><img alt=""><b></b></span>
       <span class="dm-row-copy">
         <header><strong></strong><time></time></header>
         <small></small>
       </span>
+      <span class="dm-chevron" aria-hidden="true">›</span>
       <i hidden></i>`;
-    row.querySelector("img").src = avatarPath(thread.avatar);
-    row.querySelector("img").alt = thread.participantName;
+    const image = row.querySelector("img");
+    image.src = avatarPath(thread.avatar);
+    image.alt = thread.participantName;
+    image.onerror = () => { image.hidden = true; };
+    row.querySelector(".dm-avatar b").textContent = initialsFor(thread.participantName);
     row.querySelector("strong").textContent = thread.participantName;
-    row.querySelector("time").textContent = last ? timeAgo(last.timestamp) : "now";
-    row.querySelector("small").textContent = last?.message_text || "No messages yet.";
+    row.querySelector("time").textContent = last ? messageListDate(last.timestamp) : "";
+    row.querySelector("small").textContent = last?.message_text || "Registered Neuro user. Start the conversation.";
     const unread = row.querySelector("i");
     if (thread.unread > 0) {
       unread.hidden = false;
@@ -1095,7 +1086,17 @@ function renderMessageInbox() {
   if (!inbox.children.length) {
     const empty = document.createElement("article");
     empty.className = "dm-empty";
-    empty.innerHTML = "<strong>No avatar messages yet.</strong><small>Open this HUD around other Neuro users to start private chats.</small>";
+    if (state.messages.loading) {
+      empty.innerHTML = "<strong>Checking Messages</strong><small>Asking the Neuro Messages server for live avatar chats.</small>";
+    } else if (state.messages.offline) {
+      empty.innerHTML = "<strong>Messages Server Offline</strong><small>The HUD is wired to the server, but the in-world message server did not answer yet.</small>";
+    } else if (needle) {
+      empty.innerHTML = "<strong>No Results</strong><small>No server conversations match that search.</small>";
+    } else if (liveBridge && state.messages.live) {
+      empty.innerHTML = "<strong>No Registered Contacts</strong><small>When another Neuro HUD user opens Profile, they will appear here from the message server.</small>";
+    } else {
+      empty.innerHTML = "<strong>Server Messages Only</strong><small>Open this HUD in Second Life to load live Neuro Messages.</small>";
+    }
     inbox.append(empty);
   }
 }
@@ -1203,6 +1204,67 @@ function resetRecoveredStatDismissals() {
   saveNotificationsLocal();
 }
 
+function webStatePayload() {
+  return {
+    notifications: {
+      items: state.notifications.items.slice(0, 8),
+      dismissedStats: state.notifications.dismissedStats
+    },
+    savedAt: Date.now()
+  };
+}
+
+function applyWebState(saved) {
+  if (!saved || typeof saved !== "object") return;
+  const notifications = saved.notifications || {};
+  if (Array.isArray(notifications.items)) {
+    state.notifications.items = notifications.items.slice(0, 8);
+  }
+  if (Array.isArray(notifications.dismissedStats)) {
+    state.notifications.dismissedStats = notifications.dismissedStats;
+  }
+  renderNotificationCount();
+  const menu = document.querySelector("[data-notification-menu]");
+  if (menu && !menu.hidden) renderNotificationMenu();
+}
+
+function saveWebStateNow() {
+  if (!liveBridge) return;
+  sendBridge("state-save", JSON.stringify(webStatePayload()));
+}
+
+function queueWebStateSave() {
+  if (!liveBridge) return;
+  window.clearTimeout(state.webState.saveTimer);
+  state.webState.saveTimer = window.setTimeout(() => {
+    state.webState.saveTimer = 0;
+    saveWebStateNow();
+  }, 180);
+}
+
+function requestWebState(force = false) {
+  if (!liveBridge) return;
+  if (!force && state.webState.liveLoaded) return;
+  sendBridge("state-load");
+  setLastRefresh("state loaded");
+}
+
+function handleWebStateResponse(body) {
+  if (!body.startsWith("WEB_STATE|")) return false;
+
+  state.webState.liveLoaded = true;
+  const payload = body.substring(10);
+  if (!payload || payload === "{}") return true;
+
+  try {
+    applyWebState(JSON.parse(payload));
+    saveNotificationsLocal(false);
+  } catch {
+    logBridge("bad state payload");
+  }
+  return true;
+}
+
 function loadNotificationsLocal() {
   try {
     const saved = JSON.parse(window.localStorage.getItem("neuroNotifications") || "[]");
@@ -1219,11 +1281,16 @@ function loadNotificationsLocal() {
   }
 }
 
-function saveNotificationsLocal() {
-  window.localStorage.setItem("neuroNotifications", JSON.stringify({
-    items: state.notifications.items.slice(0, 8),
-    dismissedStats: state.notifications.dismissedStats
-  }));
+function saveNotificationsLocal(syncHud = true) {
+  try {
+    window.localStorage.setItem("neuroNotifications", JSON.stringify({
+      items: state.notifications.items.slice(0, 8),
+      dismissedStats: state.notifications.dismissedStats
+    }));
+  } catch {
+    logBridge("local notification cache blocked");
+  }
+  if (syncHud) queueWebStateSave();
 }
 
 function addLocalNotification(title, message, category = "System") {
@@ -1286,6 +1353,7 @@ function renderMessageThread() {
   const threadView = document.querySelector("[data-dm-thread]");
   const compose = document.querySelector("[data-dm-form]");
   const back = document.querySelector("[data-message-back]");
+  const search = document.querySelector(".message-search");
   if (!thread || !threadView) return;
 
   setMessagesTitle(thread.participantName);
@@ -1293,6 +1361,7 @@ function renderMessageThread() {
   threadView.hidden = false;
   if (compose) compose.hidden = thread.participantUuid === "system";
   if (back) back.hidden = false;
+  if (search) search.hidden = true;
   threadView.replaceChildren();
 
   thread.messages.forEach((message) => {
@@ -1935,6 +2004,13 @@ document.addEventListener("submit", (event) => {
   }
 });
 
+document.addEventListener("input", (event) => {
+  const search = event.target.closest("[data-message-search]");
+  if (!search) return;
+  state.messages.query = String(search.value || "");
+  renderMessageInbox();
+});
+
 window.addEventListener("message", (event) => {
   const data = String(event.data || "");
   if (!data.startsWith("NEURO_GATEWAY_ACK|")) return;
@@ -1946,6 +2022,7 @@ window.addEventListener("message", (event) => {
   const op = pendingBridge.get(tick) || tick;
   pendingBridge.delete(tick);
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
+  if (handleWebStateResponse(body)) return;
   if (handleProfileResponse(body)) return;
   if (handleWalletResponse(body)) return;
   if (handleDmResponse(body)) return;
@@ -1956,9 +2033,11 @@ window.addEventListener("message", (event) => {
 
 setupStats();
 loadSavedProfile();
+requestStoredProfile(true);
 loadMessagesLocal();
 loadNotificationsLocal();
 renderNotificationCount();
+requestWebState(true);
 setupClock();
 loadHome();
 startLiveStats();

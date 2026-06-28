@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=messages-live-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=state-handshake-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -222,10 +222,14 @@
         <section class="messages-panel neuro-messages" aria-label="Neuro messages">
           <header class="messages-head messages-headbar">
             <div>
-              <span>Neuro Messages</span>
+              <span>Messages</span>
             </div>
             <button type="button" data-message-back hidden>Back</button>
           </header>
+          <label class="message-search">
+            <span>Search</span>
+            <input type="search" data-message-search autocomplete="off" aria-label="Search messages">
+          </label>
           <section class="message-inbox" data-message-inbox>
           </section>
           <section class="dm-thread" data-dm-thread hidden>
@@ -293,6 +297,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=messages-live-1"></script>
+  <script src="assets/js/app.js?v=state-handshake-1"></script>
 </body>
 </html>

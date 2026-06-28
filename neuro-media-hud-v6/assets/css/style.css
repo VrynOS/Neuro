@@ -2094,6 +2094,277 @@ h1 {
   height: 23px;
 }
 
+.neuro-messages {
+  gap: 8px;
+  padding: 12px 0 10px;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.neuro-messages .messages-head {
+  min-height: 42px;
+  padding: 0 18px;
+}
+
+.neuro-messages .messages-head span {
+  color: #f7f7f9;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.neuro-messages .messages-headbar button {
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2f8cff;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.message-search {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  margin: 0 16px 4px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(35, 35, 38, 0.86);
+  color: #8e8e93;
+}
+
+.message-search[hidden] {
+  display: none;
+}
+
+.message-search span {
+  position: relative;
+  padding-left: 28px;
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.message-search span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  transform: translateY(-54%);
+}
+
+.message-search span::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 27px;
+  width: 11px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.message-search input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f7f7f9;
+  font: inherit;
+  font-size: 20px;
+}
+
+.message-search:focus-within {
+  border-color: rgba(47, 140, 255, 0.46);
+  box-shadow: 0 0 0 2px rgba(47, 140, 255, 0.12);
+}
+
+.neuro-messages .message-inbox {
+  gap: 0;
+  padding: 0 0 0 16px;
+}
+
+.neuro-messages .dm-row {
+  position: relative;
+  grid-template-columns: 70px minmax(0, 1fr) 24px;
+  gap: 12px;
+  min-height: 96px;
+  padding: 12px 14px 12px 0;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  box-shadow: none;
+}
+
+.neuro-messages .dm-row:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.dm-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #58526f, #211d34);
+}
+
+.dm-avatar img,
+.dm-avatar b {
+  grid-area: 1 / 1;
+}
+
+.dm-avatar img {
+  position: relative;
+  z-index: 2;
+  width: 62px;
+  height: 62px;
+  border: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dm-avatar b {
+  color: #f7f7f9;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.neuro-messages .dm-row-copy {
+  gap: 5px;
+  align-self: center;
+}
+
+.neuro-messages .dm-row header {
+  align-items: center;
+  gap: 10px;
+}
+
+.neuro-messages .dm-row strong {
+  color: #f7f7f9;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.neuro-messages .dm-row.is-unread strong {
+  color: #ffffff;
+}
+
+.neuro-messages .dm-row time {
+  margin-left: auto;
+  color: #8e8e93;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.neuro-messages .dm-row small {
+  color: #8e8e93;
+  font-size: 21px;
+  line-height: 1.18;
+}
+
+.dm-chevron {
+  align-self: center;
+  color: #5d5d64;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.neuro-messages .dm-row i {
+  position: absolute;
+  right: 38px;
+  bottom: 14px;
+  width: 25px;
+  height: 25px;
+  background: #0a84ff;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.neuro-messages .dm-empty {
+  margin: 22px 16px 0 0;
+  border: 0;
+  background: transparent;
+  color: #8e8e93;
+}
+
+.neuro-messages .dm-empty strong {
+  color: #f7f7f9;
+  font-size: 25px;
+}
+
+.neuro-messages .dm-empty small {
+  color: #8e8e93;
+  font-size: 19px;
+}
+
+.neuro-messages .dm-thread {
+  gap: 8px;
+  padding: 8px 14px;
+}
+
+.neuro-messages .dm-message {
+  max-width: 78%;
+  padding: 9px 13px;
+  border: 0;
+  border-radius: 18px;
+  background: #2c2c2e;
+}
+
+.neuro-messages .dm-message.self {
+  background: #0a84ff;
+}
+
+.neuro-messages .dm-message header {
+  display: none;
+}
+
+.neuro-messages .dm-message p {
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.neuro-messages .dm-compose {
+  grid-template-columns: minmax(0, 1fr) 46px;
+  margin: 0 14px;
+  padding-top: 4px;
+}
+
+.neuro-messages .dm-compose input {
+  min-height: 44px;
+  border-color: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(35, 35, 38, 0.94);
+  color: #f7f7f9;
+}
+
+.neuro-messages .dm-compose button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: #0a84ff;
+  color: #ffffff;
+}
+
 [data-profile-status].is-online,
 [data-bridge-status].is-online {
   color: var(--green);
