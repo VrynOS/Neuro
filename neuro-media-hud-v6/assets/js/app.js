@@ -624,6 +624,52 @@ function renderNotificationCount() {
     button.classList.toggle("has-alerts", count > 0);
     button.setAttribute("aria-label", count > 0 ? `${count} unread notifications` : "Notifications");
   });
+  if (document.querySelector("[data-notification-menu]:not([hidden])")) renderNotificationMenu();
+}
+
+function renderNotificationMenu() {
+  const list = document.querySelector("[data-notification-list]");
+  if (!list) return;
+  list.replaceChildren();
+
+  sortedDmThreads().slice(0, 5).forEach((thread) => {
+    const last = lastDmMessage(thread);
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = thread.unread > 0 ? "notification-item is-unread" : "notification-item";
+    item.dataset.notificationThread = thread.threadId;
+    item.innerHTML = "<img alt=\"\"><span><strong></strong><small></small></span><time></time>";
+    item.querySelector("img").src = avatarPath(thread.avatar);
+    item.querySelector("img").alt = thread.participantName;
+    item.querySelector("strong").textContent = thread.participantName;
+    item.querySelector("small").textContent = last?.message_text || "No updates yet.";
+    item.querySelector("time").textContent = last ? timeAgo(last.timestamp) : "now";
+    list.append(item);
+  });
+
+  if (!list.children.length) {
+    const empty = document.createElement("article");
+    empty.className = "notification-item";
+    empty.innerHTML = "<span><strong>No Updates</strong><small>Nothing new right now.</small></span>";
+    list.append(empty);
+  }
+}
+
+function setNotificationMenu(open) {
+  const menu = document.querySelector("[data-notification-menu]");
+  const button = document.querySelector("[data-notification-button]");
+  if (!menu) return;
+  menu.hidden = !open;
+  if (button) button.setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) renderNotificationMenu();
+}
+
+function toggleNotificationMenu() {
+  const menu = document.querySelector("[data-notification-menu]");
+  loadMessagesLocal();
+  renderNotificationCount();
+  setNotificationMenu(Boolean(menu?.hidden));
+  if (liveBridge) sendBridge("notify");
 }
 
 function renderMessageThread() {
@@ -694,11 +740,13 @@ function sendPrivateMessage(text) {
 
 function openNotifications() {
   loadMessagesLocal();
-  const firstUnread = sortedDmThreads().find((thread) => thread.unread > 0);
+  toggleNotificationMenu();
+}
+
+function openNotificationThread(threadId) {
+  setNotificationMenu(false);
   showScreen("profile");
-  if (firstUnread) openMessageThread(firstUnread.threadId);
-  else renderMessageInbox();
-  if (liveBridge) sendBridge("notify");
+  openMessageThread(threadId);
 }
 
 function loadHome() {
@@ -1038,6 +1086,22 @@ document.addEventListener("click", (event) => {
   if (notifyButton) {
     openNotifications();
     return;
+  }
+
+  const notificationClose = event.target.closest("[data-notification-close]");
+  if (notificationClose) {
+    setNotificationMenu(false);
+    return;
+  }
+
+  const notificationThread = event.target.closest("[data-notification-thread]");
+  if (notificationThread) {
+    openNotificationThread(notificationThread.dataset.notificationThread);
+    return;
+  }
+
+  if (!event.target.closest("[data-notification-menu]")) {
+    setNotificationMenu(false);
   }
 
   const commandButton = event.target.closest("[data-command]");
