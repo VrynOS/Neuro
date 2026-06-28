@@ -1011,7 +1011,7 @@ h1 {
   grid-column: 1;
   grid-row: 2;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
 .health-detail header {
@@ -1060,7 +1060,8 @@ h1 {
 }
 
 .health-section-buttons,
-.health-subsection-buttons {
+.health-subsection-buttons,
+.health-cycle-actions {
   display: grid;
   gap: 10px;
 }
@@ -1075,8 +1076,18 @@ h1 {
   padding: 10px 0;
 }
 
+.health-cycle-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 10px 0 2px;
+}
+
+.health-cycle-actions[hidden] {
+  display: none;
+}
+
 .health-section-buttons button,
-.health-subsection-buttons button {
+.health-subsection-buttons button,
+.health-cycle-actions button {
   min-height: 46px;
   border: 1px solid var(--glass-border);
   border-radius: 6px;
@@ -1091,6 +1102,12 @@ h1 {
 .health-subsection-buttons button {
   min-height: 38px;
   font-size: 15px;
+}
+
+.health-cycle-actions button {
+  min-height: 44px;
+  color: var(--blue);
+  font-size: 17px;
 }
 
 .health-section-buttons button.is-active,

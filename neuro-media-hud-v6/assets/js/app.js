@@ -146,6 +146,27 @@ const healthSectionPurposes = {
   planB: "Shows emergency use status, last taken, effects, and side effects."
 };
 
+const cycleActions = {
+  start: {
+    label: "Start Cycle",
+    command: "cycle-start",
+    status: "Active",
+    nextStep: "Track Care"
+  },
+  pause: {
+    label: "Pause Cycle",
+    command: "cycle-pause",
+    status: "Paused",
+    nextStep: "Resume Cycle"
+  },
+  stop: {
+    label: "Stop Cycle",
+    command: "cycle-stop",
+    status: "Inactive",
+    nextStep: "Start Cycle"
+  }
+};
+
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -439,6 +460,21 @@ function healthRows(groups) {
   }));
 }
 
+function setSnapshotValue(key, value) {
+  if (!state.lastSnapshot || typeof state.lastSnapshot !== "object") state.lastSnapshot = {};
+  state.lastSnapshot[key] = value;
+}
+
+function handleCycleAction(actionKey) {
+  const action = cycleActions[actionKey];
+  if (!action) return;
+  setSnapshotValue("cycle.status", action.status);
+  setSnapshotValue("cycle.nextStep", action.nextStep);
+  setSnapshotValue("cycle.lastAction", action.label);
+  renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
+  sendBridge(action.command);
+}
+
 function renderKeyValueRows(target, rows) {
   if (!target) return;
   target.replaceChildren();
@@ -571,6 +607,7 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
   const title = document.querySelector("[data-health-detail-title]");
   const purpose = document.querySelector("[data-health-detail-purpose]");
   const subnav = document.querySelector("[data-health-subsections]");
+  const cycleActionBar = document.querySelector("[data-health-cycle-actions]");
   const target = document.querySelector("[data-health-detail]");
   const groups = healthDetailGroups(section);
   const activeIndex = Math.min(Math.max(Number(groupIndex) || 0, 0), groups.length - 1);
@@ -588,6 +625,19 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
       button.textContent = group.title.replace(/^Cycle /, "").replace(/ Tab$/, "");
       subnav.append(button);
     });
+  }
+  if (cycleActionBar) {
+    cycleActionBar.hidden = section !== "cycle";
+    cycleActionBar.replaceChildren();
+    if (section === "cycle") {
+      Object.entries(cycleActions).forEach(([key, action]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.cycleAction = key;
+        button.textContent = action.label;
+        cycleActionBar.append(button);
+      });
+    }
   }
   if (!target) return;
   target.replaceChildren();
@@ -1416,6 +1466,12 @@ document.addEventListener("click", (event) => {
   if (healthSubsectionButton) {
     const section = healthSubsectionButton.dataset.healthSectionKey || document.querySelector("[data-health-section].is-active")?.dataset.healthSection || "cycle";
     renderHealthDetail(section, Number(healthSubsectionButton.dataset.healthSubsection));
+    return;
+  }
+
+  const cycleActionButton = event.target.closest("[data-cycle-action]");
+  if (cycleActionButton) {
+    handleCycleAction(cycleActionButton.dataset.cycleAction);
     return;
   }
 
