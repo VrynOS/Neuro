@@ -36,6 +36,7 @@ const state = {
     loading: false,
     query: "",
     offline: false,
+    refreshTimer: 0,
     threads: []
   },
   notifications: {
@@ -976,6 +977,20 @@ function requestDmInbox(force = false) {
   setLastRefresh("messages requested");
 }
 
+function startMessageRefresh() {
+  if (!liveBridge) return;
+  window.clearInterval(state.messages.refreshTimer);
+  state.messages.refreshTimer = window.setInterval(() => {
+    if (state.perf.activeTab !== "profile" || !state.perf.loaded.messages) return;
+    requestDmInbox(true);
+  }, 7000);
+}
+
+function stopMessageRefresh() {
+  window.clearInterval(state.messages.refreshTimer);
+  state.messages.refreshTimer = 0;
+}
+
 function handleDmResponse(body) {
   if (body.startsWith("DM_OFFLINE|")) {
     state.messages.loading = false;
@@ -1415,6 +1430,7 @@ function sendPrivateMessage(text) {
   renderNotificationCount();
   if (liveBridge) {
     sendBridge("dm-send", JSON.stringify({ thread_id: thread.threadId, ...message }));
+    window.setTimeout(() => requestDmInbox(true), 900);
     setLastRefresh("message sent");
   }
 }
@@ -1471,6 +1487,7 @@ function loadProfile() {
   renderProfile();
   loadMessagesLocal();
   requestDmInbox(true);
+  startMessageRefresh();
   if (state.messages.activeThreadId) renderMessageThread();
   else renderMessageInbox();
   renderNotificationCount();
@@ -1518,6 +1535,7 @@ function showScreen(name) {
   if (name === "wallet") loadWallet();
   if (name === "health") loadHealth();
   if (name === "settings") loadSettings();
+  if (name !== "profile") stopMessageRefresh();
   renderPerfDebug();
 }
 
