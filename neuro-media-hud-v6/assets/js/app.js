@@ -743,10 +743,26 @@ function openNotifications() {
   toggleNotificationMenu();
 }
 
-function openNotificationThread(threadId) {
-  setNotificationMenu(false);
-  showScreen("profile");
-  openMessageThread(threadId);
+function clearNotificationThread(threadId) {
+  const thread = state.messages.threads.find((item) => item.threadId === threadId);
+  if (!thread) return;
+  thread.unread = 0;
+  thread.messages.forEach((message) => {
+    if (message.sender_uuid !== currentOwnerUuid()) message.read = true;
+  });
+  saveMessagesLocal();
+  renderNotificationCount();
+}
+
+function clearAllNotifications() {
+  state.messages.threads.forEach((thread) => {
+    thread.unread = 0;
+    thread.messages.forEach((message) => {
+      if (message.sender_uuid !== currentOwnerUuid()) message.read = true;
+    });
+  });
+  saveMessagesLocal();
+  renderNotificationCount();
 }
 
 function loadHome() {
@@ -1094,9 +1110,15 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const notificationClear = event.target.closest("[data-notification-clear]");
+  if (notificationClear) {
+    clearAllNotifications();
+    return;
+  }
+
   const notificationThread = event.target.closest("[data-notification-thread]");
   if (notificationThread) {
-    openNotificationThread(notificationThread.dataset.notificationThread);
+    clearNotificationThread(notificationThread.dataset.notificationThread);
     return;
   }
 

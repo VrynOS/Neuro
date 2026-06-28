@@ -303,6 +303,11 @@ h1 {
   text-transform: uppercase;
 }
 
+.notification-menu header span {
+  display: flex;
+  gap: 6px;
+}
+
 .notification-menu header button {
   border: 1px solid rgba(40, 161, 252, 0.28);
   background: rgba(40, 161, 252, 0.08);

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=leaf-logo-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=notify-menu-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -50,7 +50,13 @@
           <span class="notification-badge" data-notification-count hidden>0</span>
         </button>
         <section class="notification-menu" data-notification-menu hidden>
-          <header><strong>Updates</strong><button type="button" data-notification-close>Close</button></header>
+          <header>
+            <strong>Updates</strong>
+            <span>
+              <button type="button" data-notification-clear>Clear All</button>
+              <button type="button" data-notification-close>Close</button>
+            </span>
+          </header>
           <div data-notification-list></div>
         </section>
         <time id="slt-clock" class="slt-clock">
@@ -235,6 +241,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=leaf-logo-1"></script>
+  <script src="assets/js/app.js?v=notify-menu-1"></script>
 </body>
 </html>
