@@ -683,7 +683,6 @@ function maleHealthDetailRows(section) {
   const groups = {
     care: [
       ["Shower", ["male.care.shower", "care.shower", "selfCare.shower"], "Not Done"],
-      ["Lotion", ["male.care.lotion", "care.lotion", "selfCare.lotion"], "Not Used"],
       ["Daily Vitamin", ["male.care.dailyVitamin", "care.dailyVitamin", "selfCare.multivitamin"], "Not Taken"],
       ["Haircut / Hair Done", ["male.care.hair", "care.hair", "selfCare.hair"], "Not Done"],
       ["Last Care", ["male.care.lastCare", "care.lastCare", "selfCare.lastCare"], "None"],
@@ -703,7 +702,6 @@ function maleHealthDetailRows(section) {
     ],
     records: [
       ["Last Shower", ["records.lastShower", "male.records.lastShower", "male.care.lastShower"], "None"],
-      ["Last Lotion Used", ["records.lastLotion", "male.records.lastLotion", "male.care.lastLotion"], "None"],
       ["Last Vitamin Taken", ["records.lastVitamin", "male.records.lastVitamin", "male.care.lastVitamin"], "None"],
       ["Last Hair Service", ["records.lastHair", "male.records.lastHair", "male.care.lastHair"], "None"],
       ["Last Workout", ["records.lastWorkout", "male.records.lastWorkout", "fitness.lastWorkout"], "None"],
