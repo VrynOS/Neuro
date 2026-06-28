@@ -1814,6 +1814,10 @@ function startLiveStats() {
   const detail = document.querySelector("[data-body-status-detail]");
   if (detail) detail.textContent = "SYNCING";
   sendBridge("stats");
+  state.perf.statsTimer = perfInterval("live stats", () => {
+    sendBridge("stats");
+    setLastRefresh("stats requested");
+  }, 12000);
   setLastRefresh("stats requested");
   renderPerfDebug();
 }
