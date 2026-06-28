@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=neuro-badge-3">
+  <link rel="stylesheet" href="assets/css/style.css?v=clock-alerts-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -45,8 +45,14 @@
         </div>
       </section>
       <section class="top-status">
-        <button class="icon-button" type="button" data-command="notify" aria-label="Notifications"><svg><use href="#icon-bell"></use></svg></button>
-        <time id="slt-clock">12:23 <span>SLT</span></time>
+        <button class="icon-button notification-button" type="button" data-command="notify" data-notification-button aria-label="Notifications">
+          <svg><use href="#icon-bell"></use></svg>
+          <span class="notification-badge" data-notification-count hidden>0</span>
+        </button>
+        <time id="slt-clock" class="slt-clock">
+          <span class="clock-hour" data-clock-hour>12</span><span class="clock-separator">:</span><span class="clock-minute minute-tone-0" data-clock-minute>23</span>
+          <span class="clock-zone">SLT</span>
+        </time>
       </section>
     </header>
 
@@ -225,6 +231,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=neuro-badge-3"></script>
+  <script src="assets/js/app.js?v=clock-alerts-1"></script>
 </body>
 </html>

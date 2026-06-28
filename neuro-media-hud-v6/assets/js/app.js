@@ -117,6 +117,10 @@ const state = {
     bridgeActive: liveBridge,
     statsTimer: 0,
     clockTimer: 0
+  },
+  clock: {
+    lastMinuteKey: "",
+    minuteToneIndex: 0
   }
 };
 
@@ -606,6 +610,22 @@ function renderMessageInbox() {
   });
 }
 
+function unreadNotificationCount() {
+  return state.messages.threads.reduce((total, thread) => total + Math.max(0, Math.round(asNumber(thread.unread, 0))), 0);
+}
+
+function renderNotificationCount() {
+  const count = unreadNotificationCount();
+  document.querySelectorAll("[data-notification-count]").forEach((node) => {
+    node.hidden = count <= 0;
+    node.textContent = count > 9 ? "9+" : String(count);
+  });
+  document.querySelectorAll("[data-notification-button]").forEach((button) => {
+    button.classList.toggle("has-alerts", count > 0);
+    button.setAttribute("aria-label", count > 0 ? `${count} unread notifications` : "Notifications");
+  });
+}
+
 function renderMessageThread() {
   const thread = activeDmThread();
   const inbox = document.querySelector("[data-message-inbox]");
@@ -644,6 +664,7 @@ function openMessageThread(threadId) {
   });
   saveMessagesLocal();
   renderMessageThread();
+  renderNotificationCount();
 }
 
 function closeMessageThread() {
@@ -667,7 +688,17 @@ function sendPrivateMessage(text) {
   thread.messages.push(message);
   saveMessagesLocal();
   renderMessageThread();
+  renderNotificationCount();
   if (liveBridge) sendBridge("dm-send", JSON.stringify({ thread_id: thread.threadId, ...message }));
+}
+
+function openNotifications() {
+  loadMessagesLocal();
+  const firstUnread = sortedDmThreads().find((thread) => thread.unread > 0);
+  showScreen("profile");
+  if (firstUnread) openMessageThread(firstUnread.threadId);
+  else renderMessageInbox();
+  if (liveBridge) sendBridge("notify");
 }
 
 function loadHome() {
@@ -684,6 +715,7 @@ function loadProfile() {
   loadMessagesLocal();
   if (state.messages.activeThreadId) renderMessageThread();
   else renderMessageInbox();
+  renderNotificationCount();
   requestStoredProfile();
 }
 
@@ -941,22 +973,39 @@ function startLiveStats() {
 function setupClock() {
   const clock = document.querySelector("#slt-clock");
   if (!clock) return;
+  const hourNode = clock.querySelector("[data-clock-hour]");
+  const minuteNode = clock.querySelector("[data-clock-minute]");
 
   function tick() {
     const now = new Date();
     const parts = new Intl.DateTimeFormat("en-US", {
       timeZone: "America/Los_Angeles",
-      hour: "2-digit",
+      hour: "numeric",
       minute: "2-digit",
-      hour12: false
+      hour12: true
     }).formatToParts(now);
-    const hour = parts.find((part) => part.type === "hour")?.value || "00";
+    const hour = parts.find((part) => part.type === "hour")?.value || "12";
     const minute = parts.find((part) => part.type === "minute")?.value || "00";
-    clock.innerHTML = `${hour}:${minute} <span>SLT</span>`;
+    const minuteKey = `${hour}:${minute}`;
+
+    if (hourNode) hourNode.textContent = hour;
+    if (minuteNode) {
+      if (state.clock.lastMinuteKey && state.clock.lastMinuteKey !== minuteKey) {
+        state.clock.minuteToneIndex = (state.clock.minuteToneIndex + 1) % 6;
+        minuteNode.classList.add("is-ticking");
+        window.setTimeout(() => minuteNode.classList.remove("is-ticking"), 220);
+      }
+      minuteNode.textContent = minute;
+      minuteNode.classList.remove("minute-tone-0", "minute-tone-1", "minute-tone-2", "minute-tone-3", "minute-tone-4", "minute-tone-5");
+      minuteNode.classList.add(`minute-tone-${state.clock.minuteToneIndex}`);
+    }
+    state.clock.lastMinuteKey = minuteKey;
+
+    const delay = Math.max(800, 61000 - (now.getSeconds() * 1000) - now.getMilliseconds());
+    state.perf.clockTimer = perfTimeout("clock", tick, delay);
   }
 
   tick();
-  state.perf.clockTimer = perfInterval("clock", tick, 30000);
 }
 
 document.addEventListener("click", (event) => {
@@ -982,6 +1031,12 @@ document.addEventListener("click", (event) => {
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
+    return;
+  }
+
+  const notifyButton = event.target.closest("[data-command='notify']");
+  if (notifyButton) {
+    openNotifications();
     return;
   }
 
@@ -1053,6 +1108,8 @@ window.addEventListener("message", (event) => {
 
 setupStats();
 loadSavedProfile();
+loadMessagesLocal();
+renderNotificationCount();
 setupClock();
 loadHome();
 startLiveStats();
