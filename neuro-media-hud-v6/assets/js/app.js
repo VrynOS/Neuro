@@ -680,9 +680,10 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
 }
 
 function maleHealthDetailRows(section) {
+  const hygieneStatus = Number(state.stats.hygiene) > 75 ? "Good" : "Needs Care";
   const groups = {
     care: [
-      ["Shower", ["male.care.shower", "care.shower", "selfCare.shower"], "Not Done"],
+      ["Hygiene", [], hygieneStatus],
       ["Daily Vitamin", ["male.care.dailyVitamin", "care.dailyVitamin", "selfCare.multivitamin"], "Not Taken"],
       ["Haircut / Hair Done", ["male.care.hair", "care.hair", "selfCare.hair"], "Not Done"],
       ["Last Care", ["male.care.lastCare", "care.lastCare", "selfCare.lastCare"], "None"],
@@ -701,7 +702,6 @@ function maleHealthDetailRows(section) {
       ["Workout Timer", ["fitness.workoutTimer", "male.fitness.workoutTimer"], "0"]
     ],
     records: [
-      ["Last Shower", ["records.lastShower", "male.records.lastShower", "male.care.lastShower"], "None"],
       ["Last Vitamin Taken", ["records.lastVitamin", "male.records.lastVitamin", "male.care.lastVitamin"], "None"],
       ["Last Hair Service", ["records.lastHair", "male.records.lastHair", "male.care.lastHair"], "None"],
       ["Last Workout", ["records.lastWorkout", "male.records.lastWorkout", "fitness.lastWorkout"], "None"],
@@ -729,7 +729,10 @@ function renderMaleHealthDetail(section = state.health.activeMaleSection || "car
   article.append(heading);
   maleHealthDetailRows(key).forEach(([label, value]) => {
     const row = document.createElement("p");
+    const normalizedValue = String(value).toLowerCase();
     row.innerHTML = "<span></span><strong></strong>";
+    row.classList.toggle("is-good", label === "Hygiene" && normalizedValue === "good");
+    row.classList.toggle("is-warning", ["not done", "not taken", "needs care", "now"].includes(normalizedValue));
     row.querySelector("span").textContent = label;
     row.querySelector("strong").textContent = String(value);
     article.append(row);
