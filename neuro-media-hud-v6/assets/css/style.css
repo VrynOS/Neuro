@@ -118,14 +118,14 @@ svg {
   border: 0;
   border-radius: 2px;
   background:
-    linear-gradient(90deg, rgba(0, 3, 7, 0.9), rgba(0, 4, 8, 0.76) 31%, rgba(0, 5, 10, 0.72) 58%, rgba(0, 3, 7, 0.88)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(40, 161, 252, 0.035) 28%, rgba(0, 4, 8, 0.9)),
+    linear-gradient(90deg, rgba(0, 8, 16, 0.76), rgba(3, 18, 29, 0.58) 31%, rgba(3, 20, 32, 0.5) 58%, rgba(0, 8, 16, 0.72)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(40, 161, 252, 0.07) 28%, rgba(0, 8, 16, 0.7)),
     url("../img/perf/camden-day-bg.jpg");
   background-size: cover, cover, cover;
   background-position: center, center, center;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.18),
-    inset 0 0 70px rgba(0, 0, 0, 0.34),
+    inset 0 0 70px rgba(0, 0, 0, 0.2),
     0 0 34px rgba(40, 161, 252, 0.2);
   display: flex;
   flex-direction: column;
@@ -138,9 +138,9 @@ svg {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 24%, rgba(40, 161, 252, 0.045) 54%, transparent 72%),
-    radial-gradient(circle at 78% 31%, rgba(255, 221, 148, 0.08), transparent 24%),
-    radial-gradient(circle at 18% 24%, rgba(40, 161, 252, 0.1), transparent 22%);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 24%, rgba(40, 161, 252, 0.07) 54%, transparent 72%),
+    radial-gradient(circle at 78% 31%, rgba(255, 221, 148, 0.14), transparent 24%),
+    radial-gradient(circle at 18% 24%, rgba(40, 161, 252, 0.16), transparent 22%);
   mix-blend-mode: screen;
 }
 
@@ -150,8 +150,8 @@ svg {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 20%),
-    radial-gradient(ellipse at center, transparent 0 48%, rgba(0, 0, 0, 0.38) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 20%),
+    radial-gradient(ellipse at center, transparent 0 52%, rgba(0, 5, 12, 0.28) 100%);
 }
 
 .hud-top,
@@ -596,12 +596,12 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.2);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(2, 10, 16, 0.84), rgba(0, 3, 7, 0.88));
+    linear-gradient(180deg, rgba(6, 24, 36, 0.68), rgba(0, 10, 18, 0.72));
   backdrop-filter: blur(12px) saturate(1.22);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    inset 0 0 26px rgba(40, 161, 252, 0.035),
-    0 0 20px rgba(0, 0, 0, 0.42);
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 0 26px rgba(40, 161, 252, 0.055),
+    0 0 20px rgba(0, 0, 0, 0.34);
 }
 
 .body-status {
@@ -901,7 +901,7 @@ h1 {
   padding: 10px 12px;
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
-  background: rgba(0, 5, 9, 0.78);
+  background: rgba(2, 15, 24, 0.66);
 }
 
 .cdf-news-grid article span {
@@ -1047,9 +1047,9 @@ h1 {
 .profile-editor {
   border: 1px solid rgba(40, 161, 252, 0.22);
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(2, 10, 16, 0.88), rgba(0, 4, 8, 0.92));
+  background: linear-gradient(180deg, rgba(5, 22, 34, 0.72), rgba(0, 10, 18, 0.76));
   backdrop-filter: blur(16px) saturate(1.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 0 26px rgba(40, 161, 252, 0.045), 0 0 20px rgba(0, 0, 0, 0.36);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 26px rgba(40, 161, 252, 0.06), 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .profile-card {
