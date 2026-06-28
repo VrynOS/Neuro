@@ -26,6 +26,8 @@ const state = {
     level: 22,
     xpCurrent: 22840,
     xpGoal: 30000,
+    xpPerLevel: 2500,
+    verified: true,
     savedInHud: false
   },
   messages: {
@@ -323,12 +325,18 @@ function applySavedProfile(profile, fromHud = false) {
 }
 
 function profileXp() {
-  const level = Math.max(1, Math.round(asNumber(state.profile.level, 1)));
+  const level = Math.max(0, Math.round(asNumber(state.profile.level, 0)));
   const current = Math.max(0, Math.round(asNumber(state.profile.xpCurrent, 0)));
   const goal = Math.max(1, Math.round(asNumber(state.profile.xpGoal, 1)));
+  const perLevel = Math.max(1, Math.round(asNumber(state.profile.xpPerLevel, 2500)));
+  const levelFloor = Math.max(0, goal - perLevel);
+  const levelSpan = Math.max(1, goal - levelFloor);
+  const levelProgress = Math.max(0, Math.min(levelSpan, current - levelFloor));
   const needed = Math.max(0, goal - current);
-  const percent = Math.max(0, Math.min(100, Math.round((current / goal) * 100)));
-  return { level, current, goal, needed, percent, verified: level >= 10 };
+  const absolutePercent = Math.max(0, Math.min(100, Math.round((current / goal) * 100)));
+  const percent = current >= levelFloor ? Math.round((levelProgress / levelSpan) * 100) : absolutePercent;
+  const verified = state.profile.verified === undefined ? level >= 10 : Boolean(state.profile.verified);
+  return { level, current, goal, needed, percent, verified };
 }
 
 function renderProfile() {
@@ -780,6 +788,10 @@ function loadProfile() {
   if (state.messages.activeThreadId) renderMessageThread();
   else renderMessageInbox();
   renderNotificationCount();
+  if (liveBridge) {
+    sendBridge("stats");
+    setLastRefresh("profile xp requested");
+  }
   requestStoredProfile();
 }
 
@@ -869,6 +881,14 @@ function clampStat(value) {
   return Math.max(0, Math.min(100, Math.round(asNumber(value))));
 }
 
+function asBoolean(value, fallback = false) {
+  if (value === true || value === false) return value;
+  const text = String(value ?? "").trim().toLowerCase();
+  if (["1", "true", "yes", "y", "on"].includes(text)) return true;
+  if (["0", "false", "no", "n", "off"].includes(text)) return false;
+  return fallback;
+}
+
 function snapshotValue(snapshot, key, fallback = "") {
   if (!snapshot || !(key in snapshot)) return fallback;
   const value = snapshot[key];
@@ -884,15 +904,57 @@ function firstSnapshotValue(snapshot, keys, fallback = "") {
 }
 
 function profileXpFromSnapshot(snapshot) {
-  const rawLevel = snapshotValue(snapshot, "level", snapshotValue(snapshot, "xpLevel", state.profile.level));
-  const rawXp = snapshotValue(snapshot, "xpCurrent", snapshotValue(snapshot, "currentXp", snapshotValue(snapshot, "xp", state.profile.xpCurrent)));
-  const perLevel = Math.max(1, Math.round(asNumber(snapshotValue(snapshot, "xpPerLevel", 2500), 2500)));
-  const level = Math.max(1, Math.round(asNumber(rawLevel, state.profile.level)));
+  const rawXp = firstSnapshotValue(snapshot, [
+    "xp",
+    "totalXp",
+    "totalXP",
+    "xp.total",
+    "profile.xp",
+    "xpCurrent",
+    "currentXp",
+    "currentXP",
+    "NEURON_XP"
+  ], state.profile.xpCurrent);
+  const perLevel = Math.max(1, Math.round(asNumber(firstSnapshotValue(snapshot, [
+    "xpPerLevel",
+    "xp.perLevel",
+    "xpLevelSize",
+    "levelXp",
+    "levelXP"
+  ], state.profile.xpPerLevel || 2500), 2500)));
   const totalXp = Math.max(0, Math.round(asNumber(rawXp, state.profile.xpCurrent)));
-  const current = Math.max(0, Math.round(asNumber(snapshotValue(snapshot, "xpIntoLevel", totalXp % perLevel), totalXp % perLevel)));
-  const goal = Math.max(1, Math.round(asNumber(snapshotValue(snapshot, "xpGoal", snapshotValue(snapshot, "xpNext", perLevel)), perLevel)));
+  const rawLevel = firstSnapshotValue(snapshot, [
+    "level",
+    "xpLevel",
+    "profile.level",
+    "stat.level"
+  ], Math.floor(totalXp / perLevel));
+  const level = Math.max(0, Math.round(asNumber(rawLevel, Math.floor(totalXp / perLevel))));
+  const fallbackNext = (level + 1) * perLevel;
+  const goal = Math.max(1, Math.round(asNumber(firstSnapshotValue(snapshot, [
+    "xpNext",
+    "nextXp",
+    "nextXP",
+    "xp.next",
+    "xpGoal",
+    "xp.goal",
+    "profile.xpNext"
+  ], fallbackNext), fallbackNext)));
+  const verifiedRaw = firstSnapshotValue(snapshot, [
+    "verified",
+    "isVerified",
+    "profile.verified",
+    "memberVerified",
+    "verifiedMember"
+  ], level >= 10 ? "1" : "0");
 
-  return { level, xpCurrent: current, xpGoal: goal };
+  return {
+    level,
+    xpCurrent: totalXp,
+    xpGoal: goal,
+    xpPerLevel: perLevel,
+    verified: asBoolean(verifiedRaw, level >= 10)
+  };
 }
 
 function statsFromSnapshot(snapshot) {
