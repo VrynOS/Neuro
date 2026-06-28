@@ -452,12 +452,14 @@ function healthDetailGroups(section) {
   const xp = profileXp();
   const groups = {
     cycle: [
-      { title: "Cycle Tab", rows: [
+      { title: "Cycle Status", rows: [
         ["Status", ["cycle.status"], "Inactive"],
         ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "6") + " / " + healthValue(["cycle.length"], "28")],
         ["Phase", ["cycle.phase"], "None"],
         ["Risk", ["cycle.risk"], "NONE"],
-        ["Next Step", ["cycle.nextStep"], "Start Cycle"],
+        ["Next Step", ["cycle.nextStep"], "Start Cycle"]
+      ] },
+      { title: "Cycle Timing", rows: [
         ["Flow", ["cycle.flow"], "None"],
         ["Period Status", ["period.status", "cycle.periodStatus"], "Inactive"],
         ["Fertile Window", ["cycle.fertileWindow"], "Closed"],

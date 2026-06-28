@@ -1023,8 +1023,8 @@ h1 {
 
 .health-detail header small {
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.2;
+  font-size: 14px;
+  line-height: 1.25;
 }
 
 .health-stat-grid,
@@ -1042,13 +1042,13 @@ h1 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 18px;
+  gap: 10px;
+  min-height: 22px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.15;
+  font-size: 14px;
+  line-height: 1.2;
 }
 
 .health-stat-grid strong,
@@ -1056,7 +1056,7 @@ h1 {
   color: var(--text);
   font-weight: 500;
   text-align: right;
-  max-width: 58%;
+  max-width: 52%;
 }
 
 .health-section-buttons {
@@ -1085,9 +1085,9 @@ h1 {
 
 .health-detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   align-content: start;
-  gap: 8px;
+  gap: 10px;
   min-height: 0;
   overflow: hidden;
   padding-top: 8px;
@@ -1098,13 +1098,13 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
   background: var(--glass-card);
-  padding: 8px;
+  padding: 10px;
 }
 
 .health-detail-group h3 {
-  margin: 0 0 5px;
+  margin: 0 0 6px;
   color: var(--green);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   text-transform: uppercase;
 }
