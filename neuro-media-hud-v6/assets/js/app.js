@@ -589,24 +589,12 @@ function renderHealthDetail(section = "cycle") {
 
 function renderHealth() {
   const female = isFemaleAvatar();
-  const owner = document.querySelector("[data-health-owner]");
-  const note = document.querySelector("[data-health-sex-note]");
-  if (owner) owner.textContent = `${state.profile.name || "XinjXi"}'s 'Neuron'`;
-  if (note) note.textContent = female ? "Female health systems available." : "Female health options hidden because avatar sex is not Female.";
 
   document.querySelectorAll("[data-female-health]").forEach((node) => {
     node.hidden = !female;
   });
 
   if (!female) return;
-
-  renderKeyValueRows(document.querySelector("[data-health-female-summary]"), [
-    ["Cycle Care", healthValue(["cycleCare.status", "cycle.status"], "Available")],
-    ["Pregnancy", healthValue(["pregnancy.status"], "Not Pregnant")],
-    ["Self Care", healthValue(["selfCare.score"], "0/100")],
-    ["Birth Control", healthValue(["birthControl.status", "bc.status"], "Not Active")],
-    ["Plan B Zero", healthValue(["planB.status"], "Not Used")]
-  ]);
 
   const buttons = document.querySelector("[data-health-section-buttons]");
   if (buttons && !buttons.children.length) {
