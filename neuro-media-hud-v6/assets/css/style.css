@@ -287,9 +287,9 @@ h1 {
   top: calc(100% + 10px);
   left: 0;
   z-index: 50;
-  width: 360px;
-  max-height: 326px;
-  padding: 10px;
+  width: 390px;
+  max-height: 376px;
+  padding: 12px;
   border: 1px solid rgba(46, 242, 143, 0.36);
   border-radius: 6px;
   background:
@@ -302,19 +302,41 @@ h1 {
   display: none;
 }
 
+.settings-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 138px;
+  z-index: 50;
+  width: 330px;
+  padding: 12px;
+  border: 1px solid rgba(40, 161, 252, 0.38);
+  border-radius: 6px;
+  background:
+    var(--glass-sheen),
+    var(--glass-surface-strong);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.42), 0 0 18px rgba(40, 161, 252, 0.16);
+}
+
+.settings-menu[hidden] {
+  display: none;
+}
+
 .notification-menu header,
-.notification-item {
+.notification-item,
+.settings-menu header {
   display: flex;
   align-items: center;
 }
 
-.notification-menu header {
+.notification-menu header,
+.settings-menu header {
   justify-content: space-between;
   padding: 2px 2px 9px;
   border-bottom: 1px solid rgba(46, 242, 143, 0.16);
 }
 
-.notification-menu header strong {
+.notification-menu header strong,
+.settings-menu header strong {
   color: var(--green);
   font-size: 16px;
   font-weight: 500;
@@ -327,7 +349,9 @@ h1 {
   gap: 6px;
 }
 
-.notification-menu header button {
+.notification-menu header button,
+.settings-menu header button,
+.settings-menu-grid button {
   border: 1px solid rgba(40, 161, 252, 0.28);
   background: var(--glass-field);
   color: var(--blue);
@@ -337,24 +361,39 @@ h1 {
   cursor: pointer;
 }
 
-.notification-menu [data-notification-list] {
+.settings-menu-grid {
   display: grid;
   gap: 8px;
-  max-height: 264px;
+  padding-top: 10px;
+}
+
+.settings-menu-grid button {
+  min-height: 38px;
+  color: var(--green);
+  text-align: left;
+}
+
+.notification-menu [data-notification-list] {
+  display: grid;
+  gap: 9px;
+  max-height: 310px;
   overflow: auto;
   padding-top: 9px;
 }
 
 .notification-item {
   width: 100%;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: start;
   gap: 10px;
-  min-height: 58px;
+  min-height: 72px;
   border: 1px solid rgba(40, 161, 252, 0.18);
   background: var(--glass-card);
   color: var(--text);
   text-align: left;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
 }
 
 .notification-item.is-unread {
@@ -363,42 +402,67 @@ h1 {
 }
 
 .notification-item img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.notification-item span {
+.notification-copy {
   display: grid;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 
-.notification-item strong,
-.notification-item small {
+.notification-copy header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notification-copy strong,
+.notification-copy small,
+.notification-copy em {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.notification-copy strong {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
-.notification-item strong {
-  font-size: 15px;
-  font-weight: 500;
+.notification-copy small {
+  color: rgba(232, 248, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.24;
+  white-space: normal;
 }
 
-.notification-item small {
-  color: rgba(232, 248, 255, 0.72);
-  font-size: 13px;
+.notification-copy em {
+  color: var(--green);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .notification-item time {
-  margin-left: auto;
-  color: var(--blue);
-  font-size: 12px;
+  color: var(--amber);
+  font-family: var(--hud-font);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: right;
+  white-space: nowrap;
+  text-shadow: none;
 }
 
-.top-status time {
+.slt-clock {
   position: relative;
   display: flex;
   align-items: baseline;
@@ -415,7 +479,7 @@ h1 {
   text-shadow: 0 0 18px rgba(40, 161, 252, 0.62), var(--shadow);
 }
 
-.top-status time::before {
+.slt-clock::before {
   content: "";
   position: absolute;
   left: 12px;
@@ -428,7 +492,7 @@ h1 {
   transform: translateY(-50%);
 }
 
-.top-status time::after {
+.slt-clock::after {
   content: "";
   position: absolute;
   left: 7px;

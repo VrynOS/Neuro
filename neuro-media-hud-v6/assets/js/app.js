@@ -95,6 +95,10 @@ const state = {
       }
     ]
   },
+  notifications: {
+    items: [],
+    dismissedStats: []
+  },
   stats: {
     hunger: 82,
     thirst: 64,
@@ -279,6 +283,7 @@ function sendBridge(op, text = "") {
 
 function masterRefresh(button = null) {
   setLastRefresh("master refresh");
+  addLocalNotification("HUD refreshed", "Media face and HUD scripts were asked to sync.", "System");
   if (button) {
     button.classList.add("is-refreshing");
     window.setTimeout(() => button.classList.remove("is-refreshing"), 460);
@@ -1043,7 +1048,9 @@ function renderMessageInbox() {
 }
 
 function unreadNotificationCount() {
-  return state.messages.threads.reduce((total, thread) => total + Math.max(0, Math.round(asNumber(thread.unread, 0))), 0);
+  const dmCount = state.messages.threads.reduce((total, thread) => total + Math.max(0, Math.round(asNumber(thread.unread, 0))), 0);
+  const localCount = state.notifications.items.filter((item) => !item.read).length;
+  return dmCount + localCount + generatedStatNotifications().length;
 }
 
 function renderNotificationCount() {
@@ -1064,18 +1071,43 @@ function renderNotificationMenu() {
   if (!list) return;
   list.replaceChildren();
 
-  sortedDmThreads().filter((thread) => thread.unread > 0).slice(0, 8).forEach((thread) => {
-    const last = lastDmMessage(thread);
+  const alertItems = [
+    ...generatedStatNotifications(),
+    ...state.notifications.items,
+    ...sortedDmThreads().filter((thread) => thread.unread > 0).map((thread) => {
+      const last = lastDmMessage(thread);
+      return {
+        id: thread.threadId,
+        kind: "dm",
+        avatar: thread.avatar,
+        category: "Message",
+        title: thread.participantName,
+        message: last?.message_text || "New private message.",
+        timestamp: last?.timestamp || Date.now(),
+        unread: thread.unread > 0
+      };
+    })
+  ].sort((a, b) => Number(b.timestamp || 0) - Number(a.timestamp || 0)).slice(0, 8);
+
+  alertItems.forEach((alert) => {
     const item = document.createElement("button");
     item.type = "button";
-    item.className = thread.unread > 0 ? "notification-item is-unread" : "notification-item";
-    item.dataset.notificationThread = thread.threadId;
-    item.innerHTML = "<img alt=\"\"><span><strong></strong><small></small></span><time></time>";
-    item.querySelector("img").src = avatarPath(thread.avatar);
-    item.querySelector("img").alt = thread.participantName;
-    item.querySelector("strong").textContent = thread.participantName;
-    item.querySelector("small").textContent = last?.message_text || "No updates yet.";
-    item.querySelector("time").textContent = last ? timeAgo(last.timestamp) : "now";
+    item.className = alert.unread === false || alert.read ? "notification-item" : "notification-item is-unread";
+    if (alert.kind === "dm") item.dataset.notificationThread = alert.id;
+    if (alert.kind === "local") item.dataset.notificationId = alert.id;
+    item.innerHTML = `
+      <img alt="">
+      <span class="notification-copy">
+        <header><em></em><strong></strong></header>
+        <small></small>
+      </span>
+      <time></time>`;
+    item.querySelector("img").src = alert.avatar ? avatarPath(alert.avatar) : avatarPath("01");
+    item.querySelector("img").alt = alert.category || "Notification";
+    item.querySelector("em").textContent = alert.category || "Update";
+    item.querySelector("strong").textContent = alert.title || "Notification";
+    item.querySelector("small").textContent = alert.message || "No details.";
+    item.querySelector("time").textContent = alert.timestamp ? timeAgo(alert.timestamp) : "now";
     list.append(item);
   });
 
@@ -1087,13 +1119,103 @@ function renderNotificationMenu() {
   }
 }
 
+function generatedStatNotifications() {
+  return [
+    ["hunger", "Hunger"],
+    ["thirst", "Thirst"],
+    ["sleep", "Sleep"],
+    ["hygiene", "Hygiene"],
+    ["energy", "Energy"],
+    ["fun", "Fun"],
+    ["care", "Care"]
+  ].filter(([key]) => asNumber(state.stats[key], 100) < 50)
+    .filter(([key]) => !state.notifications.dismissedStats.includes(`stat-${key}`))
+    .map(([key, label]) => ({
+      id: `stat-${key}`,
+    kind: "stat",
+    avatar: "01",
+    category: "Stats",
+    title: `${label} is low`,
+    message: `${label} is at ${Math.round(asNumber(state.stats[key], 0))}%. Take care of it soon.`,
+    timestamp: Date.now(),
+    unread: true
+  }));
+}
+
+function resetRecoveredStatDismissals() {
+  state.notifications.dismissedStats = state.notifications.dismissedStats.filter((id) => {
+    const key = id.replace("stat-", "");
+    return asNumber(state.stats[key], 100) < 50;
+  });
+  saveNotificationsLocal();
+}
+
+function loadNotificationsLocal() {
+  try {
+    const saved = JSON.parse(window.localStorage.getItem("neuroNotifications") || "[]");
+    if (Array.isArray(saved)) {
+      state.notifications.items = saved.slice(0, 8);
+      state.notifications.dismissedStats = [];
+      return;
+    }
+    state.notifications.items = Array.isArray(saved.items) ? saved.items.slice(0, 8) : [];
+    state.notifications.dismissedStats = Array.isArray(saved.dismissedStats) ? saved.dismissedStats : [];
+  } catch {
+    window.localStorage.removeItem("neuroNotifications");
+    state.notifications.items = [];
+  }
+}
+
+function saveNotificationsLocal() {
+  window.localStorage.setItem("neuroNotifications", JSON.stringify({
+    items: state.notifications.items.slice(0, 8),
+    dismissedStats: state.notifications.dismissedStats
+  }));
+}
+
+function addLocalNotification(title, message, category = "System") {
+  state.notifications.items.unshift({
+    id: `note-${Date.now()}`,
+    kind: "local",
+    avatar: "01",
+    category,
+    title,
+    message,
+    timestamp: Date.now(),
+    read: false,
+    unread: true
+  });
+  state.notifications.items = state.notifications.items.slice(0, 8);
+  saveNotificationsLocal();
+  renderNotificationCount();
+}
+
 function setNotificationMenu(open) {
   const menu = document.querySelector("[data-notification-menu]");
   const button = document.querySelector("[data-notification-button]");
   if (!menu) return;
   menu.hidden = !open;
   if (button) button.setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) setSettingsMenu(false);
   if (open) renderNotificationMenu();
+}
+
+function setSettingsMenu(open) {
+  const menu = document.querySelector("[data-settings-menu]");
+  const button = document.querySelector("[data-settings-button]");
+  if (!menu) return;
+  menu.hidden = !open;
+  if (button) {
+    button.classList.toggle("is-active", open);
+    button.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  if (open) setNotificationMenu(false);
+}
+
+function toggleSettingsMenu() {
+  const menu = document.querySelector("[data-settings-menu]");
+  if (state.perf.activeTab === "settings") showScreen("home");
+  setSettingsMenu(Boolean(menu?.hidden));
 }
 
 function toggleNotificationMenu() {
@@ -1193,8 +1315,14 @@ function clearAllNotifications() {
       if (message.sender_uuid !== currentOwnerUuid()) message.read = true;
     });
   });
+  state.notifications.items = [];
+  state.notifications.dismissedStats = ["hunger", "thirst", "sleep", "hygiene", "energy", "fun", "care"]
+    .filter((key) => asNumber(state.stats[key], 100) < 50)
+    .map((key) => `stat-${key}`);
+  saveNotificationsLocal();
   saveMessagesLocal();
   renderNotificationCount();
+  renderNotificationMenu();
 }
 
 function loadHome() {
@@ -1495,6 +1623,7 @@ function applySnapshot(snapshot) {
   if (!snapshot || snapshot.token !== "CDF_WORLD_V1") return;
   state.lastSnapshot = snapshot;
   renderStats(statsFromSnapshot(snapshot));
+  resetRecoveredStatDismissals();
   applyProfileSnapshot(snapshot);
   applyXpSnapshot(snapshot);
 }
@@ -1599,6 +1728,12 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const settingsButton = event.target.closest("[data-settings-button]");
+  if (settingsButton) {
+    toggleSettingsMenu();
+    return;
+  }
+
   const healthSectionButton = event.target.closest("[data-health-section]");
   if (healthSectionButton) {
     document.querySelectorAll("[data-health-section]").forEach((button) => {
@@ -1649,11 +1784,42 @@ document.addEventListener("click", (event) => {
   const notificationThread = event.target.closest("[data-notification-thread]");
   if (notificationThread) {
     clearNotificationThread(notificationThread.dataset.notificationThread);
+    renderNotificationMenu();
+    return;
+  }
+
+  const notificationItem = event.target.closest("[data-notification-id]");
+  if (notificationItem) {
+    const item = state.notifications.items.find((entry) => entry.id === notificationItem.dataset.notificationId);
+    if (item) {
+      item.read = true;
+      item.unread = false;
+      saveNotificationsLocal();
+      renderNotificationCount();
+      renderNotificationMenu();
+    }
     return;
   }
 
   if (!event.target.closest("[data-notification-menu]")) {
     setNotificationMenu(false);
+  }
+
+  const settingsClose = event.target.closest("[data-settings-close]");
+  if (settingsClose) {
+    setSettingsMenu(false);
+    return;
+  }
+
+  const settingsItem = event.target.closest("[data-settings-item]");
+  if (settingsItem) {
+    setLastRefresh(settingsItem.textContent.trim());
+    setSettingsMenu(false);
+    return;
+  }
+
+  if (!event.target.closest("[data-settings-menu]")) {
+    setSettingsMenu(false);
   }
 
   const commandButton = event.target.closest("[data-command]");
@@ -1725,6 +1891,7 @@ window.addEventListener("message", (event) => {
 setupStats();
 loadSavedProfile();
 loadMessagesLocal();
+loadNotificationsLocal();
 renderNotificationCount();
 setupClock();
 loadHome();
