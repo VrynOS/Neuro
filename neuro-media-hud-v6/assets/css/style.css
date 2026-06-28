@@ -221,7 +221,7 @@ h1 {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
 }
 
 .icon-button {
@@ -248,8 +248,19 @@ h1 {
 }
 
 .icon-button svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
+}
+
+.top-action.is-active,
+.master-refresh-button:active {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 0 22px rgba(40, 161, 252, 0.22), 0 0 22px rgba(40, 161, 252, 0.36);
+}
+
+.master-refresh-button.is-refreshing svg {
+  animation: refreshPulse 420ms ease;
 }
 
 .notification-badge {
@@ -274,7 +285,7 @@ h1 {
 .notification-menu {
   position: absolute;
   top: calc(100% + 10px);
-  right: 248px;
+  left: 0;
   z-index: 50;
   width: 360px;
   max-height: 326px;
@@ -467,7 +478,7 @@ h1 {
 
 .hud-nav {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
   margin: 8px 24px 12px;
   flex: 0 0 auto;
@@ -2287,4 +2298,10 @@ body.perf-lite .profile-grid article {
   50%, 100% {
     opacity: 0.18;
   }
+}
+
+@keyframes refreshPulse {
+  0% { transform: rotate(0deg); filter: brightness(1); }
+  55% { transform: rotate(180deg); filter: brightness(1.45); }
+  100% { transform: rotate(360deg); filter: brightness(1); }
 }

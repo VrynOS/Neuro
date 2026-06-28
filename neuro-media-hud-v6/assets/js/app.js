@@ -277,6 +277,19 @@ function sendBridge(op, text = "") {
   return tick;
 }
 
+function masterRefresh(button = null) {
+  setLastRefresh("master refresh");
+  if (button) {
+    button.classList.add("is-refreshing");
+    window.setTimeout(() => button.classList.remove("is-refreshing"), 460);
+  }
+  if (liveBridge) {
+    sendBridge("refresh");
+    return;
+  }
+  window.location.reload();
+}
+
 function gcMoney(value) {
   const amount = Number.parseInt(value, 10);
   if (!Number.isFinite(amount)) return "Syncing";
@@ -1513,12 +1526,7 @@ function startLiveStats() {
   if (detail) detail.textContent = "SYNCING";
   sendBridge("stats");
   setLastRefresh("stats requested");
-  perfInterval("stats", () => {
-    if (state.perf.activeTab === "home" || state.perf.activeTab === "profile") {
-      sendBridge("stats");
-      setLastRefresh("stats polled");
-    }
-  }, 30000);
+  renderPerfDebug();
 }
 
 function setupClock() {
@@ -1582,6 +1590,12 @@ document.addEventListener("click", (event) => {
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
+    return;
+  }
+
+  const masterRefreshButton = event.target.closest("[data-master-refresh]");
+  if (masterRefreshButton) {
+    masterRefresh(masterRefreshButton);
     return;
   }
 
