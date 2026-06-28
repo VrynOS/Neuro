@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=all-glossy-dark-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=health-page-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -70,7 +70,7 @@
       <button class="nav-button is-active" type="button" data-screen-target="home"><span class="nav-icon"><svg><use href="#icon-home"></use></svg></span><span>Home</span></button>
       <button class="nav-button" type="button" data-screen-target="profile"><span class="nav-icon"><svg><use href="#icon-profile"></use></svg></span><span>Profile</span></button>
       <button class="nav-button" type="button" data-screen-target="wallet"><span class="nav-icon"><svg><use href="#icon-wallet"></use></svg></span><span>Wallet</span></button>
-      <button class="nav-button" type="button" data-command="health"><span class="nav-icon"><svg><use href="#icon-health"></use></svg></span><span>Health</span></button>
+      <button class="nav-button" type="button" data-screen-target="health"><span class="nav-icon"><svg><use href="#icon-health"></use></svg></span><span>Health</span></button>
       <button class="nav-button" type="button" data-command="work"><span class="nav-icon"><svg><use href="#icon-work"></use></svg></span><span>Work</span></button>
       <button class="nav-button" type="button" data-screen-target="settings"><span class="nav-icon"><svg><use href="#icon-settings"></use></svg></span><span>Settings</span></button>
     </nav>
@@ -118,6 +118,38 @@
         <button type="button" data-command="wallet-request">Request</button>
         <button type="button" data-command="wallet-transfer">Transfer</button>
         <button type="button" data-command="wallet-send">Send</button>
+      </section>
+    </section>
+
+    <section class="screen screen-health" id="screen-health">
+      <header class="health-head">
+        <div>
+          <span data-health-owner>XinjXi's 'Neuron'</span>
+          <strong>Neuro Health</strong>
+        </div>
+        <small data-health-sex-note>Female health locked until avatar sex is Female.</small>
+      </header>
+
+      <section class="health-grid">
+        <article class="health-card health-core">
+          <h2>Core Stats</h2>
+          <div class="health-stat-grid" data-health-core></div>
+        </article>
+
+        <article class="health-card health-female" data-female-health>
+          <h2>Female Health</h2>
+          <div class="health-stat-grid" data-health-female-summary></div>
+        </article>
+
+        <article class="health-card health-sections" data-female-health>
+          <h2>Health Sections</h2>
+          <div class="health-section-buttons" data-health-section-buttons></div>
+        </article>
+
+        <article class="health-card health-detail" data-female-health>
+          <header><span data-health-detail-title>Cycle Care</span><small data-health-detail-purpose></small></header>
+          <div class="health-detail-grid" data-health-detail></div>
+        </article>
       </section>
     </section>
 
@@ -241,6 +273,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=profile-xp-live-1"></script>
+  <script src="assets/js/app.js?v=health-page-1"></script>
 </body>
 </html>

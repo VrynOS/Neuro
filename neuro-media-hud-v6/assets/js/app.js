@@ -111,6 +111,7 @@ const state = {
       home: false,
       profile: false,
       wallet: false,
+      health: false,
       settings: false,
       messages: false
     },
@@ -124,6 +125,22 @@ const state = {
     lastMinuteKey: "",
     minuteToneIndex: 0
   }
+};
+
+const healthSectionLabels = {
+  cycle: "Cycle Care",
+  pregnancy: "Pregnancy",
+  selfCare: "Self Care",
+  birthControl: "Birth Control",
+  planB: "Plan B Zero"
+};
+
+const healthSectionPurposes = {
+  cycle: "Tracks cycle status, period care, pain, flow, pads, tampons, and Nue Relief.",
+  pregnancy: "Shows pregnancy status, test info, alerts, and prenatal vitamin care.",
+  selfCare: "Tracks personal care, wellness, salon care, lotion, and multivitamins.",
+  birthControl: "Shows birth control status, last taken, and time left.",
+  planB: "Shows emergency use status, last taken, effects, and side effects."
 };
 
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png`;
@@ -400,6 +417,222 @@ function renderProfile() {
   });
 
   renderConnectionStatus(liveBridge ? "Online" : "Offline");
+}
+
+function isFemaleAvatar() {
+  return String(state.profile.sex || "").trim().toLowerCase() === "female";
+}
+
+function healthValue(keys, fallback = "") {
+  const value = firstSnapshotValue(state.lastSnapshot || {}, Array.isArray(keys) ? keys : [keys], fallback);
+  if (value === undefined || value === null || value === "" || value === "JSON_INVALID") return fallback;
+  return value;
+}
+
+function healthRows(groups) {
+  return groups.map((group) => ({
+    title: group.title,
+    rows: group.rows.map(([label, keys, fallback]) => [label, healthValue(keys, fallback)])
+  }));
+}
+
+function renderKeyValueRows(target, rows) {
+  if (!target) return;
+  target.replaceChildren();
+  rows.forEach(([label, value]) => {
+    const row = document.createElement("p");
+    row.innerHTML = "<span></span><strong></strong>";
+    row.querySelector("span").textContent = label;
+    row.querySelector("strong").textContent = String(value);
+    target.append(row);
+  });
+}
+
+function healthDetailGroups(section) {
+  const xp = profileXp();
+  const groups = {
+    cycle: [
+      { title: "Cycle Tab", rows: [
+        ["Status", ["cycle.status"], "Inactive"],
+        ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "6") + " / " + healthValue(["cycle.length"], "28")],
+        ["Phase", ["cycle.phase"], "None"],
+        ["Risk", ["cycle.risk"], "NONE"],
+        ["Next Step", ["cycle.nextStep"], "Start Cycle"],
+        ["Flow", ["cycle.flow"], "None"],
+        ["Period Status", ["period.status", "cycle.periodStatus"], "Inactive"],
+        ["Fertile Window", ["cycle.fertileWindow"], "Closed"],
+        ["Ovulation", ["cycle.ovulation"], "No"],
+        ["Pregnancy Status", ["pregnancy.status"], "Not Pregnant"],
+        ["Next Period", ["cycle.nextPeriod"], "23 CDF days"],
+        ["Next Ovulation", ["cycle.nextOvulation"], "8 CDF days"]
+      ] },
+      { title: "Cycle Care", rows: [
+        ["Pad Status", ["cycle.padStatus", "pad.status"], "Not Needed"],
+        ["Tampon Status", ["cycle.tamponStatus", "tampon.status"], "Not Needed"],
+        ["Last Pad Used", ["cycle.lastPadUsed", "last.padUsed"], "None"],
+        ["Last Tampon Used", ["cycle.lastTamponUsed", "last.tamponUsed"], "None"],
+        ["Care Stat", ["cycle.care", "care.self"], "0"],
+        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene],
+        ["Next Change Timer", ["cycle.nextChangeTimer"], "None"],
+        ["Care Item XP", ["cycle.careItemXP", "careItemXP"], "0"]
+      ] },
+      { title: "Cycle Relief", rows: [
+        ["Nue Relief", ["nueRelief.name"], "Nue Relief"],
+        ["Status", ["nueRelief.status"], "Period Only"],
+        ["Taken", ["nueRelief.taken"], "None"],
+        ["Ends", ["nueRelief.ends"], "0"],
+        ["Need", ["nueRelief.need"], "Now"],
+        ["Purpose", ["nueRelief.purpose"], "Used for cycle pain and cramps."],
+        ["Effect", ["nueRelief.effect"], "Pain relief during period/cycle care."]
+      ] }
+    ],
+    pregnancy: [
+      { title: "Pregnancy Tab", rows: [
+        ["Status", ["pregnancy.status"], "No active pregnancy."],
+        ["Last Test", ["pregnancy.lastTest", "last.pregnancyTest"], "None"],
+        ["Test Taken", ["pregnancy.testTaken"], "None"]
+      ] },
+      { title: "Pregnancy Care", rows: [
+        ["Pregnancy Test", ["pregnancy.testAvailable"], "Available"],
+        ["Prenatal Vitamin", ["pregnancy.prenatalVitamin"], "Not Taken"],
+        ["Last Prenatal Vitamin", ["pregnancy.lastPrenatalVitamin", "last.prenatalVitamin"], "None"],
+        ["Prenatal Care Status", ["pregnancy.prenatalCareStatus"], "None"]
+      ] },
+      { title: "Pregnancy Rule", rows: [
+        ["If Pregnant", ["pregnancy.rule"], "Cycle inactive, period inactive, fertile window closed, ovulation stopped."]
+      ] }
+    ],
+    selfCare: [
+      { title: "Self Care Tab", rows: [
+        ["Self Care", ["selfCare.score"], "0/100"],
+        ["Status", ["selfCare.status"], "Needs Care"],
+        ["Last Care", ["selfCare.lastCare"], "None"],
+        ["Next Care Due", ["selfCare.nextDue"], "Now"]
+      ] },
+      { title: "Salon Services", rows: [
+        ["Hair", ["selfCare.hair"], "Not Done"],
+        ["Nails", ["selfCare.nails"], "Not Done"],
+        ["Feet", ["selfCare.feet"], "Not Done"],
+        ["Facial", ["selfCare.facial"], "Not Done"]
+      ] },
+      { title: "Body Care", rows: [
+        ["Skin Care", ["selfCare.skinCare"], "Not Done"],
+        ["Lotion", ["selfCare.lotion"], "Not Used"],
+        ["Shower", ["selfCare.shower"], "Not Done"],
+        ["Rest", ["selfCare.rest"], "Not Done"]
+      ] },
+      { title: "Self Care Items", rows: [
+        ["Lotion", ["selfCare.lotionItem"], "Not Used"],
+        ["Self Care Multivitamin", ["selfCare.multivitamin"], "Not Taken"],
+        ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
+        ["Care Item XP", ["selfCare.careItemXP"], "0"],
+        ["Lotion Effect", ["selfCare.lotionEffect"], "Self Care +10 / Hygiene +5"]
+      ] }
+    ],
+    birthControl: [
+      { title: "Birth Control Tab", rows: [
+        ["Status", ["birthControl.status", "bc.status"], "Not Active"],
+        ["Last Taken", ["birthControl.lastTaken", "last.bcTaken"], "None"],
+        ["BC Time Left", ["birthControl.timeLeft", "bc.timeLeft"], "0"],
+        ["Protected", ["birthControl.protected", "bc.protected"], "No"]
+      ] },
+      { title: "Effect", rows: [
+        ["Purpose", ["birthControl.effect"], "Helps prevent pregnancy while active."],
+        ["Duration", ["birthControl.duration"], "8 RL hours"],
+        ["Side Effects", ["birthControl.sideEffects"], "Care -5 / Energy -5 / Pain: None or Mild"],
+        ["Rule", ["birthControl.rule"], "Taken from item, not toggled from menu."]
+      ] }
+    ],
+    planB: [
+      { title: "Plan B Tab", rows: [
+        ["Plan B Zero", ["planB.name"], "Plan B Zero"],
+        ["Pregnancy Status", ["pregnancy.status"], "Not Pregnant"],
+        ["Times Taken", ["planB.timesTaken"], "0"],
+        ["Last Taken", ["planB.lastTaken", "last.planBTaken"], "None"],
+        ["Last Use Status", ["planB.lastUseStatus"], "None"]
+      ] },
+      { title: "Effect", rows: [
+        ["Purpose", ["planB.effect"], "Lowers pregnancy risk after intimacy."],
+        ["Best Used", ["planB.bestUsed"], "Soon after."],
+        ["Side Effects", ["planB.sideEffects"], "Care -50 / Energy -10 / Pain: Mild"],
+        ["Rule", ["planB.rule"], "Use once. Taken from item, not toggled from menu."]
+      ] }
+    ]
+  };
+  return healthRows(groups[section] || groups.cycle);
+}
+
+function renderHealthDetail(section = "cycle") {
+  const title = document.querySelector("[data-health-detail-title]");
+  const purpose = document.querySelector("[data-health-detail-purpose]");
+  const target = document.querySelector("[data-health-detail]");
+  if (title) title.textContent = healthSectionLabels[section] || healthSectionLabels.cycle;
+  if (purpose) purpose.textContent = healthSectionPurposes[section] || healthSectionPurposes.cycle;
+  if (!target) return;
+  target.replaceChildren();
+  healthDetailGroups(section).forEach((group) => {
+    const article = document.createElement("section");
+    article.className = "health-detail-group";
+    const heading = document.createElement("h3");
+    heading.textContent = group.title;
+    article.append(heading);
+    group.rows.forEach(([label, value]) => {
+      const row = document.createElement("p");
+      row.innerHTML = "<span></span><strong></strong>";
+      row.querySelector("span").textContent = label;
+      row.querySelector("strong").textContent = String(value);
+      article.append(row);
+    });
+    target.append(article);
+  });
+}
+
+function renderHealth() {
+  const female = isFemaleAvatar();
+  const xp = profileXp();
+  const owner = document.querySelector("[data-health-owner]");
+  const note = document.querySelector("[data-health-sex-note]");
+  if (owner) owner.textContent = `${state.profile.name || "XinjXi"}'s 'Neuron'`;
+  if (note) note.textContent = female ? "Female health systems available." : "Female health options hidden because avatar sex is not Female.";
+
+  renderKeyValueRows(document.querySelector("[data-health-core]"), [
+    ["Hunger", state.stats.hunger],
+    ["Thirst", state.stats.thirst],
+    ["Sleep", state.stats.sleep],
+    ["Hygiene", state.stats.hygiene],
+    ["Energy", state.stats.energy],
+    ["Fun", state.stats.fun],
+    ["XP", `${xp.current.toLocaleString("en-US")}/${xp.goal.toLocaleString("en-US")}`]
+  ]);
+
+  document.querySelectorAll("[data-female-health]").forEach((node) => {
+    node.hidden = !female;
+  });
+
+  if (!female) return;
+
+  renderKeyValueRows(document.querySelector("[data-health-female-summary]"), [
+    ["Cycle Care", healthValue(["cycleCare.status", "cycle.status"], "Available")],
+    ["Pregnancy", healthValue(["pregnancy.status"], "Not Pregnant")],
+    ["Self Care", healthValue(["selfCare.score"], "0/100")],
+    ["Birth Control", healthValue(["birthControl.status", "bc.status"], "Not Active")],
+    ["Plan B Zero", healthValue(["planB.status"], "Not Used")]
+  ]);
+
+  const buttons = document.querySelector("[data-health-section-buttons]");
+  if (buttons && !buttons.children.length) {
+    Object.entries(healthSectionLabels).forEach(([key, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.healthSection = key;
+      button.textContent = label;
+      buttons.append(button);
+    });
+  }
+  buttons?.querySelectorAll("[data-health-section]").forEach((button, index) => {
+    button.classList.toggle("is-active", index === 0 && !buttons.querySelector(".is-active"));
+  });
+  renderHealthDetail(document.querySelector("[data-health-section-buttons] .is-active")?.dataset.healthSection || "cycle");
 }
 
 function renderConnectionStatus(status) {
@@ -801,6 +1034,15 @@ function loadWallet() {
   requestWalletBalance();
 }
 
+function loadHealth() {
+  state.perf.loaded.health = true;
+  renderHealth();
+  if (liveBridge) {
+    sendBridge("stats");
+    setLastRefresh("health requested");
+  }
+}
+
 function loadSettings() {
   state.perf.loaded.settings = true;
   renderPerfDebug();
@@ -820,6 +1062,7 @@ function showScreen(name) {
   if (name === "home") loadHome();
   if (name === "profile") loadProfile();
   if (name === "wallet") loadWallet();
+  if (name === "health") loadHealth();
   if (name === "settings") loadSettings();
   renderPerfDebug();
 }
@@ -1031,6 +1274,7 @@ function renderStats(stats) {
     updateStatRow(row);
   });
   renderBodyStatus(state.stats);
+  if (state.perf.loaded.health) renderHealth();
 }
 
 function applyProfileSnapshot(snapshot) {
@@ -1046,11 +1290,13 @@ function applyProfileSnapshot(snapshot) {
 
   state.profile = { ...state.profile, ...updates };
   renderProfile();
+  if (state.perf.loaded.health) renderHealth();
 }
 
 function applyXpSnapshot(snapshot) {
   state.profile = { ...state.profile, ...profileXpFromSnapshot(snapshot) };
   renderProfile();
+  if (state.perf.loaded.health) renderHealth();
 }
 
 function applySnapshot(snapshot) {
@@ -1157,6 +1403,15 @@ document.addEventListener("click", (event) => {
   const screenButton = event.target.closest("[data-screen-target]");
   if (screenButton) {
     showScreen(screenButton.dataset.screenTarget);
+    return;
+  }
+
+  const healthSectionButton = event.target.closest("[data-health-section]");
+  if (healthSectionButton) {
+    document.querySelectorAll("[data-health-section]").forEach((button) => {
+      button.classList.toggle("is-active", button === healthSectionButton);
+    });
+    renderHealthDetail(healthSectionButton.dataset.healthSection);
     return;
   }
 
