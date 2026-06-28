@@ -12,7 +12,12 @@ const state = {
     checking: null,
     savings: null,
     live: false,
-    retryTimer: 0
+    retryTimer: 0,
+    refreshTimer: 0,
+    users: [],
+    selectedUser: null,
+    receipts: [],
+    transferStatus: "Transfers stay inside the wallet app and are logged by the G-Coin server."
   },
   profile: {
     title: "Resident",
@@ -250,6 +255,40 @@ function gcMoney(value) {
   return `GC ${amount.toLocaleString("en-US")}`;
 }
 
+function parseWalletUsers(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((user) => ({
+        id: String(user.id || user.uuid || user.key || "").trim(),
+        name: String(user.name || user.displayName || user.label || "").trim()
+      }))
+      .filter((user) => user.id && user.name)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  } catch {
+    return [];
+  }
+}
+
+function walletUserLabel(user) {
+  if (!user) return "";
+  return user.name || user.id || "";
+}
+
+function addWalletReceipt(receipt) {
+  state.wallet.receipts = [{
+    id: receipt.id || `wallet-${Date.now()}`,
+    type: receipt.type || "Transfer",
+    title: receipt.title || "G-Coin transfer",
+    detail: receipt.detail || "Waiting for server detail.",
+    amount: receipt.amount || "",
+    direction: receipt.direction || "out",
+    time: receipt.time || Date.now()
+  }, ...state.wallet.receipts].slice(0, 10);
+  renderWalletReceipts();
+}
+
 function renderWalletStatus(text, live = false) {
   const status = document.querySelector("[data-wallet-status]");
   if (!status) return;
@@ -268,10 +307,83 @@ function renderWallet() {
     if (!balance) return;
     const text = gcMoney(value);
     balance.dataset.original = text;
-    balance.textContent = state.hiddenBalances[name] ? "Hidden" : text;
+    balance.textContent = state.hiddenBalances[name] ? "GC ----" : text;
+  });
+
+  document.querySelectorAll("[data-wallet-eye]").forEach((button) => {
+    const account = button.dataset.walletEye;
+    const hidden = !!state.hiddenBalances[account];
+    button.setAttribute("aria-label", `${hidden ? "Show" : "Hide"} ${account} balance`);
+    button.innerHTML = `<svg><use href="#${hidden ? "icon-eye" : "icon-eye-off"}"></use></svg>`;
   });
 
   renderWalletStatus(state.wallet.live ? "Live wallet synced from Second Life" : "Waiting for Second Life wallet bridge", state.wallet.live);
+  renderWalletUsers();
+  renderWalletReceipts();
+  renderWalletTransferStatus();
+}
+
+function renderWalletTransferStatus() {
+  const status = document.querySelector("[data-wallet-transfer-status]");
+  if (status) status.textContent = state.wallet.transferStatus;
+}
+
+function renderWalletUsers() {
+  const list = document.querySelector("[data-wallet-users]");
+  const field = document.querySelector("[data-wallet-user-field]");
+  const type = document.querySelector("[data-wallet-transfer-type]")?.value || "checking-savings";
+  const search = String(document.querySelector("[data-wallet-user-search]")?.value || "").trim().toLowerCase();
+  const needsUser = type === "checking-user";
+  if (field) field.hidden = !needsUser;
+  if (!list) return;
+  list.hidden = !needsUser;
+  if (!needsUser) return;
+
+  const matches = state.wallet.users
+    .filter((user) => !search || walletUserLabel(user).toLowerCase().includes(search))
+    .slice(0, 8);
+
+  list.innerHTML = "";
+  if (!matches.length) {
+    const empty = document.createElement("article");
+    empty.className = "wallet-user-empty";
+    empty.textContent = state.wallet.users.length ? "No matching G-Coin user." : "Loading G-Coin users...";
+    list.append(empty);
+    return;
+  }
+
+  matches.forEach((user) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.walletUser = user.id;
+    button.className = state.wallet.selectedUser?.id === user.id ? "is-selected" : "";
+    button.textContent = walletUserLabel(user);
+    list.append(button);
+  });
+}
+
+function renderWalletReceipts() {
+  const list = document.querySelector("[data-wallet-receipts]");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!state.wallet.receipts.length) {
+    const empty = document.createElement("article");
+    empty.className = "wallet-receipt-empty";
+    empty.innerHTML = "<strong>No receipts yet</strong><small>Transfers and incoming G-Coin activity will appear here.</small>";
+    list.append(empty);
+    return;
+  }
+
+  state.wallet.receipts.forEach((receipt) => {
+    const item = document.createElement("article");
+    item.className = `wallet-receipt is-${receipt.direction || "out"}`;
+    item.innerHTML = "<span></span><strong></strong><small></small><em></em>";
+    item.querySelector("span").textContent = receipt.type;
+    item.querySelector("strong").textContent = receipt.title;
+    item.querySelector("small").textContent = receipt.detail;
+    item.querySelector("em").textContent = receipt.amount;
+    list.append(item);
+  });
 }
 
 function requestWalletBalance() {
@@ -282,7 +394,24 @@ function requestWalletBalance() {
   }
   renderWalletStatus("Requesting live G-Coin balance...", false);
   sendBridge("wallet-balance");
+  sendBridge("wallet-users");
   setLastRefresh("wallet requested");
+}
+
+function startWalletRefresh() {
+  if (!liveBridge) return;
+  window.clearInterval(state.wallet.refreshTimer);
+  state.wallet.refreshTimer = window.setInterval(() => {
+    if (state.perf.activeTab !== "wallet") return;
+    sendBridge("wallet-balance");
+    sendBridge("wallet-users");
+    setLastRefresh("wallet requested");
+  }, 15000);
+}
+
+function stopWalletRefresh() {
+  window.clearInterval(state.wallet.refreshTimer);
+  state.wallet.refreshTimer = 0;
 }
 
 function handleWalletResponse(body) {
@@ -292,6 +421,33 @@ function handleWalletResponse(body) {
     state.wallet.savings = Number.parseInt(parts[2], 10);
     state.wallet.live = true;
     renderWallet();
+    return true;
+  }
+
+  if (body.startsWith("WALLET_USERS|")) {
+    state.wallet.users = parseWalletUsers(body.slice("WALLET_USERS|".length));
+    renderWalletUsers();
+    return true;
+  }
+
+  if (body.startsWith("WALLET_TX|")) {
+    const parts = body.split("|");
+    const status = parts[1] || "OK";
+    const kind = parts[2] || "Transfer";
+    const amount = parts[3] || "";
+    const detail = parts.slice(4).join("|") || "G-Coin server accepted the transfer.";
+    state.wallet.transferStatus = status === "OK" ? detail : `Transfer failed: ${detail}`;
+    if (status === "OK") {
+      addWalletReceipt({
+        type: kind,
+        title: "Transfer complete",
+        detail,
+        amount: gcMoney(amount),
+        direction: kind === "Incoming" ? "in" : "out"
+      });
+      requestWalletBalance();
+    }
+    renderWalletTransferStatus();
     return true;
   }
 
@@ -1510,6 +1666,7 @@ function loadWallet() {
   state.perf.loaded.wallet = true;
   renderWallet();
   requestWalletBalance();
+  startWalletRefresh();
 }
 
 function loadHealth() {
@@ -1541,6 +1698,7 @@ function showScreen(name) {
   if (name === "home") loadHome();
   if (name === "profile") loadProfile();
   if (name === "wallet") loadWallet();
+  if (name !== "wallet") stopWalletRefresh();
   if (name === "health") loadHealth();
   if (name === "settings") loadSettings();
   if (name !== "profile") stopMessageRefresh();
@@ -1551,10 +1709,51 @@ function toggleBalance(name) {
   state.hiddenBalances[name] = !state.hiddenBalances[name];
   const balance = document.querySelector(`[data-balance="${name}"]`);
   if (!balance) return;
-  balance.textContent = state.hiddenBalances[name] ? "Hidden" : balance.dataset.original || balance.textContent;
-  if (!balance.dataset.original && balance.textContent !== "Hidden") {
+  balance.textContent = state.hiddenBalances[name] ? "GC ----" : balance.dataset.original || balance.textContent;
+  if (!balance.dataset.original && balance.textContent !== "GC ----") {
     balance.dataset.original = balance.textContent;
   }
+  renderWallet();
+}
+
+function walletTransferPayload() {
+  const type = document.querySelector("[data-wallet-transfer-type]")?.value || "checking-savings";
+  const amount = Number.parseInt(document.querySelector("[data-wallet-amount]")?.value || "0", 10);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return { error: "Enter a GC amount greater than 0." };
+  }
+
+  if (type === "checking-user") {
+    if (!state.wallet.selectedUser?.id) return { error: "Choose a G-Coin user first." };
+    return {
+      type,
+      from: "checking",
+      to: "user",
+      target: state.wallet.selectedUser.id,
+      targetName: walletUserLabel(state.wallet.selectedUser),
+      amount
+    };
+  }
+
+  if (type === "savings-checking") {
+    return { type, from: "savings", to: "checking", amount };
+  }
+
+  return { type, from: "checking", to: "savings", amount };
+}
+
+function submitWalletTransfer() {
+  const payload = walletTransferPayload();
+  if (payload.error) {
+    state.wallet.transferStatus = payload.error;
+    renderWalletTransferStatus();
+    return;
+  }
+
+  state.wallet.transferStatus = "Transfer sent to G-Coin server. Waiting for receipt.";
+  renderWalletTransferStatus();
+  sendBridge("wallet-transfer", JSON.stringify(payload));
+  setLastRefresh("wallet transfer");
 }
 
 function statState(value) {
@@ -1996,6 +2195,15 @@ document.addEventListener("click", (event) => {
     setSettingsMenu(false);
   }
 
+  const walletUserButton = event.target.closest("[data-wallet-user]");
+  if (walletUserButton) {
+    const id = walletUserButton.dataset.walletUser;
+    state.wallet.selectedUser = state.wallet.users.find((user) => user.id === id) || null;
+    state.wallet.transferStatus = state.wallet.selectedUser ? `Sending to ${walletUserLabel(state.wallet.selectedUser)}.` : "Choose a G-Coin user first.";
+    renderWallet();
+    return;
+  }
+
   const commandButton = event.target.closest("[data-command]");
   if (commandButton) {
     sendBridge(commandButton.dataset.command);
@@ -2023,10 +2231,18 @@ document.addEventListener("click", (event) => {
   const eyeButton = event.target.closest("[data-wallet-eye]");
   if (eyeButton) {
     toggleBalance(eyeButton.dataset.walletEye);
+    return;
   }
 });
 
 document.addEventListener("submit", (event) => {
+  const walletForm = event.target.closest("[data-wallet-transfer-form]");
+  if (walletForm) {
+    event.preventDefault();
+    submitWalletTransfer();
+    return;
+  }
+
   const profileForm = event.target.closest("[data-profile-form]");
   if (profileForm) {
     event.preventDefault();
@@ -2045,10 +2261,33 @@ document.addEventListener("submit", (event) => {
 });
 
 document.addEventListener("input", (event) => {
+  const walletType = event.target.closest("[data-wallet-transfer-type]");
+  if (walletType) {
+    state.wallet.selectedUser = null;
+    if (walletType.value === "checking-user") sendBridge("wallet-users");
+    renderWalletUsers();
+    return;
+  }
+
+  const walletUserSearch = event.target.closest("[data-wallet-user-search]");
+  if (walletUserSearch) {
+    if (!state.wallet.users.length) sendBridge("wallet-users");
+    renderWalletUsers();
+    return;
+  }
+
   const search = event.target.closest("[data-message-search]");
   if (!search) return;
   state.messages.query = String(search.value || "");
   renderMessageInbox();
+});
+
+document.addEventListener("change", (event) => {
+  const walletType = event.target.closest("[data-wallet-transfer-type]");
+  if (!walletType) return;
+  state.wallet.selectedUser = null;
+  if (walletType.value === "checking-user") sendBridge("wallet-users");
+  renderWalletUsers();
 });
 
 window.addEventListener("message", (event) => {
