@@ -2,6 +2,7 @@ const BRIDGE_PREFIX = "NEURO_GATEWAY|";
 const query = new URLSearchParams(window.location.search);
 const liveBridge = query.get("bridge") === "sl";
 const pendingBridge = new Map();
+let bridgeSeq = 0;
 
 const state = {
   hiddenBalances: {
@@ -222,7 +223,8 @@ function renderPerfDebug() {
 }
 
 function sendBridge(op, text = "") {
-  const tick = Date.now().toString();
+  bridgeSeq = (bridgeSeq + 1) % 100000;
+  const tick = `${Date.now()}-${bridgeSeq}`;
   const query = new URLSearchParams({
     op,
     text,
@@ -516,25 +518,42 @@ function handleWalletResponse(body) {
 }
 
 function loadSavedProfile() {
+  const storageKey = profileStorageKey();
   try {
-    const saved = JSON.parse(window.localStorage.getItem("neuroProfile") || "{}");
+    let saved = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+    if (!liveBridge && !Object.keys(saved).length) {
+      saved = JSON.parse(window.localStorage.getItem("neuroProfile") || "{}");
+    }
     applySavedProfile(saved, false);
   } catch {
-    window.localStorage.removeItem("neuroProfile");
+    window.localStorage.removeItem(storageKey);
+  }
+}
+
+function applyBridgeIdentityDefaults() {
+  if (!liveBridge) return;
+  const displayName = String(query.get("name") || "").trim();
+  if (displayName && (state.profile.name === "Neuro Resident" || state.profile.name === "Resident")) {
+    state.profile.name = displayName;
   }
 }
 
 function persistProfileLocal() {
   try {
-    window.localStorage.setItem("neuroProfile", JSON.stringify(profileSavePayload()));
+    window.localStorage.setItem(profileStorageKey(), JSON.stringify(profileSavePayload()));
   } catch {
     // Second Life media can deny browser storage; the LSL gateway is the durable save path.
   }
 }
 
+function profileStorageKey() {
+  const owner = String(query.get("avatar") || "local").replace(/[^a-z0-9-]/gi, "");
+  return liveBridge ? `neuroProfile:${owner || "local"}` : "neuroProfile";
+}
+
 function profileSavePayload() {
   const { role, name, age, sex, location, avatar, favoriteColor, zodiac } = state.profile;
-  return { role, name, age, sex, location, avatar, favoriteColor, zodiac };
+  return { ownerUuid: currentOwnerUuid(), role, name, age, sex, location, avatar, favoriteColor, zodiac };
 }
 
 function applySavedProfile(profile, fromHud = false) {
@@ -2460,6 +2479,7 @@ window.addEventListener("message", (event) => {
 });
 
 setupStats();
+applyBridgeIdentityDefaults();
 loadSavedProfile();
 requestStoredProfile(true);
 loadMessagesLocal();
