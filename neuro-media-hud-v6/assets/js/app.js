@@ -91,6 +91,7 @@ const state = {
   },
   clock: {
     lastMinuteKey: "",
+    lastHourNoticeKey: "",
     minuteToneIndex: 0
   }
 };
@@ -2246,7 +2247,9 @@ function setupClock() {
     }).formatToParts(now);
     const hour = parts.find((part) => part.type === "hour")?.value || "12";
     const minute = parts.find((part) => part.type === "minute")?.value || "00";
+    const dayPeriod = parts.find((part) => part.type === "dayPeriod")?.value || "";
     const minuteKey = `${hour}:${minute}`;
+    const hourNoticeKey = `${hour}-${dayPeriod}-${now.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })}`;
 
     if (hourNode) hourNode.textContent = hour;
     if (minuteNode) {
@@ -2260,6 +2263,10 @@ function setupClock() {
       minuteNode.classList.add(`minute-tone-${state.clock.minuteToneIndex}`);
     }
     state.clock.lastMinuteKey = minuteKey;
+    if (minute === "00" && state.clock.lastHourNoticeKey !== hourNoticeKey) {
+      state.clock.lastHourNoticeKey = hourNoticeKey;
+      showNeura(`CDF time is ${hour}:00 ${dayPeriod}.`, "time");
+    }
 
     const delay = Math.max(800, 61000 - (now.getSeconds() * 1000) - now.getMilliseconds());
     state.perf.clockTimer = perfTimeout("clock", tick, delay);
