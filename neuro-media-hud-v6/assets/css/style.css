@@ -839,19 +839,20 @@ h1 {
   color: #ffd45a;
   font-family: inherit;
   font-size: 30px;
-  font-weight: 360;
+  font-weight: 800;
   line-height: 0.96;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
   white-space: pre-line;
   overflow-wrap: break-word;
-  -webkit-text-stroke: 0;
+  -webkit-text-stroke: 1px rgba(116, 65, 255, 0.96);
   text-shadow:
-    0 2px 0 rgba(0, 0, 0, 0.98),
+    0 2px 0 rgba(31, 0, 58, 0.98),
     0 0 2px rgba(0, 0, 0, 1),
-    0 0 12px rgba(255, 174, 44, 0.84),
-    0 0 22px rgba(140, 64, 255, 0.36);
+    0 0 10px rgba(116, 65, 255, 0.92),
+    0 0 18px rgba(116, 65, 255, 0.72),
+    0 0 12px rgba(255, 174, 44, 0.56);
   opacity: 0;
   transform: translateY(-50%);
   transition: opacity 180ms ease, transform 180ms ease;
