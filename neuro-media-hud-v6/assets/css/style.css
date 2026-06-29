@@ -794,6 +794,24 @@ h1 {
   filter: blur(14px);
 }
 
+.neura-hologram::after {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  z-index: 2;
+  border-radius: 50%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(177, 244, 255, 0),
+    rgba(177, 244, 255, 0) 7px,
+    rgba(177, 244, 255, 0.18) 8px,
+    rgba(177, 244, 255, 0) 10px
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: translateY(-14%);
+}
+
 .neura-hologram img {
   position: relative;
   z-index: 1;
@@ -832,6 +850,20 @@ h1 {
   opacity: 0.96;
   transform: scale(1.03);
   filter: saturate(1.28) brightness(1.08);
+  animation: neuraProjectIn 620ms cubic-bezier(0.17, 0.84, 0.36, 1), neuraPresence 4.8s ease-in-out 620ms infinite;
+}
+
+.neura-hologram.is-active::before {
+  animation: neuraGlowPulse 2.8s ease-in-out infinite;
+}
+
+.neura-hologram.is-active::after {
+  opacity: 0.7;
+  animation: neuraScan 1.35s linear infinite;
+}
+
+.neura-hologram.is-active img {
+  animation: neuraImageResolve 680ms ease-out, neuraFloat 3.6s ease-in-out 680ms infinite;
 }
 
 .neura-hologram.is-active p {
@@ -3058,6 +3090,10 @@ body.perf-lite .messages-panel {
 body.perf-lite .reactor::before,
 body.perf-lite .reactor-core,
 body.perf-lite .reactor-core::after,
+body.perf-lite .neura-hologram,
+body.perf-lite .neura-hologram::before,
+body.perf-lite .neura-hologram::after,
+body.perf-lite .neura-hologram img,
 body.perf-lite .stat-panel article,
 body.perf-lite .stat-icon,
 body.perf-lite .stat-panel strong {
@@ -3089,6 +3125,82 @@ body.perf-lite .profile-grid article {
   50% {
     opacity: 0.78;
     transform: scale(1.018);
+  }
+}
+
+@keyframes neuraProjectIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.72) translateY(12%);
+    filter: blur(8px) saturate(1.45) brightness(1.5);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(1.08) translateY(-2%);
+    filter: blur(1px) saturate(1.35) brightness(1.2);
+  }
+  100% {
+    opacity: 0.96;
+    transform: scale(1.03) translateY(0);
+    filter: blur(0) saturate(1.28) brightness(1.08);
+  }
+}
+
+@keyframes neuraImageResolve {
+  0% {
+    clip-path: circle(10% at 50% 58%);
+    opacity: 0.2;
+  }
+  56% {
+    clip-path: circle(74% at 50% 50%);
+    opacity: 0.92;
+  }
+  100% {
+    clip-path: circle(100% at 50% 50%);
+    opacity: 1;
+  }
+}
+
+@keyframes neuraPresence {
+  0%, 100% {
+    filter: saturate(1.2) brightness(1.04);
+  }
+  50% {
+    filter: saturate(1.42) brightness(1.16);
+  }
+}
+
+@keyframes neuraGlowPulse {
+  0%, 100% {
+    opacity: 0.76;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes neuraScan {
+  0% {
+    transform: translateY(-18%);
+    opacity: 0;
+  }
+  18%, 82% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(18%);
+    opacity: 0;
+  }
+}
+
+@keyframes neuraFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2.5%) scale(1.018);
   }
 }
 
