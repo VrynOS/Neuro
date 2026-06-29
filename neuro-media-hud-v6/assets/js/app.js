@@ -140,7 +140,8 @@ const cycleActions = {
   }
 };
 
-const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png`;
+const AVATAR_ASSET_VERSION = "profile-images-1";
+const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
   aries: "Aries",
