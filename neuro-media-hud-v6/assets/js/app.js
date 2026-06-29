@@ -100,7 +100,8 @@ const state = {
     activeGroups: {},
     activeMaleSection: "care",
     activeSection: "cycle",
-    detailOpen: false
+    detailOpen: false,
+    cycleLengthPickerOpen: false
   },
   clock: {
     lastMinuteKey: "",
@@ -138,17 +139,9 @@ const maleHealthSectionPurposes = {
 };
 
 const cycleActions = {
-  start28: {
-    label: "Start 28 Days",
-    command: "28 days",
-    status: "Active",
-    nextStep: "Track Care"
-  },
-  start30: {
-    label: "Start 30 Days",
-    command: "30 days",
-    status: "Active",
-    nextStep: "Track Care"
+  start: {
+    label: "Start Cycle",
+    opensPicker: true
   },
   pause: {
     label: "Pause Cycle",
@@ -170,9 +163,17 @@ const cycleActions = {
   }
 };
 
+const cycleLengthActions = [
+  { key: "21", label: "21 Days", command: "21 days" },
+  { key: "24", label: "24 Days", command: "24 days" },
+  { key: "28", label: "28 Days", command: "28 days" },
+  { key: "30", label: "30 Days", command: "30 days" },
+  { key: "35", label: "35 Days", command: "35 days" }
+];
+
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-panel-2";
+const NEURA_ASSET_VERSION = "cycle-picker-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -761,11 +762,28 @@ function sendHealthCommand(command, label = command) {
 function handleCycleAction(actionKey) {
   const action = cycleActions[actionKey];
   if (!action) return;
+  if (action.opensPicker) {
+    state.health.cycleLengthPickerOpen = true;
+    renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
+    return;
+  }
   setSnapshotValue("cycle.status", action.status);
   setSnapshotValue("cycle.nextStep", action.nextStep);
   setSnapshotValue("cycle.lastAction", action.label);
   renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
   sendHealthCommand(action.command, action.label);
+}
+
+function handleCycleLengthAction(lengthKey) {
+  const action = cycleLengthActions.find((item) => item.key === String(lengthKey));
+  if (!action) return;
+  state.health.cycleLengthPickerOpen = false;
+  setSnapshotValue("cycle.status", "Active");
+  setSnapshotValue("cycle.nextStep", "Track Care");
+  setSnapshotValue("cycle.length", action.key);
+  setSnapshotValue("cycle.lastAction", `Start ${action.label}`);
+  renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
+  sendHealthCommand(action.command, `Start ${action.label}`);
 }
 
 function renderKeyValueRows(target, rows) {
@@ -930,13 +948,37 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
     cycleActionBar.hidden = sectionKey !== "cycle";
     cycleActionBar.replaceChildren();
     if (sectionKey === "cycle") {
-      Object.entries(cycleActions).forEach(([key, action]) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.dataset.cycleAction = key;
-        button.textContent = action.label;
-        cycleActionBar.append(button);
-      });
+      cycleActionBar.classList.toggle("is-picker-open", state.health.cycleLengthPickerOpen);
+      if (state.health.cycleLengthPickerOpen) {
+        const label = document.createElement("span");
+        label.className = "health-cycle-picker-label";
+        label.textContent = "Choose cycle length";
+        cycleActionBar.append(label);
+
+        cycleLengthActions.forEach((action) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.dataset.cycleLength = action.key;
+          button.textContent = action.label;
+          cycleActionBar.append(button);
+        });
+
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        closeButton.dataset.cycleLengthClose = "true";
+        closeButton.textContent = "Close";
+        cycleActionBar.append(closeButton);
+      } else {
+        Object.entries(cycleActions).forEach(([key, action]) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.dataset.cycleAction = key;
+          button.textContent = action.label;
+          cycleActionBar.append(button);
+        });
+      }
+    } else {
+      cycleActionBar.classList.remove("is-picker-open");
     }
   }
   if (!target) return;
@@ -2449,6 +2491,7 @@ document.addEventListener("click", (event) => {
   const healthDetailClose = event.target.closest("[data-health-detail-close]");
   if (healthDetailClose) {
     state.health.detailOpen = false;
+    state.health.cycleLengthPickerOpen = false;
     renderHealthDetail(state.health.activeSection || "cycle");
     return;
   }
@@ -2470,6 +2513,19 @@ document.addEventListener("click", (event) => {
   const cycleActionButton = event.target.closest("[data-cycle-action]");
   if (cycleActionButton) {
     handleCycleAction(cycleActionButton.dataset.cycleAction);
+    return;
+  }
+
+  const cycleLengthButton = event.target.closest("[data-cycle-length]");
+  if (cycleLengthButton) {
+    handleCycleLengthAction(cycleLengthButton.dataset.cycleLength);
+    return;
+  }
+
+  const cycleLengthClose = event.target.closest("[data-cycle-length-close]");
+  if (cycleLengthClose) {
+    state.health.cycleLengthPickerOpen = false;
+    renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
     return;
   }
 
