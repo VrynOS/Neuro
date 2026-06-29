@@ -771,34 +771,38 @@ h1 {
 
 .neura-hologram {
   position: absolute;
-  inset: 18px;
+  inset: 0;
   z-index: 1;
   display: grid;
   place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
   pointer-events: none;
   opacity: 0.24;
-  transform: scale(0.94);
+  transform: scale(0.98);
   transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
 }
 
 .neura-hologram::before {
   content: "";
   position: absolute;
-  inset: 20px;
+  inset: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(40, 161, 252, 0.2), transparent 64%);
-  filter: blur(10px);
+  background:
+    radial-gradient(circle, rgba(46, 242, 143, 0.22), transparent 30%),
+    radial-gradient(circle, rgba(40, 161, 252, 0.42), transparent 68%);
+  filter: blur(14px);
 }
 
 .neura-hologram img {
   position: relative;
   z-index: 1;
-  width: 72%;
-  height: 72%;
-  object-fit: contain;
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
   filter:
-    drop-shadow(0 0 12px rgba(40, 161, 252, 0.76))
-    drop-shadow(0 0 28px rgba(46, 242, 143, 0.22));
+    drop-shadow(0 0 16px rgba(40, 161, 252, 0.9))
+    drop-shadow(0 0 38px rgba(46, 242, 143, 0.42));
   mix-blend-mode: screen;
 }
 
@@ -826,8 +830,8 @@ h1 {
 .neura-hologram.is-active {
   z-index: 4;
   opacity: 0.96;
-  transform: scale(1);
-  filter: saturate(1.18);
+  transform: scale(1.03);
+  filter: saturate(1.28) brightness(1.08);
 }
 
 .neura-hologram.is-active p {
