@@ -760,13 +760,88 @@ h1 {
 
 .reactor-core {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   isolation: isolate;
   display: grid;
   place-items: center;
   width: 70%;
   aspect-ratio: 1;
   border-radius: 50%;
+}
+
+.neura-hologram {
+  position: absolute;
+  inset: 18px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0.24;
+  transform: scale(0.94);
+  transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+}
+
+.neura-hologram::before {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(40, 161, 252, 0.2), transparent 64%);
+  filter: blur(10px);
+}
+
+.neura-hologram img {
+  position: relative;
+  z-index: 1;
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 12px rgba(40, 161, 252, 0.76))
+    drop-shadow(0 0 28px rgba(46, 242, 143, 0.22));
+  mix-blend-mode: screen;
+}
+
+.neura-hologram p {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 14px;
+  z-index: 3;
+  min-height: 34px;
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid rgba(46, 242, 143, 0.32);
+  border-radius: 6px;
+  background: rgba(0, 10, 14, 0.78);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.18;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.neura-hologram.is-active {
+  z-index: 4;
+  opacity: 0.96;
+  transform: scale(1);
+  filter: saturate(1.18);
+}
+
+.neura-hologram.is-active p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.neura-hologram[data-mood="critical"] p {
+  border-color: rgba(255, 79, 88, 0.46);
+  color: #ffdfe2;
+}
+
+.neura-hologram.is-active + .reactor-core {
+  opacity: 0.34;
 }
 
 .reactor-core span {

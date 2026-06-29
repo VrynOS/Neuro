@@ -55,6 +55,10 @@ const state = {
     liveLoaded: false,
     saveTimer: 0
   },
+  neura: {
+    alertTimer: 0,
+    lastStatSignature: ""
+  },
   stats: {
     hunger: 82,
     thirst: 64,
@@ -142,6 +146,8 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
+const NEURA_ASSET_VERSION = "neura-ai-1";
+const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
   aries: "Aries",
@@ -252,6 +258,24 @@ function masterRefresh(button = null) {
     return;
   }
   window.location.reload();
+}
+
+function alertImagePath(alert) {
+  if (alert?.assistant || alert?.avatar === "neura") return neuraPath();
+  return alert?.avatar ? avatarPath(alert.avatar) : neuraPath();
+}
+
+function showNeura(message = "Neura online.", mood = "system") {
+  const panel = document.querySelector("[data-neura-hologram]");
+  const copy = document.querySelector("[data-neura-message]");
+  if (!panel) return;
+  if (copy) copy.textContent = message;
+  panel.dataset.mood = mood;
+  panel.classList.add("is-active");
+  window.clearTimeout(state.neura.alertTimer);
+  state.neura.alertTimer = window.setTimeout(() => {
+    panel.classList.remove("is-active");
+  }, 6200);
 }
 
 function gcMoney(value) {
@@ -1238,10 +1262,13 @@ function handleDmResponse(body) {
   state.messages.loading = false;
   state.messages.offline = false;
   try {
+    const previousUnread = state.messages.threads.reduce((total, thread) => total + Math.max(0, Math.round(asNumber(thread.unread, 0))), 0);
     const payload = body.substring(3) || "[]";
     const threads = JSON.parse(payload);
     state.messages.threads = Array.isArray(threads) ? threads.map(normalizeDmThread) : [];
     state.messages.live = true;
+    const nextUnread = state.messages.threads.reduce((total, thread) => total + Math.max(0, Math.round(asNumber(thread.unread, 0))), 0);
+    if (nextUnread > previousUnread) showNeura("You have a new message.", "message");
     saveMessagesLocal();
     if (state.perf.loaded.messages) {
       if (state.messages.activeThreadId && activeDmThread()) renderMessageThread();
@@ -1382,10 +1409,11 @@ function renderNotificationMenu() {
       return {
         id: thread.threadId,
         kind: "dm",
-        avatar: thread.avatar,
+        avatar: "neura",
+        assistant: true,
         category: "Message",
-        title: thread.participantName,
-        message: last?.message_text || "New private message.",
+        title: "New Message",
+        message: `${thread.participantName}: ${last?.message_text || "New private message."}`,
         timestamp: last?.timestamp || Date.now(),
         unread: thread.unread > 0
       };
@@ -1405,7 +1433,7 @@ function renderNotificationMenu() {
         <small></small>
       </span>
       <time></time>`;
-    item.querySelector("img").src = alert.avatar ? avatarPath(alert.avatar) : avatarPath("01");
+    item.querySelector("img").src = alertImagePath(alert);
     item.querySelector("img").alt = alert.category || "Notification";
     item.querySelector("em").textContent = alert.category || "Update";
     item.querySelector("strong").textContent = alert.title || "Notification";
@@ -1436,9 +1464,10 @@ function generatedStatNotifications() {
     .map(([key, label]) => ({
       id: `stat-${key}`,
     kind: "stat",
-    avatar: "01",
+    avatar: "neura",
+    assistant: true,
     category: "Stats",
-    title: `${label} is low`,
+    title: `Neura: ${label} is low`,
     message: `${label} is at ${Math.round(asNumber(state.stats[key], 0))}%. Take care of it soon.`,
     timestamp: Date.now(),
     unread: true
@@ -1478,6 +1507,7 @@ function compactSavedNotification(item) {
     id: compactSavedText(item.id || `note-${Date.now()}`, 48),
     kind: compactSavedText(item.kind || "local", 16),
     avatar: compactSavedText(item.avatar || "01", 12),
+    assistant: Boolean(item.assistant),
     category: compactSavedText(item.category || "System", 24),
     title: compactSavedText(item.title || "HUD Update", 42),
     message: compactSavedText(item.message || "", 90),
@@ -1600,7 +1630,8 @@ function addLocalNotification(title, message, category = "System") {
   state.notifications.items.unshift({
     id: `note-${Date.now()}`,
     kind: "local",
-    avatar: "01",
+    avatar: "neura",
+    assistant: true,
     category,
     title,
     message,
@@ -1611,6 +1642,7 @@ function addLocalNotification(title, message, category = "System") {
   state.notifications.items = state.notifications.items.slice(0, 8);
   saveNotificationsLocal();
   renderNotificationCount();
+  showNeura(message || title, category.toLowerCase());
 }
 
 function setNotificationMenu(open) {
@@ -2089,7 +2121,35 @@ function renderBodyStatus(stats) {
   if (shell) shell.dataset.vitals = status.level;
 }
 
+function notifyNeuraForStats(previousStats, nextStats) {
+  const watched = [
+    ["hunger", "Hunger"],
+    ["thirst", "Thirst"],
+    ["sleep", "Sleep"],
+    ["hygiene", "Hygiene"],
+    ["energy", "Energy"],
+    ["fun", "Fun"],
+    ["care", "Care"]
+  ];
+  const lows = watched
+    .map(([key, label]) => [key, label, clampStat(nextStats[key])])
+    .filter(([, , value]) => value < 50)
+    .sort((a, b) => a[2] - b[2]);
+  if (!lows.length) {
+    state.neura.lastStatSignature = "";
+    return;
+  }
+
+  const [key, label, value] = lows[0];
+  const previous = clampStat(previousStats?.[key] ?? 100);
+  const signature = `${key}:${Math.floor(value / 10)}`;
+  if (signature === state.neura.lastStatSignature && previous < 50) return;
+  state.neura.lastStatSignature = signature;
+  showNeura(`${label} is at ${value}%. I need you to handle that.`, value <= 25 ? "critical" : "stats");
+}
+
 function renderStats(stats) {
+  const previousStats = { ...state.stats };
   state.stats = { ...state.stats, ...stats };
   Object.entries(state.stats).forEach(([name, value]) => {
     const row = document.querySelector(`[data-stat="${name}"]`);
@@ -2101,6 +2161,7 @@ function renderStats(stats) {
     updateStatRow(row);
   });
   renderBodyStatus(state.stats);
+  notifyNeuraForStats(previousStats, state.stats);
   if (state.perf.loaded.health) renderHealth();
 }
 
