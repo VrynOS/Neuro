@@ -828,25 +828,27 @@ h1 {
 
 .neura-hologram p {
   position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: 8%;
+  left: 7%;
+  right: 7%;
+  bottom: 12%;
   z-index: 3;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #02080c;
-  font-size: 22px;
+  color: #f3ffff;
+  font-size: 26px;
   font-weight: 900;
-  line-height: 0.98;
+  line-height: 1;
   text-align: center;
   text-transform: uppercase;
-  -webkit-text-stroke: 0.7px rgba(216, 253, 255, 0.98);
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  -webkit-text-stroke: 1.35px rgba(0, 5, 10, 0.96);
   text-shadow:
-    0 0 1px rgba(216, 253, 255, 1),
-    0 0 8px rgba(40, 161, 252, 0.9),
-    0 2px 4px rgba(0, 0, 0, 0.95);
+    0 2px 0 rgba(0, 0, 0, 0.92),
+    0 0 8px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(40, 161, 252, 0.62);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 180ms ease, transform 180ms ease;
@@ -881,12 +883,12 @@ h1 {
 }
 
 .neura-hologram[data-mood="critical"] p {
-  color: #180305;
-  -webkit-text-stroke-color: rgba(255, 229, 232, 0.98);
+  color: #fff2f3;
+  -webkit-text-stroke-color: rgba(20, 0, 3, 0.98);
   text-shadow:
-    0 0 1px rgba(255, 229, 232, 1),
-    0 0 8px rgba(255, 79, 88, 0.9),
-    0 2px 4px rgba(0, 0, 0, 0.95);
+    0 2px 0 rgba(20, 0, 3, 0.95),
+    0 0 8px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(255, 79, 88, 0.62);
 }
 
 .neura-hologram.is-active + .reactor-core {

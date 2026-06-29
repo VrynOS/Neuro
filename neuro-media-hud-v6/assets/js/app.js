@@ -147,7 +147,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "neura-ai-3";
+const NEURA_ASSET_VERSION = "neura-ai-4";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -266,11 +266,26 @@ function alertImagePath(alert) {
   return alert?.avatar ? avatarPath(alert.avatar) : neuraPath();
 }
 
+function neuraReactorMessage(message = "", mood = "system") {
+  const text = String(message || "").trim();
+  const lower = text.toLowerCase();
+  if (lower.includes("messages") && lower.includes("did not answer")) return "Messages offline";
+  if (lower.includes("server") && lower.includes("offline")) return "Server offline";
+  if (lower.includes("new message")) return "New message";
+  if (lower.includes("transfer") && lower.includes("failed")) return "Transfer failed";
+  if (lower.includes("transfer")) return "Transfer complete";
+  if (lower.includes("refreshed") || lower.includes("sync")) return "HUD synced";
+  if (mood === "time") return text;
+  if (mood === "critical") return text.replace("I need you to handle that.", "Needs care.");
+  if (text.length <= 28) return text;
+  return text.split(/[.!?]/)[0].slice(0, 28).trim();
+}
+
 function showNeura(message = "Neura online.", mood = "system") {
   const panel = document.querySelector("[data-neura-hologram]");
   const copy = document.querySelector("[data-neura-message]");
   if (!panel) return;
-  if (copy) copy.textContent = message;
+  if (copy) copy.textContent = neuraReactorMessage(message, mood);
   panel.dataset.mood = mood;
   panel.classList.add("is-active");
   window.clearTimeout(state.neura.alertTimer);
