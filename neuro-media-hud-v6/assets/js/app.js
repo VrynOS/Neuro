@@ -1434,14 +1434,47 @@ function resetRecoveredStatDismissals() {
   if (before !== state.notifications.dismissedStats.join("|")) saveNotificationsLocal();
 }
 
+function compactSavedText(value, limit = 90) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  return text.length > limit ? `${text.slice(0, limit - 1)}...` : text;
+}
+
+function compactSavedReceipt(receipt) {
+  return {
+    id: compactSavedText(receipt.id || `wallet-${Date.now()}`, 48),
+    type: compactSavedText(receipt.type || "Transfer", 28),
+    title: compactSavedText(receipt.title || "G-Coin transfer", 50),
+    detail: compactSavedText(receipt.detail || "", 96),
+    amount: compactSavedText(receipt.amount || "", 24),
+    sender: compactSavedText(receipt.sender || state.profile.name || "You", 44),
+    receiver: compactSavedText(receipt.receiver || "G-Coin", 44),
+    direction: receipt.direction === "in" ? "in" : "out",
+    time: Number(receipt.time || Date.now())
+  };
+}
+
+function compactSavedNotification(item) {
+  return {
+    id: compactSavedText(item.id || `note-${Date.now()}`, 48),
+    kind: compactSavedText(item.kind || "local", 16),
+    avatar: compactSavedText(item.avatar || "01", 12),
+    category: compactSavedText(item.category || "System", 24),
+    title: compactSavedText(item.title || "HUD Update", 42),
+    message: compactSavedText(item.message || "", 90),
+    timestamp: Number(item.timestamp || Date.now()),
+    read: Boolean(item.read),
+    unread: Boolean(item.unread)
+  };
+}
+
 function webStatePayload() {
   return {
     notifications: {
-      items: state.notifications.items.slice(0, 8),
+      items: state.notifications.items.slice(0, 8).map(compactSavedNotification),
       dismissedStats: state.notifications.dismissedStats
     },
     wallet: {
-      receipts: state.wallet.receipts.slice(0, 4)
+      receipts: state.wallet.receipts.slice(0, 4).map(compactSavedReceipt)
     },
     savedAt: Date.now()
   };
