@@ -1705,14 +1705,14 @@ h1 {
 }
 
 .wallet-user-dialog {
-  width: min(420px, 86%);
-  max-height: 78%;
+  width: min(680px, 92%);
+  max-height: 86%;
   display: grid;
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid rgba(40, 161, 252, 0.5);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(40, 161, 252, 0.64);
   background: rgba(2, 13, 20, 0.96);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 18px 58px rgba(0, 0, 0, 0.64), inset 0 0 28px rgba(40, 161, 252, 0.1);
 }
 
 .wallet-user-dialog header {
@@ -1724,33 +1724,42 @@ h1 {
 
 .wallet-user-dialog header strong {
   color: var(--green);
+  font-size: 18px;
   text-transform: uppercase;
 }
 
 .wallet-user-dialog header button {
-  min-height: 32px;
+  min-height: 40px;
   border: 1px solid rgba(40, 161, 252, 0.35);
   background: rgba(0, 4, 8, 0.82);
   color: var(--blue);
-  padding: 0 12px;
+  padding: 0 18px;
+  font-size: 15px;
   cursor: pointer;
+}
+
+.wallet-user-dialog .wallet-search-wrap {
+  min-height: 44px;
+  font-size: 16px;
 }
 
 .wallet-users {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  max-height: 230px;
+  gap: 10px;
+  max-height: 340px;
   overflow: auto;
 }
 
 .wallet-users button,
 .wallet-user-empty {
-  min-height: 36px;
+  min-height: 50px;
   border: 1px solid rgba(40, 161, 252, 0.32);
   background: rgba(4, 21, 31, 0.88);
   color: var(--text);
-  padding: 0 10px;
+  padding: 0 16px;
+  font-size: 17px;
+  font-weight: 700;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
