@@ -151,7 +151,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "hud-memory-1";
+const NEURA_ASSET_VERSION = "breadcrumb-settings-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -2442,6 +2442,16 @@ document.addEventListener("click", (event) => {
   const settingsItem = event.target.closest("[data-settings-item]");
   if (settingsItem) {
     setLastRefresh(settingsItem.textContent.trim());
+    setSettingsMenu(false);
+    return;
+  }
+
+  const breadcrumbCommand = event.target.closest("[data-breadcrumb-command]");
+  if (breadcrumbCommand) {
+    const command = breadcrumbCommand.dataset.breadcrumbCommand;
+    sendBridge("breadcrumb", command);
+    addLocalNotification("Breadcrumb Settings", breadcrumbCommand.textContent.trim(), "Settings");
+    setLastRefresh(`breadcrumb ${command}`);
     setSettingsMenu(false);
     return;
   }
