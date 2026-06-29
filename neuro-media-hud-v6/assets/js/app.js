@@ -136,21 +136,33 @@ const maleHealthSectionPurposes = {
 };
 
 const cycleActions = {
-  start: {
-    label: "Start Cycle",
-    command: "cycle-start",
+  start28: {
+    label: "Start 28 Days",
+    command: "28 days",
+    status: "Active",
+    nextStep: "Track Care"
+  },
+  start30: {
+    label: "Start 30 Days",
+    command: "30 days",
     status: "Active",
     nextStep: "Track Care"
   },
   pause: {
     label: "Pause Cycle",
-    command: "cycle-pause",
+    command: "pause cycle",
     status: "Paused",
     nextStep: "Resume Cycle"
   },
+  resume: {
+    label: "Resume Cycle",
+    command: "resume cycle",
+    status: "Active",
+    nextStep: "Track Care"
+  },
   stop: {
     label: "Stop Cycle",
-    command: "cycle-stop",
+    command: "stop cycle",
     status: "Inactive",
     nextStep: "Start Cycle"
   }
@@ -158,7 +170,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "wallet-picker-large-1";
+const NEURA_ASSET_VERSION = "health-online-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -730,6 +742,20 @@ function setSnapshotValue(key, value) {
   state.lastSnapshot[key] = value;
 }
 
+function scheduleHealthRefresh(reason = "health") {
+  if (!liveBridge) return;
+  window.setTimeout(() => sendBridge("stats"), 900);
+  setLastRefresh(`${reason} sync`);
+}
+
+function sendHealthCommand(command, label = command) {
+  const cleanCommand = String(command || "").trim();
+  if (!cleanCommand) return;
+  sendBridge("health-command", cleanCommand);
+  addLocalNotification("Health Updated", label || cleanCommand, "Health");
+  scheduleHealthRefresh("health command");
+}
+
 function handleCycleAction(actionKey) {
   const action = cycleActions[actionKey];
   if (!action) return;
@@ -737,8 +763,7 @@ function handleCycleAction(actionKey) {
   setSnapshotValue("cycle.nextStep", action.nextStep);
   setSnapshotValue("cycle.lastAction", action.label);
   renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
-  addLocalNotification("Health Updated", action.label, "Health");
-  sendBridge(action.command);
+  sendHealthCommand(action.command, action.label);
 }
 
 function renderKeyValueRows(target, rows) {
@@ -2402,7 +2427,17 @@ document.addEventListener("click", (event) => {
     document.querySelectorAll("[data-health-section]").forEach((button) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
-    renderHealthDetail(healthSectionButton.dataset.healthSection);
+    const section = healthSectionButton.dataset.healthSection;
+    renderHealthDetail(section);
+    const sectionCommands = {
+      cycle: "cycle",
+      pregnancy: "pregnancy",
+      selfCare: "care",
+      birthControl: "birth control",
+      planB: "plan b"
+    };
+    sendBridge("health-section", sectionCommands[section] || "health");
+    scheduleHealthRefresh("health section");
     return;
   }
 

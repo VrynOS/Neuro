@@ -1167,6 +1167,7 @@ h1 {
   height: 100%;
   min-height: 0;
   overflow: hidden;
+  padding: 28px 40px;
 }
 
 .screen-health.is-active {
@@ -1176,9 +1177,9 @@ h1 {
 
 .health-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 14px;
   min-height: 0;
 }
 
@@ -1188,7 +1189,7 @@ h1 {
   border-radius: 8px;
   background: var(--glass-surface);
   box-shadow: var(--glass-shadow);
-  padding: 12px;
+  padding: 16px;
   overflow: hidden;
 }
 
@@ -1351,12 +1352,14 @@ h1 {
 .health-sections {
   grid-column: 1;
   grid-row: 1;
-  padding: 12px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
 }
 
 .health-detail {
-  grid-column: 1;
-  grid-row: 2;
+  grid-column: 2;
+  grid-row: 1;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
 }
@@ -1370,7 +1373,7 @@ h1 {
 
 .health-detail header small {
   color: var(--muted);
-  font-size: 18px;
+  font-size: 19px;
   line-height: 1.25;
 }
 
@@ -1390,11 +1393,11 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 36px;
+  min-height: 42px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 22px;
+  font-size: 21px;
   line-height: 1.25;
 }
 
@@ -1422,17 +1425,17 @@ h1 {
 }
 
 .health-section-buttons {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .health-subsection-buttons {
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   border-bottom: 1px solid rgba(40, 161, 252, 0.16);
   padding: 10px 0;
 }
 
 .health-cycle-actions {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   padding: 10px 0 2px;
 }
 
@@ -1443,7 +1446,7 @@ h1 {
 .health-section-buttons button,
 .health-subsection-buttons button,
 .health-cycle-actions button {
-  min-height: 46px;
+  min-height: 52px;
   border: 1px solid var(--glass-border);
   border-radius: 6px;
   background: var(--glass-surface-strong);
@@ -1455,12 +1458,12 @@ h1 {
 }
 
 .health-subsection-buttons button {
-  min-height: 44px;
+  min-height: 46px;
   font-size: 18px;
 }
 
 .health-cycle-actions button {
-  min-height: 44px;
+  min-height: 46px;
   color: var(--blue);
   font-size: 17px;
 }
@@ -1478,7 +1481,7 @@ h1 {
   align-content: start;
   gap: 10px;
   min-height: 0;
-  overflow: hidden;
+  overflow: auto;
   padding-top: 8px;
 }
 
@@ -1496,6 +1499,26 @@ h1 {
   font-size: 21px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .screen-health {
+    padding: 16px 14px;
+  }
+
+  .health-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .health-detail {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .health-section-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .wallet-header {
