@@ -53,7 +53,11 @@ const state = {
   },
   webState: {
     liveLoaded: false,
-    saveTimer: 0
+    saveTimer: 0,
+    heartbeatTimer: 0,
+    dirty: false,
+    lastSaveHash: "",
+    lastSaveAt: 0
   },
   neura: {
     alertTimer: 0,
@@ -147,7 +151,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "neura-ai-4";
+const NEURA_ASSET_VERSION = "hud-memory-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -254,7 +258,7 @@ function masterRefresh(button = null) {
     window.setTimeout(() => button.classList.remove("is-refreshing"), 460);
   }
   if (liveBridge) {
-    saveWebStateNow();
+    saveWebStateNow("refresh", true);
     sendBridge("refresh");
     return;
   }
@@ -334,7 +338,7 @@ function addWalletReceipt(receipt) {
     time: receipt.time || Date.now()
   }, ...state.wallet.receipts].slice(0, 4);
   renderWalletReceipts();
-  saveWebStateNow();
+  saveWebStateNow("wallet receipt", true);
 }
 
 function walletReceiptTime(value) {
@@ -1568,25 +1572,45 @@ function applyWebState(saved) {
   if (menu && !menu.hidden) renderNotificationMenu();
 }
 
-function saveWebStateNow() {
+function saveWebStateNow(reason = "manual", force = false) {
   if (!liveBridge) return;
-  sendBridge("state-save", JSON.stringify(webStatePayload()));
+  const payload = JSON.stringify(webStatePayload());
+  if (!force && payload === state.webState.lastSaveHash) return;
+  state.webState.lastSaveHash = payload;
+  state.webState.lastSaveAt = Date.now();
+  state.webState.dirty = false;
+  sendBridge("memory-save", payload);
+  setLastRefresh(`memory saved: ${reason}`);
 }
 
-function queueWebStateSave() {
+function queueWebStateSave(reason = "change") {
   if (!liveBridge) return;
+  state.webState.dirty = true;
   window.clearTimeout(state.webState.saveTimer);
   state.webState.saveTimer = window.setTimeout(() => {
     state.webState.saveTimer = 0;
-    saveWebStateNow();
-  }, 180);
+    saveWebStateNow(reason);
+  }, 350);
 }
 
 function requestWebState(force = false) {
   if (!liveBridge) return;
   if (!force && state.webState.liveLoaded) return;
-  sendBridge("state-load");
-  setLastRefresh("state loaded");
+  sendBridge("memory-load");
+  setLastRefresh("memory loaded");
+}
+
+function startMemoryHeartbeat() {
+  if (!liveBridge) return;
+  window.clearInterval(state.webState.heartbeatTimer);
+  state.webState.heartbeatTimer = window.setInterval(() => {
+    if (state.webState.dirty) saveWebStateNow("heartbeat");
+    sendBridge("memory-touch", JSON.stringify({
+      activeTab: state.perf.activeTab,
+      open: true,
+      time: Date.now()
+    }));
+  }, 5000);
 }
 
 function handleWebStateResponse(body) {
@@ -1639,7 +1663,7 @@ function saveNotificationsLocal(syncHud = true) {
   } catch {
     logBridge("local notification cache blocked");
   }
-  if (syncHud) saveWebStateNow();
+  if (syncHud) saveWebStateNow("notification", true);
 }
 
 function addLocalNotification(title, message, category = "System") {
@@ -2542,6 +2566,22 @@ document.addEventListener("change", (event) => {
   renderWalletUsers();
 });
 
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveWebStateNow("visibility hidden", true);
+  else {
+    requestWebState(true);
+    sendBridge("refresh");
+  }
+});
+
+window.addEventListener("pagehide", () => {
+  saveWebStateNow("pagehide", true);
+});
+
+window.addEventListener("beforeunload", () => {
+  saveWebStateNow("beforeunload", true);
+});
+
 window.addEventListener("message", (event) => {
   const data = String(event.data || "");
   if (!data.startsWith("NEURO_GATEWAY_ACK|")) return;
@@ -2573,4 +2613,5 @@ requestWebState(true);
 setupClock();
 loadHome();
 startLiveStats();
+startMemoryHeartbeat();
 renderPerfDebug();
