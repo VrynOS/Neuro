@@ -17,6 +17,7 @@ const state = {
     users: [],
     selectedUser: null,
     receipts: [],
+    pendingTransfer: null,
     transferStatus: "Transfers stay inside the wallet app and are logged by the G-Coin server."
   },
   profile: {
@@ -283,10 +284,17 @@ function addWalletReceipt(receipt) {
     title: receipt.title || "G-Coin transfer",
     detail: receipt.detail || "Waiting for server detail.",
     amount: receipt.amount || "",
+    sender: receipt.sender || state.profile.name || "You",
+    receiver: receipt.receiver || "G-Coin",
     direction: receipt.direction || "out",
     time: receipt.time || Date.now()
-  }, ...state.wallet.receipts].slice(0, 10);
+  }, ...state.wallet.receipts].slice(0, 4);
   renderWalletReceipts();
+}
+
+function walletReceiptTime(value) {
+  const date = new Date(value || Date.now());
+  return `${date.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
 }
 
 function renderWalletStatus(text, live = false) {
@@ -377,10 +385,11 @@ function renderWalletReceipts() {
   state.wallet.receipts.forEach((receipt) => {
     const item = document.createElement("article");
     item.className = `wallet-receipt is-${receipt.direction || "out"}`;
-    item.innerHTML = "<span></span><strong></strong><small></small><em></em>";
+    item.innerHTML = "<span></span><strong></strong><small></small><time></time><em></em>";
     item.querySelector("span").textContent = receipt.type;
     item.querySelector("strong").textContent = receipt.title;
-    item.querySelector("small").textContent = receipt.detail;
+    item.querySelector("small").textContent = `${receipt.sender} -> ${receipt.receiver}. ${receipt.detail}`;
+    item.querySelector("time").textContent = walletReceiptTime(receipt.time);
     item.querySelector("em").textContent = receipt.amount;
     list.append(item);
   });
@@ -436,15 +445,24 @@ function handleWalletResponse(body) {
     const kind = parts[2] || "Transfer";
     const amount = parts[3] || "";
     const detail = parts.slice(4).join("|") || "G-Coin server accepted the transfer.";
+    const pending = state.wallet.pendingTransfer;
     state.wallet.transferStatus = status === "OK" ? detail : `Transfer failed: ${detail}`;
     if (status === "OK") {
+      const receiver = pending?.to === "user"
+        ? pending.targetName
+        : walletAccountLabel(pending?.to || "G-Coin");
       addWalletReceipt({
         type: kind,
-        title: "Transfer complete",
+        title: pending?.label || "Transfer complete",
         detail,
         amount: gcMoney(amount),
-        direction: kind === "Incoming" ? "in" : "out"
+        sender: walletAccountLabel(pending?.from || "checking", state.profile.name || "You"),
+        receiver,
+        direction: kind === "Incoming" ? "in" : "out",
+        time: Date.now()
       });
+      state.wallet.pendingTransfer = null;
+      clearWalletTransferFields();
       requestWalletBalance();
     }
     renderWalletTransferStatus();
@@ -1719,6 +1737,11 @@ function toggleBalance(name) {
 function walletTransferPayload() {
   const type = document.querySelector("[data-wallet-transfer-type]")?.value || "checking-savings";
   const amount = Number.parseInt(document.querySelector("[data-wallet-amount]")?.value || "0", 10);
+  const label = {
+    "checking-savings": "Checking to Savings",
+    "savings-checking": "Savings to Checking",
+    "checking-user": "Checking to User"
+  }[type] || "Transfer";
   if (!Number.isFinite(amount) || amount <= 0) {
     return { error: "Enter a GC amount greater than 0." };
   }
@@ -1727,6 +1750,7 @@ function walletTransferPayload() {
     if (!state.wallet.selectedUser?.id) return { error: "Choose a G-Coin user first." };
     return {
       type,
+      label,
       from: "checking",
       to: "user",
       target: state.wallet.selectedUser.id,
@@ -1736,10 +1760,26 @@ function walletTransferPayload() {
   }
 
   if (type === "savings-checking") {
-    return { type, from: "savings", to: "checking", amount };
+    return { type, label, from: "savings", to: "checking", amount };
   }
 
-  return { type, from: "checking", to: "savings", amount };
+  return { type, label, from: "checking", to: "savings", amount };
+}
+
+function walletAccountLabel(account, fallback = "") {
+  if (account === "checking") return "Checking";
+  if (account === "savings") return "Savings";
+  if (account === "user") return fallback || "G-Coin User";
+  return fallback || account || "G-Coin";
+}
+
+function clearWalletTransferFields() {
+  const amount = document.querySelector("[data-wallet-amount]");
+  const search = document.querySelector("[data-wallet-user-search]");
+  if (amount) amount.value = "";
+  if (search) search.value = "";
+  state.wallet.selectedUser = null;
+  renderWalletUsers();
 }
 
 function submitWalletTransfer() {
@@ -1751,6 +1791,7 @@ function submitWalletTransfer() {
   }
 
   state.wallet.transferStatus = "Transfer sent to G-Coin server. Waiting for receipt.";
+  state.wallet.pendingTransfer = payload;
   renderWalletTransferStatus();
   sendBridge("wallet-transfer", JSON.stringify(payload));
   setLastRefresh("wallet transfer");

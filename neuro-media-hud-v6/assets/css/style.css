@@ -1618,9 +1618,14 @@ h1 {
 }
 
 .wallet-receipt small,
+.wallet-receipt time,
 .wallet-receipt-empty small {
   grid-column: 1 / -1;
   color: var(--muted);
+}
+
+.wallet-receipt time {
+  font-size: 12px;
 }
 
 .wallet-receipt em {
