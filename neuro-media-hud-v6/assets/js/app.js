@@ -98,7 +98,9 @@ const state = {
   },
   health: {
     activeGroups: {},
-    activeMaleSection: "care"
+    activeMaleSection: "care",
+    activeSection: "cycle",
+    detailOpen: false
   },
   clock: {
     lastMinuteKey: "",
@@ -170,7 +172,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-online-2";
+const NEURA_ASSET_VERSION = "health-panel-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -895,32 +897,39 @@ function healthDetailGroups(section) {
 }
 
 function renderHealthDetail(section = "cycle", groupIndex = state.health.activeGroups[section] || 0) {
+  const panel = document.querySelector("[data-health-detail-panel]");
   const title = document.querySelector("[data-health-detail-title]");
   const purpose = document.querySelector("[data-health-detail-purpose]");
   const subnav = document.querySelector("[data-health-subsections]");
   const cycleActionBar = document.querySelector("[data-health-cycle-actions]");
   const target = document.querySelector("[data-health-detail]");
-  const groups = healthDetailGroups(section);
+  const sectionKey = healthSectionLabels[section] ? section : "cycle";
+  state.health.activeSection = sectionKey;
+  if (panel) {
+    panel.hidden = !state.health.detailOpen;
+    panel.classList.toggle("is-open", state.health.detailOpen);
+  }
+  const groups = healthDetailGroups(sectionKey);
   const activeIndex = Math.min(Math.max(Number(groupIndex) || 0, 0), groups.length - 1);
-  state.health.activeGroups[section] = activeIndex;
-  if (title) title.textContent = healthSectionLabels[section] || healthSectionLabels.cycle;
-  if (purpose) purpose.textContent = healthSectionPurposes[section] || healthSectionPurposes.cycle;
+  state.health.activeGroups[sectionKey] = activeIndex;
+  if (title) title.textContent = healthSectionLabels[sectionKey] || healthSectionLabels.cycle;
+  if (purpose) purpose.textContent = healthSectionPurposes[sectionKey] || healthSectionPurposes.cycle;
   if (subnav) {
     subnav.replaceChildren();
     groups.forEach((group, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.healthSubsection = String(index);
-      button.dataset.healthSectionKey = section;
+      button.dataset.healthSectionKey = sectionKey;
       button.classList.toggle("is-active", index === activeIndex);
       button.textContent = group.title.replace(/^Cycle /, "").replace(/ Tab$/, "");
       subnav.append(button);
     });
   }
   if (cycleActionBar) {
-    cycleActionBar.hidden = section !== "cycle";
+    cycleActionBar.hidden = sectionKey !== "cycle";
     cycleActionBar.replaceChildren();
-    if (section === "cycle") {
+    if (sectionKey === "cycle") {
       Object.entries(cycleActions).forEach(([key, action]) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -1051,7 +1060,8 @@ function renderHealth() {
   }
 
   document.querySelectorAll("[data-female-health]").forEach((node) => {
-    node.hidden = !female;
+    if (node.matches("[data-health-detail-panel]")) node.hidden = !female || !state.health.detailOpen;
+    else node.hidden = !female;
   });
 
   document.querySelectorAll("[data-male-health]").forEach((node) => {
@@ -1075,10 +1085,10 @@ function renderHealth() {
       buttons.append(button);
     });
   }
-  buttons?.querySelectorAll("[data-health-section]").forEach((button, index) => {
-    button.classList.toggle("is-active", index === 0 && !buttons.querySelector(".is-active"));
+  buttons?.querySelectorAll("[data-health-section]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.healthSection === state.health.activeSection);
   });
-  renderHealthDetail(document.querySelector("[data-health-section-buttons] .is-active")?.dataset.healthSection || "cycle");
+  renderHealthDetail(state.health.activeSection || "cycle");
 }
 
 function renderConnectionStatus(status) {
@@ -2425,20 +2435,21 @@ document.addEventListener("click", (event) => {
 
   const healthSectionButton = event.target.closest("[data-health-section]");
   if (healthSectionButton) {
+    const section = healthSectionButton.dataset.healthSection || "cycle";
+    state.health.activeSection = healthSectionLabels[section] ? section : "cycle";
+    state.health.detailOpen = true;
     document.querySelectorAll("[data-health-section]").forEach((button) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
-    const section = healthSectionButton.dataset.healthSection;
-    renderHealthDetail(section);
-    const sectionCommands = {
-      cycle: "cycle",
-      pregnancy: "pregnancy",
-      selfCare: "care",
-      birthControl: "birth control",
-      planB: "plan b"
-    };
-    sendBridge("health-section", sectionCommands[section] || "health");
+    renderHealthDetail(state.health.activeSection);
     scheduleHealthRefresh("health section");
+    return;
+  }
+
+  const healthDetailClose = event.target.closest("[data-health-detail-close]");
+  if (healthDetailClose) {
+    state.health.detailOpen = false;
+    renderHealthDetail(state.health.activeSection || "cycle");
     return;
   }
 

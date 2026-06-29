@@ -1168,6 +1168,7 @@ h1 {
   min-height: 0;
   overflow: hidden;
   padding: 28px 40px;
+  position: relative;
 }
 
 .screen-health.is-active {
@@ -1358,22 +1359,51 @@ h1 {
 }
 
 .health-detail {
-  grid-column: 2;
-  grid-row: 1;
+  position: absolute;
+  inset: 10px;
+  z-index: 30;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
+  padding: 22px;
+  background:
+    linear-gradient(180deg, rgba(3, 18, 28, 0.98), rgba(0, 8, 14, 0.98)),
+    var(--glass-surface);
+}
+
+.health-detail[hidden] {
+  display: none;
 }
 
 .health-detail header {
   display: grid;
-  gap: 4px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px 16px;
   border-bottom: 1px solid rgba(40, 161, 252, 0.16);
-  padding-bottom: 8px;
+  padding-bottom: 12px;
+}
+
+.health-detail header span {
+  font-size: 30px;
+}
+
+.health-detail header button {
+  min-height: 42px;
+  min-width: 100px;
+  border: 1px solid rgba(40, 161, 252, 0.42);
+  border-radius: 6px;
+  background: rgba(0, 4, 8, 0.82);
+  color: var(--blue);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .health-detail header small {
+  grid-column: 1 / -1;
   color: var(--muted);
-  font-size: 19px;
+  font-size: 21px;
   line-height: 1.25;
 }
 
@@ -1393,11 +1423,11 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 42px;
+  min-height: 50px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 21px;
+  font-size: 24px;
   line-height: 1.25;
 }
 
@@ -1429,13 +1459,13 @@ h1 {
 }
 
 .health-subsection-buttons {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   border-bottom: 1px solid rgba(40, 161, 252, 0.16);
   padding: 10px 0;
 }
 
 .health-cycle-actions {
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   padding: 10px 0 2px;
 }
 
@@ -1458,14 +1488,14 @@ h1 {
 }
 
 .health-subsection-buttons button {
-  min-height: 46px;
-  font-size: 18px;
+  min-height: 54px;
+  font-size: 20px;
 }
 
 .health-cycle-actions button {
-  min-height: 46px;
+  min-height: 54px;
   color: var(--blue);
-  font-size: 17px;
+  font-size: 19px;
 }
 
 .health-section-buttons button.is-active,
@@ -1482,7 +1512,8 @@ h1 {
   gap: 10px;
   min-height: 0;
   overflow: auto;
-  padding-top: 8px;
+  padding-top: 12px;
+  padding-right: 8px;
 }
 
 .health-detail-group {
@@ -1490,13 +1521,13 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
   background: var(--glass-card);
-  padding: 14px;
+  padding: 18px;
 }
 
 .health-detail-group h3 {
   margin: 0 0 10px;
   color: var(--green);
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -1511,13 +1542,13 @@ h1 {
     grid-template-rows: auto minmax(0, 1fr);
   }
 
-  .health-detail {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
   .health-section-buttons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .health-detail {
+    inset: 6px;
+    padding: 14px;
   }
 }
 
