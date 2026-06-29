@@ -51,6 +51,13 @@ const state = {
     items: [],
     dismissedStats: []
   },
+  settings: {
+    activePanel: "",
+    breadcrumbNotify: true,
+    breadcrumbSilent: false,
+    lastCommand: "",
+    updatedAt: 0
+  },
   webState: {
     liveLoaded: false,
     saveTimer: 0,
@@ -151,7 +158,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "neura-reactor-text-5";
+const NEURA_ASSET_VERSION = "settings-sync-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -1540,6 +1547,13 @@ function compactSavedNotification(item) {
 
 function webStatePayload() {
   return {
+    settings: {
+      activePanel: state.settings.activePanel,
+      breadcrumbNotify: Boolean(state.settings.breadcrumbNotify),
+      breadcrumbSilent: Boolean(state.settings.breadcrumbSilent),
+      lastCommand: state.settings.lastCommand,
+      updatedAt: state.settings.updatedAt
+    },
     notifications: {
       items: state.notifications.items.slice(0, 8).map(compactSavedNotification),
       dismissedStats: state.notifications.dismissedStats
@@ -1553,6 +1567,14 @@ function webStatePayload() {
 
 function applyWebState(saved) {
   if (!saved || typeof saved !== "object") return;
+  if (saved.settings && typeof saved.settings === "object") {
+    state.settings = {
+      ...state.settings,
+      ...saved.settings,
+      breadcrumbNotify: saved.settings.breadcrumbNotify !== false,
+      breadcrumbSilent: Boolean(saved.settings.breadcrumbSilent)
+    };
+  }
   const notifications = saved.notifications || {};
   if (Array.isArray(notifications.items)) {
     state.notifications.items = notifications.items
@@ -1612,6 +1634,18 @@ function startMemoryHeartbeat() {
       time: Date.now()
     }));
   }, 5000);
+}
+
+function syncHudOpen(reason = "open") {
+  if (!liveBridge) return;
+  requestWebState(true);
+  requestStoredProfile(true);
+  sendBridge("stats");
+  sendBridge("wallet-balance");
+  sendBridge("wallet-users");
+  requestDmInbox(true);
+  sendBridge("settings", reason);
+  setLastRefresh(`hud open sync: ${reason}`);
 }
 
 function handleWebStateResponse(body) {
@@ -2442,6 +2476,12 @@ document.addEventListener("click", (event) => {
 
   const settingsItem = event.target.closest("[data-settings-item]");
   if (settingsItem) {
+    const section = settingsItem.dataset.settingsItem || "";
+    state.settings.activePanel = section;
+    state.settings.lastCommand = `settings:${section}`;
+    state.settings.updatedAt = Date.now();
+    sendBridge("settings", section);
+    saveWebStateNow("settings", true);
     setLastRefresh(settingsItem.textContent.trim());
     setSettingsMenu(false);
     return;
@@ -2450,8 +2490,16 @@ document.addEventListener("click", (event) => {
   const breadcrumbCommand = event.target.closest("[data-breadcrumb-command]");
   if (breadcrumbCommand) {
     const command = breadcrumbCommand.dataset.breadcrumbCommand;
+    if (command === "live on") state.settings.breadcrumbNotify = true;
+    if (command === "live off") state.settings.breadcrumbNotify = false;
+    if (command === "silent on") state.settings.breadcrumbSilent = true;
+    if (command === "silent off") state.settings.breadcrumbSilent = false;
+    state.settings.activePanel = "notifications";
+    state.settings.lastCommand = `breadcrumb:${command}`;
+    state.settings.updatedAt = Date.now();
     sendBridge("breadcrumb", command);
     addLocalNotification("Breadcrumb Settings", breadcrumbCommand.textContent.trim(), "Settings");
+    saveWebStateNow("breadcrumb settings", true);
     setLastRefresh(`breadcrumb ${command}`);
     setSettingsMenu(false);
     return;
@@ -2579,10 +2627,7 @@ document.addEventListener("change", (event) => {
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") saveWebStateNow("visibility hidden", true);
-  else {
-    requestWebState(true);
-    sendBridge("refresh");
-  }
+  else syncHudOpen("visible");
 });
 
 window.addEventListener("pagehide", () => {
@@ -2616,13 +2661,12 @@ window.addEventListener("message", (event) => {
 setupStats();
 applyBridgeIdentityDefaults();
 loadSavedProfile();
-requestStoredProfile(true);
 loadMessagesLocal();
 loadNotificationsLocal();
 renderNotificationCount();
-requestWebState(true);
 setupClock();
 loadHome();
 startLiveStats();
 startMemoryHeartbeat();
+syncHudOpen("startup");
 renderPerfDebug();
