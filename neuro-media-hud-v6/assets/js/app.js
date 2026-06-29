@@ -16,6 +16,7 @@ const state = {
     refreshTimer: 0,
     users: [],
     selectedUser: null,
+    userPickerOpen: false,
     receipts: [],
     pendingTransfer: null,
     transferStatus: "Transfers stay inside the wallet app and are logged by the G-Coin server."
@@ -290,6 +291,7 @@ function addWalletReceipt(receipt) {
     time: receipt.time || Date.now()
   }, ...state.wallet.receipts].slice(0, 4);
   renderWalletReceipts();
+  queueWebStateSave();
 }
 
 function walletReceiptTime(value) {
@@ -339,13 +341,19 @@ function renderWalletTransferStatus() {
 function renderWalletUsers() {
   const list = document.querySelector("[data-wallet-users]");
   const field = document.querySelector("[data-wallet-user-field]");
+  const selected = document.querySelector("[data-wallet-selected-user]");
+  const modal = document.querySelector("[data-wallet-user-modal]");
   const type = document.querySelector("[data-wallet-transfer-type]")?.value || "checking-savings";
   const search = String(document.querySelector("[data-wallet-user-search]")?.value || "").trim().toLowerCase();
   const needsUser = type === "checking-user";
   if (field) field.hidden = !needsUser;
+  if (selected) selected.textContent = state.wallet.selectedUser ? walletUserLabel(state.wallet.selectedUser) : "No user selected";
+  if (modal) modal.hidden = !needsUser || !state.wallet.userPickerOpen;
   if (!list) return;
-  list.hidden = !needsUser;
-  if (!needsUser) return;
+  if (!needsUser) {
+    list.innerHTML = "";
+    return;
+  }
 
   const matches = state.wallet.users
     .filter((user) => !search || walletUserLabel(user).toLowerCase().includes(search))
@@ -368,6 +376,23 @@ function renderWalletUsers() {
     button.textContent = walletUserLabel(user);
     list.append(button);
   });
+}
+
+function openWalletUserPicker() {
+  if (!liveBridge) {
+    state.wallet.transferStatus = "Open in Second Life to load G-Coin users.";
+    renderWalletTransferStatus();
+    return;
+  }
+  state.wallet.userPickerOpen = true;
+  sendBridge("wallet-users");
+  renderWalletUsers();
+  window.setTimeout(() => document.querySelector("[data-wallet-user-search]")?.focus(), 0);
+}
+
+function closeWalletUserPicker() {
+  state.wallet.userPickerOpen = false;
+  renderWalletUsers();
 }
 
 function renderWalletReceipts() {
@@ -1407,6 +1432,9 @@ function webStatePayload() {
       items: state.notifications.items.slice(0, 8),
       dismissedStats: state.notifications.dismissedStats
     },
+    wallet: {
+      receipts: state.wallet.receipts.slice(0, 4)
+    },
     savedAt: Date.now()
   };
 }
@@ -1419,6 +1447,10 @@ function applyWebState(saved) {
   }
   if (Array.isArray(notifications.dismissedStats)) {
     state.notifications.dismissedStats = notifications.dismissedStats;
+  }
+  if (Array.isArray(saved.wallet?.receipts)) {
+    state.wallet.receipts = saved.wallet.receipts.slice(0, 4);
+    renderWalletReceipts();
   }
   renderNotificationCount();
   const menu = document.querySelector("[data-notification-menu]");
@@ -1779,6 +1811,7 @@ function clearWalletTransferFields() {
   if (amount) amount.value = "";
   if (search) search.value = "";
   state.wallet.selectedUser = null;
+  state.wallet.userPickerOpen = false;
   renderWalletUsers();
 }
 
@@ -2236,11 +2269,30 @@ document.addEventListener("click", (event) => {
     setSettingsMenu(false);
   }
 
+  const walletUserOpen = event.target.closest("[data-wallet-user-open]");
+  if (walletUserOpen) {
+    openWalletUserPicker();
+    return;
+  }
+
+  const walletUserClose = event.target.closest("[data-wallet-user-close]");
+  if (walletUserClose) {
+    closeWalletUserPicker();
+    return;
+  }
+
+  const walletUserModal = event.target.closest("[data-wallet-user-modal]");
+  if (walletUserModal && event.target === walletUserModal) {
+    closeWalletUserPicker();
+    return;
+  }
+
   const walletUserButton = event.target.closest("[data-wallet-user]");
   if (walletUserButton) {
     const id = walletUserButton.dataset.walletUser;
     state.wallet.selectedUser = state.wallet.users.find((user) => user.id === id) || null;
     state.wallet.transferStatus = state.wallet.selectedUser ? `Sending to ${walletUserLabel(state.wallet.selectedUser)}.` : "Choose a G-Coin user first.";
+    state.wallet.userPickerOpen = false;
     renderWallet();
     return;
   }
@@ -2305,6 +2357,7 @@ document.addEventListener("input", (event) => {
   const walletType = event.target.closest("[data-wallet-transfer-type]");
   if (walletType) {
     state.wallet.selectedUser = null;
+    state.wallet.userPickerOpen = false;
     if (walletType.value === "checking-user") sendBridge("wallet-users");
     renderWalletUsers();
     return;
@@ -2327,6 +2380,7 @@ document.addEventListener("change", (event) => {
   const walletType = event.target.closest("[data-wallet-transfer-type]");
   if (!walletType) return;
   state.wallet.selectedUser = null;
+  state.wallet.userPickerOpen = false;
   if (walletType.value === "checking-user") sendBridge("wallet-users");
   renderWalletUsers();
 });

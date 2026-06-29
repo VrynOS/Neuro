@@ -1521,6 +1521,24 @@ h1 {
   font: inherit;
 }
 
+.wallet-user-open {
+  min-height: 40px;
+  border: 1px solid rgba(40, 161, 252, 0.35);
+  background: rgba(0, 4, 8, 0.82);
+  color: var(--blue);
+  font: inherit;
+  cursor: pointer;
+}
+
+.wallet-user-field strong {
+  min-height: 20px;
+  color: var(--green);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .wallet-search-wrap {
   display: grid;
   grid-template-columns: 28px 1fr;
@@ -1536,11 +1554,56 @@ h1 {
   background: transparent;
 }
 
+.wallet-user-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 5, 8, 0.58);
+}
+
+.wallet-user-modal[hidden] {
+  display: none;
+}
+
+.wallet-user-dialog {
+  width: min(420px, 86%);
+  max-height: 78%;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(40, 161, 252, 0.5);
+  background: rgba(2, 13, 20, 0.96);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.55);
+}
+
+.wallet-user-dialog header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.wallet-user-dialog header strong {
+  color: var(--green);
+  text-transform: uppercase;
+}
+
+.wallet-user-dialog header button {
+  min-height: 32px;
+  border: 1px solid rgba(40, 161, 252, 0.35);
+  background: rgba(0, 4, 8, 0.82);
+  color: var(--blue);
+  padding: 0 12px;
+  cursor: pointer;
+}
+
 .wallet-users {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  max-height: 94px;
+  max-height: 230px;
   overflow: auto;
 }
 
