@@ -22,7 +22,7 @@ const state = {
     transferStatus: "Transfers stay inside the wallet app and are logged by the G-Coin server."
   },
   profile: {
-    title: "Resident",
+    role: "Resident",
     name: "Neuro Resident",
     age: "Adult",
     sex: "Not Set",
@@ -291,7 +291,7 @@ function addWalletReceipt(receipt) {
     time: receipt.time || Date.now()
   }, ...state.wallet.receipts].slice(0, 4);
   renderWalletReceipts();
-  queueWebStateSave();
+  saveWebStateNow();
 }
 
 function walletReceiptTime(value) {
@@ -476,19 +476,23 @@ function handleWalletResponse(body) {
       const receiver = pending?.to === "user"
         ? pending.targetName
         : walletAccountLabel(pending?.to || "G-Coin");
+      const sender = walletAccountLabel(pending?.from || "checking", state.profile.name || "You");
       addWalletReceipt({
         type: kind,
         title: pending?.label || "Transfer complete",
         detail,
         amount: gcMoney(amount),
-        sender: walletAccountLabel(pending?.from || "checking", state.profile.name || "You"),
+        sender,
         receiver,
         direction: kind === "Incoming" ? "in" : "out",
         time: Date.now()
       });
+      addLocalNotification("Wallet Transfer", `${gcMoney(amount)} moved from ${sender} to ${receiver}.`, "Wallet");
       state.wallet.pendingTransfer = null;
       clearWalletTransferFields();
       requestWalletBalance();
+    } else {
+      addLocalNotification("Wallet Transfer Failed", detail, "Wallet");
     }
     renderWalletTransferStatus();
     return true;
@@ -529,13 +533,14 @@ function persistProfileLocal() {
 }
 
 function profileSavePayload() {
-  const { title, name, age, sex, location, avatar, favoriteColor, zodiac } = state.profile;
-  return { title, name, age, sex, location, avatar, favoriteColor, zodiac };
+  const { role, name, age, sex, location, avatar, favoriteColor, zodiac } = state.profile;
+  return { role, name, age, sex, location, avatar, favoriteColor, zodiac };
 }
 
 function applySavedProfile(profile, fromHud = false) {
   if (!profile || typeof profile !== "object") return;
-  const allowed = ["title", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac"];
+  if (profile.role === undefined && profile.title !== undefined) profile.role = profile.title;
+  const allowed = ["role", "name", "age", "sex", "location", "avatar", "favoriteColor", "zodiac"];
   allowed.forEach((key) => {
     if (profile[key] !== undefined && profile[key] !== null && profile[key] !== "") {
       state.profile[key] = profile[key];
@@ -590,9 +595,9 @@ function renderProfile() {
   });
 
   document.querySelectorAll("[data-profile-story]").forEach((node) => {
-    const title = state.profile.title || "Resident";
+    const role = state.profile.role || "Resident";
     const location = state.profile.location && state.profile.location !== "Not Set" ? state.profile.location : "Location unset";
-    node.textContent = `${title} / ${location}`;
+    node.textContent = `${role} / ${location}`;
   });
 
   document.querySelectorAll("[data-zodiac-name]").forEach((node) => { node.textContent = zodiacLabel; });
@@ -660,6 +665,7 @@ function handleCycleAction(actionKey) {
   setSnapshotValue("cycle.nextStep", action.nextStep);
   setSnapshotValue("cycle.lastAction", action.label);
   renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
+  addLocalNotification("Health Updated", action.label, "Health");
   sendBridge(action.command);
 }
 
@@ -996,14 +1002,14 @@ function openProfileEditor() {
   const form = document.querySelector("[data-profile-form]");
   if (!editor || !form) return;
 
-  ["title", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
+  ["role", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
     if (form.elements[name]) form.elements[name].value = state.profile[name] || "";
   });
 
   editor.hidden = false;
   renderProfile();
   window.setTimeout(() => {
-    const first = form.elements.name || form.elements.title;
+    const first = form.elements.name || form.elements.role;
     if (first) {
       first.removeAttribute("readonly");
       first.focus({ preventScroll: true });
@@ -1019,7 +1025,7 @@ function closeProfileEditor() {
 
 function saveProfileFromForm(form) {
   const next = { ...state.profile };
-  ["title", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
+  ["role", "name", "age", "sex", "location", "favoriteColor", "zodiac"].forEach((name) => {
     if (!form.elements[name]) return;
     const value = String(form.elements[name].value || "").trim();
     next[name] = value || state.profile[name];
@@ -1029,6 +1035,7 @@ function saveProfileFromForm(form) {
   persistProfileLocal();
   renderProfile();
   if (liveBridge) sendBridge("profile-save", JSON.stringify(profileSavePayload()));
+  addLocalNotification("Profile Saved", "Role and profile details were saved to the HUD server.", "Profile");
   closeProfileEditor();
 }
 
@@ -1419,11 +1426,12 @@ function generatedStatNotifications() {
 }
 
 function resetRecoveredStatDismissals() {
+  const before = state.notifications.dismissedStats.join("|");
   state.notifications.dismissedStats = state.notifications.dismissedStats.filter((id) => {
     const key = id.replace("stat-", "");
     return asNumber(state.stats[key], 100) < 50;
   });
-  saveNotificationsLocal();
+  if (before !== state.notifications.dismissedStats.join("|")) saveNotificationsLocal();
 }
 
 function webStatePayload() {
@@ -1443,13 +1451,17 @@ function applyWebState(saved) {
   if (!saved || typeof saved !== "object") return;
   const notifications = saved.notifications || {};
   if (Array.isArray(notifications.items)) {
-    state.notifications.items = notifications.items.slice(0, 8);
+    state.notifications.items = notifications.items
+      .filter((item) => item && typeof item === "object")
+      .slice(0, 8);
   }
   if (Array.isArray(notifications.dismissedStats)) {
     state.notifications.dismissedStats = notifications.dismissedStats;
   }
   if (Array.isArray(saved.wallet?.receipts)) {
-    state.wallet.receipts = saved.wallet.receipts.slice(0, 4);
+    state.wallet.receipts = saved.wallet.receipts
+      .filter((receipt) => receipt && typeof receipt === "object")
+      .slice(0, 4);
     renderWalletReceipts();
   }
   renderNotificationCount();
@@ -1483,7 +1495,11 @@ function handleWebStateResponse(body) {
 
   state.webState.liveLoaded = true;
   const payload = body.substring(10);
-  if (!payload || payload === "{}") return true;
+  if (!payload || payload === "{}") {
+    saveNotificationsLocal(false);
+    renderWalletReceipts();
+    return true;
+  }
 
   try {
     applyWebState(JSON.parse(payload));
@@ -1495,6 +1511,11 @@ function handleWebStateResponse(body) {
 }
 
 function loadNotificationsLocal() {
+  if (liveBridge) {
+    state.notifications.items = [];
+    state.notifications.dismissedStats = [];
+    return;
+  }
   try {
     const saved = JSON.parse(window.localStorage.getItem("neuroNotifications") || "[]");
     if (Array.isArray(saved)) {
@@ -1519,7 +1540,7 @@ function saveNotificationsLocal(syncHud = true) {
   } catch {
     logBridge("local notification cache blocked");
   }
-  if (syncHud) queueWebStateSave();
+  if (syncHud) saveWebStateNow();
 }
 
 function addLocalNotification(title, message, category = "System") {
@@ -2034,7 +2055,7 @@ function applyProfileSnapshot(snapshot) {
   if (state.profile.savedInHud) return;
 
   const updates = {
-    title: snapshotValue(snapshot, "title", state.profile.title) || state.profile.title,
+    role: snapshotValue(snapshot, "role", snapshotValue(snapshot, "title", state.profile.role)) || state.profile.role,
     name: snapshotValue(snapshot, "displayName", state.profile.name) || state.profile.name,
     age: snapshotValue(snapshot, "age", state.profile.age) || state.profile.age,
     sex: snapshotValue(snapshot, "sex", state.profile.sex) || state.profile.sex,

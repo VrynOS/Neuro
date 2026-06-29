@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Neuro Tec</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=wallet-user-popup-1">
+  <link rel="stylesheet" href="assets/css/style.css?v=hud-state-profile-role-1">
 </head>
 <body>
   <svg class="icon-sprite" aria-hidden="true">
@@ -250,10 +250,10 @@
           <div class="profile-identity">
             <div class="profile-avatar-frame"><img src="assets/img/perf/avatars/avatar-01.png" alt="" data-avatar-display loading="lazy" decoding="async"></div>
             <div class="profile-copy">
-              <span class="profile-title-line"><span data-profile-field="title">Resident</span><i class="profile-status-light is-offline" data-profile-status-light aria-label="Offline"></i></span>
+              <span class="profile-title-line"><span class="profile-status-pill is-offline" data-profile-status data-profile-status-light>Offline</span></span>
               <strong><span data-profile-field="name">Neuro Resident</span><i class="verified-badge" aria-label="Verified member" data-verified-badge><img src="assets/img/verified-badge-flat.png" alt=""></i></strong>
               <small><span data-profile-field="age">Adult</span> / <span data-profile-field="sex">Not Set</span></small>
-              <small>Role: <b data-profile-field="title">Resident</b></small>
+              <small>Role: <b data-profile-field="role">Resident</b></small>
               <small>District: <b data-profile-field="location">Not Set</b></small>
             </div>
           </div>
@@ -318,7 +318,7 @@
             </header>
 
             <div class="editor-grid">
-              <label>Title<input name="title" type="text" maxlength="24" placeholder="Resident" autocomplete="off" autocapitalize="words" spellcheck="false" inputmode="text"></label>
+              <label>Role<input name="role" type="text" maxlength="24" placeholder="Resident" autocomplete="off" autocapitalize="words" spellcheck="false" inputmode="text"></label>
               <label>Name<input name="name" type="text" maxlength="32" placeholder="Display name" autocomplete="off" autocapitalize="words" spellcheck="false" inputmode="text"></label>
               <label>Age<input name="age" type="text" maxlength="16" placeholder="Adult" autocomplete="off" autocapitalize="words" spellcheck="false" inputmode="text"></label>
               <label>Sex<select name="sex"><option>Not Set</option><option>Female</option><option>Male</option><option>Nonbinary</option></select></label>
@@ -364,6 +364,6 @@
     </section>
   </main>
 
-  <script src="assets/js/app.js?v=wallet-user-popup-1"></script>
+  <script src="assets/js/app.js?v=hud-state-profile-role-1"></script>
 </body>
 </html>
