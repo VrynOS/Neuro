@@ -123,7 +123,7 @@ const healthSectionPurposes = {
   pregnancy: "Shows pregnancy status, test info, alerts, and prenatal vitamin care.",
   selfCare: "Tracks personal care, wellness, salon care, lotion, and multivitamins.",
   birthControl: "Shows birth control status, last taken, and time left.",
-  planB: "Shows emergency use status, last taken, effects, and side effects."
+  planB: "Shows emergency use status, times taken, last taken, and pregnancy status."
 };
 
 const maleHealthSectionLabels = {
@@ -173,7 +173,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-picker-1";
+const NEURA_ASSET_VERSION = "health-cleanup-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -733,10 +733,20 @@ function healthValue(keys, fallback = "") {
   return value;
 }
 
+function healthPercentValue(keys, fallback = 0) {
+  const raw = healthValue(keys, fallback);
+  const number = Number(String(raw).replace("%", "").split("/")[0].trim());
+  if (!Number.isFinite(number)) return `${fallback}%`;
+  return `${Math.round(Math.max(0, Math.min(100, number)))}%`;
+}
+
 function healthRows(groups) {
   return groups.map((group) => ({
     title: group.title,
-    rows: group.rows.map(([label, keys, fallback]) => [label, healthValue(keys, fallback)])
+    rows: group.rows.map(([label, keys, fallback, formatter]) => {
+      const value = typeof formatter === "function" ? formatter(keys, fallback) : healthValue(keys, fallback);
+      return [label, value];
+    })
   }));
 }
 
@@ -850,13 +860,10 @@ function healthDetailGroups(section) {
         ["Last Prenatal Vitamin", ["pregnancy.lastPrenatalVitamin", "last.prenatalVitamin"], "None"],
         ["Prenatal Care Status", ["pregnancy.prenatalCareStatus"], "None"]
       ] },
-      { title: "Pregnancy Rule", rows: [
-        ["If Pregnant", ["pregnancy.rule"], "Cycle inactive, period inactive, fertile window closed, ovulation stopped."]
-      ] }
     ],
     selfCare: [
       { title: "Self Care Tab", rows: [
-        ["Self Care", ["selfCare.score"], "0/100"],
+        ["Self Care", ["selfCare.score", "care.self"], 0, healthPercentValue],
         ["Status", ["selfCare.status"], "Needs Care"],
         ["Last Care", ["selfCare.lastCare"], "None"],
         ["Next Care Due", ["selfCare.nextDue"], "Now"]
@@ -870,15 +877,11 @@ function healthDetailGroups(section) {
       { title: "Body Care", rows: [
         ["Skin Care", ["selfCare.skinCare"], "Not Done"],
         ["Lotion", ["selfCare.lotion"], "Not Used"],
-        ["Shower", ["selfCare.shower"], "Not Done"],
-        ["Rest", ["selfCare.rest"], "Not Done"]
-      ] },
-      { title: "Self Care Items", rows: [
-        ["Lotion", ["selfCare.lotionItem"], "Not Used"],
-        ["Self Care Multivitamin", ["selfCare.multivitamin"], "Not Taken"],
+        ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
+        ["Rest", ["selfCare.rest"], "Not Done"],
+        ["Multivitamin", ["selfCare.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
-        ["Care Item XP", ["selfCare.careItemXP"], "0"],
-        ["Lotion Effect", ["selfCare.lotionEffect"], "Self Care +10 / Hygiene +5"]
+        ["Care Item XP", ["selfCare.careItemXP"], "0"]
       ] }
     ],
     birthControl: [
@@ -887,12 +890,6 @@ function healthDetailGroups(section) {
         ["Last Taken", ["birthControl.lastTaken", "last.bcTaken"], "None"],
         ["BC Time Left", ["birthControl.timeLeft", "bc.timeLeft"], "0"],
         ["Protected", ["birthControl.protected", "bc.protected"], "No"]
-      ] },
-      { title: "Effect", rows: [
-        ["Purpose", ["birthControl.effect"], "Helps prevent pregnancy while active."],
-        ["Duration", ["birthControl.duration"], "8 RL hours"],
-        ["Side Effects", ["birthControl.sideEffects"], "Care -5 / Energy -5 / Pain: None or Mild"],
-        ["Rule", ["birthControl.rule"], "Taken from item, not toggled from menu."]
       ] }
     ],
     planB: [
@@ -902,12 +899,6 @@ function healthDetailGroups(section) {
         ["Times Taken", ["planB.timesTaken"], "0"],
         ["Last Taken", ["planB.lastTaken", "last.planBTaken"], "None"],
         ["Last Use Status", ["planB.lastUseStatus"], "None"]
-      ] },
-      { title: "Effect", rows: [
-        ["Purpose", ["planB.effect"], "Lowers pregnancy risk after intimacy."],
-        ["Best Used", ["planB.bestUsed"], "Soon after."],
-        ["Side Effects", ["planB.sideEffects"], "Care -50 / Energy -10 / Pain: Mild"],
-        ["Rule", ["planB.rule"], "Use once. Taken from item, not toggled from menu."]
       ] }
     ]
   };
