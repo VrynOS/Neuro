@@ -836,19 +836,22 @@ h1 {
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--blue);
-  font-size: 23px;
-  font-weight: 800;
-  line-height: 1.05;
+  color: #ffd45a;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 360;
+  line-height: 0.96;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
+  white-space: pre-line;
   overflow-wrap: break-word;
   -webkit-text-stroke: 0;
   text-shadow:
-    0 0 8px rgba(40, 161, 252, 0.95),
-    0 0 18px rgba(40, 161, 252, 0.72),
-    0 2px 4px rgba(0, 0, 0, 0.94);
+    0 2px 0 rgba(0, 0, 0, 0.98),
+    0 0 2px rgba(0, 0, 0, 1),
+    0 0 12px rgba(255, 174, 44, 0.84),
+    0 0 22px rgba(140, 64, 255, 0.36);
   opacity: 0;
   transform: translateY(-50%);
   transition: opacity 180ms ease, transform 180ms ease;

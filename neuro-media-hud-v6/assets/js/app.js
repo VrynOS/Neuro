@@ -151,7 +151,7 @@ const cycleActions = {
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "neura-reactor-text-1";
+const NEURA_ASSET_VERSION = "neura-reactor-text-3";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -273,15 +273,16 @@ function alertImagePath(alert) {
 function neuraReactorMessage(message = "", mood = "system") {
   const text = String(message || "").trim();
   const lower = text.toLowerCase();
-  if (lower.includes("messages") && lower.includes("did not answer")) return "Messages offline";
-  if (lower.includes("server") && lower.includes("offline")) return "Server offline";
-  if (lower.includes("new message")) return "New message";
-  if (lower.includes("transfer") && lower.includes("failed")) return "Transfer failed";
-  if (lower.includes("transfer")) return "Transfer complete";
-  if (lower.includes("refreshed") || lower.includes("sync")) return "HUD synced";
-  if (mood === "time") return text;
+  const timeMatch = text.match(/(\d{1,2}:00)\s*([AP]M)?/i);
+  if (mood === "time" && timeMatch) return `CDF TIME\n${timeMatch[1]}${timeMatch[2] ? ` ${timeMatch[2].toUpperCase()}` : ""}`;
+  if (lower.includes("messages") && lower.includes("did not answer")) return "MESSAGES\nOFFLINE";
+  if (lower.includes("server") && lower.includes("offline")) return "SERVER\nOFFLINE";
+  if (lower.includes("new message")) return "NEW\nMESSAGE";
+  if (lower.includes("transfer") && lower.includes("failed")) return "TRANSFER\nFAILED";
+  if (lower.includes("transfer")) return "TRANSFER\nCOMPLETE";
+  if (lower.includes("refreshed") || lower.includes("sync")) return "HUD\nSYNCED";
   if (mood === "critical") return text.replace("I need you to handle that.", "Needs care.");
-  if (text.length <= 28) return text;
+  if (text.length <= 18) return text;
   return text.split(/[.!?]/)[0].slice(0, 28).trim();
 }
 
