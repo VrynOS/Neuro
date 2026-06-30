@@ -976,7 +976,7 @@ function healthDetailGroups(section) {
     ],
     selfCare: [
       { title: "Self Care Tab", rows: [
-        ["Self Care", ["selfCare.score", "care.self"], 0, healthPercentValue],
+        ["Self Care", ["selfCare.score", "stat.care", "care.self"], 0, healthPercentValue],
         ["Status", ["selfCare.status"], "Needs Care"],
         ["Last Care", ["selfCare.lastCare", "care.lastCare"], "None"],
         ["Next Care Due", ["selfCare.nextDue", "care.nextDue"], "Now"]
