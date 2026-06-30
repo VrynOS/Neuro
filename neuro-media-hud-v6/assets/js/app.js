@@ -107,6 +107,7 @@ const state = {
       nextStep: "",
       until: 0
     },
+    refreshTimer: 0,
     bridgeWaiting: false,
     bridgeOffline: false
   },
@@ -852,8 +853,30 @@ function stabilizeCycleSnapshot(snapshot) {
 function scheduleHealthRefresh(reason = "health") {
   if (!liveBridge) return;
   window.setTimeout(() => sendBridge("health-sync"), 650);
+  window.setTimeout(() => sendBridge("health-sync"), 1600);
   window.setTimeout(() => sendBridge("stats"), 900);
   setLastRefresh(`${reason} sync`);
+}
+
+function startHealthRefresh() {
+  if (!liveBridge) return;
+  window.clearInterval(state.health.refreshTimer);
+  sendBridge("health-sync");
+  state.health.refreshTimer = perfInterval("health sync", () => {
+    if (state.perf.activeTab !== "health") {
+      stopHealthRefresh();
+      return;
+    }
+    sendBridge("health-sync");
+    setLastRefresh("health sync");
+  }, 3000);
+}
+
+function stopHealthRefresh() {
+  window.clearInterval(state.health.refreshTimer);
+  state.health.refreshTimer = 0;
+  window.clearInterval(state.perf.timers.get("health sync")?.id || 0);
+  state.perf.timers.delete("health sync");
 }
 
 function sendHealthCommand(command, label = command) {
@@ -2183,7 +2206,7 @@ function loadHealth() {
   if (liveBridge) {
     state.health.bridgeWaiting = !hasKnownAvatarSex();
     state.health.bridgeOffline = false;
-    sendBridge("health-sync");
+    startHealthRefresh();
     window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
     setLastRefresh("health requested");
@@ -2211,6 +2234,7 @@ function showScreen(name) {
   if (name === "wallet") loadWallet();
   if (name !== "wallet") stopWalletRefresh();
   if (name === "health") loadHealth();
+  if (name !== "health") stopHealthRefresh();
   if (name === "settings") loadSettings();
   if (name !== "profile") stopMessageRefresh();
   renderPerfDebug();
