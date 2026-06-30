@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "male-health-shared-design-1";
+const NEURA_ASSET_VERSION = "stamina-health-hud-2";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -758,6 +758,14 @@ function healthIntegerValue(keys, fallback = 0) {
   return String(Math.round(number));
 }
 
+function staminaValue() {
+  return healthPercentValue(["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100);
+}
+
+function staminaRankValue() {
+  return titleCaseHealthValue(healthValue(["stamina.rank"], "Untrained"));
+}
+
 function healthRows(groups) {
   return groups.map((group) => ({
     title: group.title,
@@ -918,6 +926,9 @@ function healthDetailGroups(section) {
         ["Product", ["selfCare.skinProduct", "care.skinProduct"], "None"],
         ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
         ["Rest", ["stat.sleep"], state.stats.sleep, healthPercentValue],
+        ["Stamina", ["fitness.stamina", "stamina.current"], 100, healthPercentValue],
+        ["Stamina Strength", ["stamina.rank"], "Untrained"],
+        ["Stamina Level", ["stamina.level"], "1"],
         ["Multivitamin", ["selfCare.multivitamin", "care.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
         ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"]
@@ -1065,7 +1076,11 @@ function maleHealthDetailRows(section) {
       ["Workout Status", ["fitness.status", "male.fitness.status"], "Inactive"],
       ["Last Workout", ["fitness.lastWorkout", "male.fitness.lastWorkout"], "None"],
       ["Workout Type", ["fitness.workoutType", "male.fitness.workoutType"], "None"],
-      ["Stamina", ["fitness.stamina", "male.fitness.stamina"], "0"],
+      ["Stamina", ["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100, healthPercentValue],
+      ["Stamina Strength", ["stamina.rank"], "Untrained"],
+      ["Stamina Level", ["stamina.level"], "1"],
+      ["Stamina XP", ["stamina.xp"], "0"],
+      ["Decay Resistance", ["stamina.decayResist"], "0"],
       ["Body Conditioning", ["fitness.bodyConditioning", "male.fitness.bodyConditioning"], "0"],
       ["Fitness XP", ["fitness.xp", "male.fitness.xp"], "0"],
       ["Last Gym Visit", ["fitness.lastGymVisit", "male.fitness.lastGymVisit"], "None"],
@@ -1142,6 +1157,7 @@ function renderMaleHealth() {
   renderKeyValueRows(document.querySelector("[data-male-health-summary]"), [
     ["Care", `${care}%`],
     ["Status", maleCareStatus(care)],
+    ["Stamina", `${staminaValue()} ${staminaRankValue()}`],
     ["Fitness", fitness === "Inactive" ? "Ready" : fitness],
     ["Last Activity", activity]
   ]);
@@ -1171,7 +1187,7 @@ function renderHealth() {
   const statusMessage = document.querySelector("[data-health-status-message]");
   const grid = document.querySelector(".health-grid");
 
-  if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline && !state.health.bridgeWaiting;
+  if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline;
   grid?.classList.toggle("is-male-health", male);
   grid?.classList.toggle("is-female-health", female);
   if (state.health.bridgeOffline || state.health.bridgeWaiting) {
@@ -2072,10 +2088,9 @@ function loadHealth() {
   renderHealth();
   requestStoredProfile(true);
   if (liveBridge) {
-    state.health.bridgeWaiting = true;
+    state.health.bridgeWaiting = !hasKnownAvatarSex();
     state.health.bridgeOffline = false;
     sendBridge("health-sync");
-    window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
     setLastRefresh("health requested");
   }
@@ -2579,7 +2594,6 @@ document.addEventListener("click", (event) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
     renderHealthDetail(state.health.activeSection);
-    scheduleHealthRefresh("health section");
     return;
   }
 
