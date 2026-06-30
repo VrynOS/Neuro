@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "self-care-columns-1";
+const NEURA_ASSET_VERSION = "self-care-columns-2";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -920,8 +920,7 @@ function healthDetailGroups(section) {
         ["Rest", ["stat.sleep"], state.stats.sleep, healthPercentValue],
         ["Multivitamin", ["selfCare.multivitamin", "care.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
-        ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"],
-        ["Care Item XP", ["selfCare.careItemXP"], "0"]
+        ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"]
       ] }
     ],
     birthControl: [
