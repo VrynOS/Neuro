@@ -2184,6 +2184,7 @@ function loadHealth() {
     state.health.bridgeWaiting = !hasKnownAvatarSex();
     state.health.bridgeOffline = false;
     sendBridge("health-sync");
+    window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
     setLastRefresh("health requested");
   }
@@ -2691,6 +2692,7 @@ document.addEventListener("click", (event) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
     renderHealthDetail(state.health.activeSection);
+    scheduleHealthRefresh("health section");
     return;
   }
 
