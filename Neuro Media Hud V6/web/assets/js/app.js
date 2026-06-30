@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-controls-1";
+const NEURA_ASSET_VERSION = "cycle-controls-2";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -824,9 +824,10 @@ function cycleStatusKey() {
 
 function visibleCycleActions() {
   const status = cycleStatusKey();
-  if (status.includes("active")) return ["pause", "stop"];
-  if (status.includes("paused")) return ["resume", "stop"];
-  if (status.includes("pregnant") || status.includes("test needed")) return [];
+  if (status === "active") return ["pause", "stop"];
+  if (status === "paused") return ["resume", "stop"];
+  if (status === "inactive" || status === "none" || status === "") return ["start"];
+  if (status === "pregnant" || status === "test needed") return [];
   return ["start"];
 }
 
@@ -981,6 +982,8 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
     cycleActionBar.hidden = sectionKey !== "cycle";
     cycleActionBar.replaceChildren();
     if (sectionKey === "cycle") {
+      const actions = visibleCycleActions();
+      if (!actions.includes("start")) state.health.cycleLengthPickerOpen = false;
       cycleActionBar.classList.toggle("is-picker-open", state.health.cycleLengthPickerOpen);
       if (state.health.cycleLengthPickerOpen) {
         const label = document.createElement("span");
@@ -1002,7 +1005,6 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
         closeButton.textContent = "Close";
         cycleActionBar.append(closeButton);
       } else {
-        const actions = visibleCycleActions();
         cycleActionBar.dataset.cycleStatus = cycleStatusKey();
         actions.forEach((key) => {
           const action = cycleActions[key];
