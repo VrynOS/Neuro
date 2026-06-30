@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "stamina-health-hud-1";
+const NEURA_ASSET_VERSION = "stamina-health-hud-2";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -1187,7 +1187,7 @@ function renderHealth() {
   const statusMessage = document.querySelector("[data-health-status-message]");
   const grid = document.querySelector(".health-grid");
 
-  if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline && !state.health.bridgeWaiting;
+  if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline;
   grid?.classList.toggle("is-male-health", male);
   grid?.classList.toggle("is-female-health", female);
   if (state.health.bridgeOffline || state.health.bridgeWaiting) {
@@ -2088,10 +2088,9 @@ function loadHealth() {
   renderHealth();
   requestStoredProfile(true);
   if (liveBridge) {
-    state.health.bridgeWaiting = true;
+    state.health.bridgeWaiting = !hasKnownAvatarSex();
     state.health.bridgeOffline = false;
     sendBridge("health-sync");
-    window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
     setLastRefresh("health requested");
   }
@@ -2595,7 +2594,6 @@ document.addEventListener("click", (event) => {
       button.classList.toggle("is-active", button === healthSectionButton);
     });
     renderHealthDetail(state.health.activeSection);
-    scheduleHealthRefresh("health section");
     return;
   }
 
