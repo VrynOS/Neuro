@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "male-health-1";
+const NEURA_ASSET_VERSION = "cycle-sync-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -808,6 +808,18 @@ function handleCycleLengthAction(lengthKey) {
   sendHealthCommand(action.command, `Start ${action.label}`);
 }
 
+function cycleStatusKey() {
+  return String(healthValue(["cycle.status"], "Inactive")).trim().toLowerCase();
+}
+
+function visibleCycleActions() {
+  const status = cycleStatusKey();
+  if (status === "active") return ["pause", "stop"];
+  if (status === "paused") return ["resume", "stop"];
+  if (status === "pregnant" || status === "test needed") return [];
+  return ["start"];
+}
+
 function renderKeyValueRows(target, rows) {
   if (!target) return;
   target.replaceChildren();
@@ -826,7 +838,7 @@ function healthDetailGroups(section) {
     cycle: [
       { title: "Cycle Status", rows: [
         ["Status", ["cycle.status"], "Inactive"],
-        ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "6") + " / " + healthValue(["cycle.length"], "28")],
+        ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "1") + " / " + healthValue(["cycle.length"], "28")],
         ["Phase", ["cycle.phase"], "None"],
         ["Risk", ["cycle.risk"], "NONE"],
         ["Next Step", ["cycle.nextStep"], "Start Cycle"]
@@ -980,7 +992,8 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
         closeButton.textContent = "Close";
         cycleActionBar.append(closeButton);
       } else {
-        Object.entries(cycleActions).forEach(([key, action]) => {
+        visibleCycleActions().forEach((key) => {
+          const action = cycleActions[key];
           const button = document.createElement("button");
           button.type = "button";
           button.dataset.cycleAction = key;
