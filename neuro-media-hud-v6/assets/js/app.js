@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "stamina-health-hud-3";
+const NEURA_ASSET_VERSION = "server-profile-health-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -2450,8 +2450,6 @@ function renderStats(stats) {
 }
 
 function applyProfileSnapshot(snapshot) {
-  if (state.profile.savedInHud) return;
-
   const updates = {
     role: snapshotValue(snapshot, "role", snapshotValue(snapshot, "title", state.profile.role)) || state.profile.role,
     name: snapshotValue(snapshot, "displayName", state.profile.name) || state.profile.name,
@@ -2460,7 +2458,12 @@ function applyProfileSnapshot(snapshot) {
     location: snapshotValue(snapshot, "location", state.profile.location) || state.profile.location
   };
 
-  state.profile = { ...state.profile, ...updates };
+  Object.entries(updates).forEach(([key, value]) => {
+    const cleanValue = String(value || "").trim();
+    if (cleanValue && cleanValue !== "0" && cleanValue.toLowerCase() !== "not set") {
+      state.profile[key] = value;
+    }
+  });
   renderProfile();
   if (state.perf.loaded.health) renderHealth();
 }
