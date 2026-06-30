@@ -1184,6 +1184,10 @@ h1 {
   min-height: 0;
 }
 
+.health-grid.is-male-health {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .health-card {
   min-height: 0;
   border: 1px solid var(--glass-border);
@@ -1223,9 +1227,11 @@ h1 {
 }
 
 .male-health {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
-  gap: 12px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 14px 18px;
 }
 
 .male-health[hidden] {
@@ -1234,13 +1240,15 @@ h1 {
 
 .male-health > header strong {
   color: var(--blue);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .male-health-overview {
+  grid-column: 1;
+  grid-row: 3;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 12px;
@@ -1260,8 +1268,8 @@ h1 {
 
 .male-health-stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px 16px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
 }
 
 .male-health-stat-grid p {
@@ -1269,11 +1277,11 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 28px;
+  min-height: 42px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 19px;
+  font-size: 22px;
 }
 
 .male-health-stat-grid strong {
@@ -1283,6 +1291,7 @@ h1 {
 }
 
 .male-health-buttons {
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
@@ -1307,6 +1316,8 @@ h1 {
 }
 
 .male-health-detail {
+  grid-column: 2;
+  grid-row: 3;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
@@ -1338,6 +1349,19 @@ h1 {
   min-height: 0;
   overflow: hidden;
   padding-top: 10px;
+}
+
+.male-health .health-detail-group {
+  min-height: 100%;
+}
+
+.male-health .health-detail-group p {
+  min-height: 50px;
+  font-size: 23px;
+}
+
+.male-health .health-detail-group strong {
+  max-width: 54%;
 }
 
 .health-card h2,

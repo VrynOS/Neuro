@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-diag-1";
+const NEURA_ASSET_VERSION = "cycle-controls-2";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -751,6 +751,13 @@ function healthPercentValue(keys, fallback = 0) {
   return `${Math.round(Math.max(0, Math.min(100, number)))}%`;
 }
 
+function healthIntegerValue(keys, fallback = 0) {
+  const raw = healthValue(keys, fallback);
+  const number = Number(String(raw).replace("%", "").split("/")[0].trim());
+  if (!Number.isFinite(number)) return String(fallback);
+  return String(Math.round(number));
+}
+
 function healthRows(groups) {
   return groups.map((group) => ({
     title: group.title,
@@ -808,6 +815,22 @@ function handleCycleLengthAction(lengthKey) {
   sendHealthCommand(action.command, `Start ${action.label}`);
 }
 
+function cycleStatusKey() {
+  return String(healthValue(["cycle.status"], "Inactive"))
+    .trim()
+    .toLowerCase()
+    .replace(/[_-]+/g, " ");
+}
+
+function visibleCycleActions() {
+  const status = cycleStatusKey();
+  if (status === "active") return ["pause", "stop"];
+  if (status === "paused") return ["resume", "stop"];
+  if (status === "inactive" || status === "none" || status === "") return ["start"];
+  if (status === "pregnant" || status === "test needed") return [];
+  return ["start"];
+}
+
 function renderKeyValueRows(target, rows) {
   if (!target) return;
   target.replaceChildren();
@@ -826,7 +849,7 @@ function healthDetailGroups(section) {
     cycle: [
       { title: "Cycle Status", rows: [
         ["Status", ["cycle.status"], "Inactive"],
-        ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "6") + " / " + healthValue(["cycle.length"], "28")],
+        ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "1") + " / " + healthValue(["cycle.length"], "28")],
         ["Phase", ["cycle.phase"], "None"],
         ["Risk", ["cycle.risk"], "NONE"],
         ["Next Step", ["cycle.nextStep"], "Start Cycle"]
@@ -845,8 +868,8 @@ function healthDetailGroups(section) {
         ["Tampon Status", ["cycle.tamponStatus", "tampon.status"], "Not Needed"],
         ["Last Pad Used", ["cycle.lastPadUsed", "last.padUsed"], "None"],
         ["Last Tampon Used", ["cycle.lastTamponUsed", "last.tamponUsed"], "None"],
-        ["Care Stat", ["cycle.care", "care.self"], "0"],
-        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene],
+        ["Care Stat", ["cycle.care", "care.self"], "0", healthIntegerValue],
+        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene, healthIntegerValue],
         ["Next Change Timer", ["cycle.nextChangeTimer"], "None"],
         ["Care Item XP", ["cycle.careItemXP", "careItemXP"], "0"]
       ] },
@@ -959,6 +982,8 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
     cycleActionBar.hidden = sectionKey !== "cycle";
     cycleActionBar.replaceChildren();
     if (sectionKey === "cycle") {
+      const actions = visibleCycleActions();
+      if (!actions.includes("start")) state.health.cycleLengthPickerOpen = false;
       cycleActionBar.classList.toggle("is-picker-open", state.health.cycleLengthPickerOpen);
       if (state.health.cycleLengthPickerOpen) {
         const label = document.createElement("span");
@@ -980,7 +1005,9 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
         closeButton.textContent = "Close";
         cycleActionBar.append(closeButton);
       } else {
-        Object.entries(cycleActions).forEach(([key, action]) => {
+        cycleActionBar.dataset.cycleStatus = cycleStatusKey();
+        actions.forEach((key) => {
+          const action = cycleActions[key];
           const button = document.createElement("button");
           button.type = "button";
           button.dataset.cycleAction = key;
@@ -1011,10 +1038,9 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
 }
 
 function maleHealthDetailRows(section) {
-  const hygieneStatus = Number(state.stats.hygiene) > 75 ? "Good" : "Needs Care";
   const groups = {
     care: [
-      ["Hygiene", [], hygieneStatus],
+      ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
       ["Daily Vitamin", ["male.care.dailyVitamin", "care.dailyVitamin", "selfCare.multivitamin"], "Not Taken"],
       ["Haircut / Hair Done", ["male.care.hair", "care.hair", "selfCare.hair"], "Not Done"],
       ["Last Care", ["male.care.lastCare", "care.lastCare", "selfCare.lastCare"], "None"],
@@ -1040,7 +1066,10 @@ function maleHealthDetailRows(section) {
       ["Last Fitness XP", ["records.lastFitnessXP", "male.records.lastFitnessXP", "fitness.lastXP"], "0"]
     ]
   };
-  return (groups[section] || groups.care).map(([label, keys, fallback]) => [label, healthValue(keys, fallback)]);
+  return (groups[section] || groups.care).map(([label, keys, fallback, formatter]) => {
+    const value = typeof formatter === "function" ? formatter(keys, fallback) : healthValue(keys, fallback);
+    return [label, value];
+  });
 }
 
 function renderMaleHealthDetail(section = state.health.activeMaleSection || "care") {
@@ -1101,8 +1130,11 @@ function renderHealth() {
   const statusCard = document.querySelector("[data-health-status-card]");
   const statusTitle = document.querySelector("[data-health-status-title]");
   const statusMessage = document.querySelector("[data-health-status-message]");
+  const grid = document.querySelector(".health-grid");
 
   if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline && !state.health.bridgeWaiting;
+  grid?.classList.toggle("is-male-health", male);
+  grid?.classList.toggle("is-female-health", female);
   if (state.health.bridgeOffline || state.health.bridgeWaiting) {
     if (statusTitle) statusTitle.textContent = state.health.bridgeOffline ? "Health Bridge Offline" : "Checking Health Bridge";
     if (statusMessage) {
