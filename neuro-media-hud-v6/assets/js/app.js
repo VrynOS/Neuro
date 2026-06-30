@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-controls-2";
+const NEURA_ASSET_VERSION = "self-care-columns-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -917,7 +917,7 @@ function healthDetailGroups(section) {
         ["Last Used", ["selfCare.skinLastUsed", "care.skinLastUsed"], "None"],
         ["Product", ["selfCare.skinProduct", "care.skinProduct"], "None"],
         ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
-        ["Rest", ["selfCare.rest"], "Not Done"],
+        ["Rest", ["stat.sleep"], state.stats.sleep, healthPercentValue],
         ["Multivitamin", ["selfCare.multivitamin", "care.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
         ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"],
@@ -1024,16 +1024,31 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
   const group = groups[activeIndex] || groups[0];
   const article = document.createElement("section");
   article.className = "health-detail-group";
+  article.classList.toggle("is-body-care", group.title === "Body Care");
   const heading = document.createElement("h3");
   heading.textContent = group.title;
   article.append(heading);
-  group.rows.forEach(([label, value]) => {
+  const appendRow = (parent, [label, value]) => {
     const row = document.createElement("p");
     row.innerHTML = "<span></span><strong></strong>";
     row.querySelector("span").textContent = label;
     row.querySelector("strong").textContent = String(value);
-    article.append(row);
-  });
+    parent.append(row);
+  };
+  if (group.title === "Body Care") {
+    const columns = document.createElement("div");
+    const left = document.createElement("div");
+    const right = document.createElement("div");
+    columns.className = "health-detail-columns";
+    left.className = "health-detail-column";
+    right.className = "health-detail-column";
+    group.rows.slice(0, 4).forEach((row) => appendRow(left, row));
+    group.rows.slice(4).forEach((row) => appendRow(right, row));
+    columns.append(left, right);
+    article.append(columns);
+  } else {
+    group.rows.forEach((row) => appendRow(article, row));
+  }
   target.append(article);
 }
 
