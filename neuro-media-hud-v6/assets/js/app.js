@@ -173,7 +173,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-cleanup-1";
+const NEURA_ASSET_VERSION = "health-lsl-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -865,22 +865,27 @@ function healthDetailGroups(section) {
       { title: "Self Care Tab", rows: [
         ["Self Care", ["selfCare.score", "care.self"], 0, healthPercentValue],
         ["Status", ["selfCare.status"], "Needs Care"],
-        ["Last Care", ["selfCare.lastCare"], "None"],
-        ["Next Care Due", ["selfCare.nextDue"], "Now"]
+        ["Last Care", ["selfCare.lastCare", "care.lastCare"], "None"],
+        ["Next Care Due", ["selfCare.nextDue", "care.nextDue"], "Now"]
       ] },
       { title: "Salon Services", rows: [
-        ["Hair", ["selfCare.hair"], "Not Done"],
-        ["Nails", ["selfCare.nails"], "Not Done"],
-        ["Feet", ["selfCare.feet"], "Not Done"],
-        ["Facial", ["selfCare.facial"], "Not Done"]
+        ["Hair", ["selfCare.hair", "care.hair"], "Not Done"],
+        ["Nails", ["selfCare.nails", "care.nails"], "Not Done"],
+        ["Feet", ["selfCare.feet", "care.feet"], "Not Done"],
+        ["Facial", ["selfCare.facial", "care.facial"], "Not Done"],
+        ["Last Visit", ["selfCare.salonLastVisit", "care.salonLastVisit"], "None"],
+        ["Next Due", ["selfCare.salonNextDue", "care.salonNextDue"], "Now"]
       ] },
       { title: "Body Care", rows: [
-        ["Skin Care", ["selfCare.skinCare"], "Not Done"],
-        ["Lotion", ["selfCare.lotion"], "Not Used"],
+        ["Skin Care", ["selfCare.skinCare", "care.skinCare"], "Not Done"],
+        ["Lotion", ["selfCare.lotion", "care.lotion"], "Not Used"],
+        ["Last Used", ["selfCare.skinLastUsed", "care.skinLastUsed"], "None"],
+        ["Product", ["selfCare.skinProduct", "care.skinProduct"], "None"],
         ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
         ["Rest", ["selfCare.rest"], "Not Done"],
-        ["Multivitamin", ["selfCare.multivitamin"], "Not Taken"],
+        ["Multivitamin", ["selfCare.multivitamin", "care.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
+        ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"],
         ["Care Item XP", ["selfCare.careItemXP"], "0"]
       ] }
     ],
@@ -925,15 +930,18 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
   if (purpose) purpose.textContent = healthSectionPurposes[sectionKey] || healthSectionPurposes.cycle;
   if (subnav) {
     subnav.replaceChildren();
-    groups.forEach((group, index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.dataset.healthSubsection = String(index);
-      button.dataset.healthSectionKey = sectionKey;
-      button.classList.toggle("is-active", index === activeIndex);
-      button.textContent = group.title.replace(/^Cycle /, "").replace(/ Tab$/, "");
-      subnav.append(button);
-    });
+    subnav.hidden = groups.length <= 1;
+    if (groups.length > 1) {
+      groups.forEach((group, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.healthSubsection = String(index);
+        button.dataset.healthSectionKey = sectionKey;
+        button.classList.toggle("is-active", index === activeIndex);
+        button.textContent = group.title.replace(/^Cycle /, "").replace(/ Tab$/, "");
+        subnav.append(button);
+      });
+    }
   }
   if (cycleActionBar) {
     cycleActionBar.hidden = sectionKey !== "cycle";
