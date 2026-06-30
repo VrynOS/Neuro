@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-controls-2";
+const NEURA_ASSET_VERSION = "stamina-health-hud-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -758,6 +758,14 @@ function healthIntegerValue(keys, fallback = 0) {
   return String(Math.round(number));
 }
 
+function staminaValue() {
+  return healthPercentValue(["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100);
+}
+
+function staminaRankValue() {
+  return titleCaseHealthValue(healthValue(["stamina.rank"], "Untrained"));
+}
+
 function healthRows(groups) {
   return groups.map((group) => ({
     title: group.title,
@@ -917,11 +925,13 @@ function healthDetailGroups(section) {
         ["Last Used", ["selfCare.skinLastUsed", "care.skinLastUsed"], "None"],
         ["Product", ["selfCare.skinProduct", "care.skinProduct"], "None"],
         ["Hygiene", ["stat.hygiene"], state.stats.hygiene, healthPercentValue],
-        ["Rest", ["selfCare.rest"], "Not Done"],
+        ["Rest", ["stat.sleep"], state.stats.sleep, healthPercentValue],
+        ["Stamina", ["fitness.stamina", "stamina.current"], 100, healthPercentValue],
+        ["Stamina Strength", ["stamina.rank"], "Untrained"],
+        ["Stamina Level", ["stamina.level"], "1"],
         ["Multivitamin", ["selfCare.multivitamin", "care.multivitamin"], "Not Taken"],
         ["Last Multivitamin", ["selfCare.lastMultivitamin", "last.multivitamin"], "None"],
-        ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"],
-        ["Care Item XP", ["selfCare.careItemXP"], "0"]
+        ["Need Multivitamin", ["selfCare.multivitaminNeed", "care.multivitaminNeed"], "Now"]
       ] }
     ],
     birthControl: [
@@ -1024,16 +1034,31 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
   const group = groups[activeIndex] || groups[0];
   const article = document.createElement("section");
   article.className = "health-detail-group";
+  article.classList.toggle("is-body-care", group.title === "Body Care");
   const heading = document.createElement("h3");
   heading.textContent = group.title;
   article.append(heading);
-  group.rows.forEach(([label, value]) => {
+  const appendRow = (parent, [label, value]) => {
     const row = document.createElement("p");
     row.innerHTML = "<span></span><strong></strong>";
     row.querySelector("span").textContent = label;
     row.querySelector("strong").textContent = String(value);
-    article.append(row);
-  });
+    parent.append(row);
+  };
+  if (group.title === "Body Care") {
+    const columns = document.createElement("div");
+    const left = document.createElement("div");
+    const right = document.createElement("div");
+    columns.className = "health-detail-columns";
+    left.className = "health-detail-column";
+    right.className = "health-detail-column";
+    group.rows.slice(0, 4).forEach((row) => appendRow(left, row));
+    group.rows.slice(4).forEach((row) => appendRow(right, row));
+    columns.append(left, right);
+    article.append(columns);
+  } else {
+    group.rows.forEach((row) => appendRow(article, row));
+  }
   target.append(article);
 }
 
@@ -1051,7 +1076,11 @@ function maleHealthDetailRows(section) {
       ["Workout Status", ["fitness.status", "male.fitness.status"], "Inactive"],
       ["Last Workout", ["fitness.lastWorkout", "male.fitness.lastWorkout"], "None"],
       ["Workout Type", ["fitness.workoutType", "male.fitness.workoutType"], "None"],
-      ["Stamina", ["fitness.stamina", "male.fitness.stamina"], "0"],
+      ["Stamina", ["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100, healthPercentValue],
+      ["Stamina Strength", ["stamina.rank"], "Untrained"],
+      ["Stamina Level", ["stamina.level"], "1"],
+      ["Stamina XP", ["stamina.xp"], "0"],
+      ["Decay Resistance", ["stamina.decayResist"], "0"],
       ["Body Conditioning", ["fitness.bodyConditioning", "male.fitness.bodyConditioning"], "0"],
       ["Fitness XP", ["fitness.xp", "male.fitness.xp"], "0"],
       ["Last Gym Visit", ["fitness.lastGymVisit", "male.fitness.lastGymVisit"], "None"],
@@ -1070,6 +1099,27 @@ function maleHealthDetailRows(section) {
     const value = typeof formatter === "function" ? formatter(keys, fallback) : healthValue(keys, fallback);
     return [label, value];
   });
+}
+
+function maleCareScore() {
+  const raw = healthValue(["male.care.score", "stat.care"], state.stats.care);
+  const value = Number(String(raw).replace("%", "").split("/")[0].trim());
+  if (!Number.isFinite(value)) return Math.round(Number(state.stats.care) || 0);
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function maleCareStatus(score) {
+  if (score >= 90) return "Excellent *";
+  if (score >= 70) return "Good";
+  if (score >= 40) return "Needs Care";
+  if (score >= 1) return "Low Care";
+  return "Neglected";
+}
+
+function titleCaseHealthValue(value) {
+  const text = String(value || "None").trim();
+  if (!text || text.toLowerCase() === "none") return "None";
+  return text.replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
 }
 
 function renderMaleHealthDetail(section = state.health.activeMaleSection || "care") {
@@ -1101,10 +1151,15 @@ function renderMaleHealthDetail(section = state.health.activeMaleSection || "car
 }
 
 function renderMaleHealth() {
+  const care = maleCareScore();
+  const activity = titleCaseHealthValue(healthValue(["health.lastActivity", "male.lastActivity", "fitness.lastWorkout"], "None"));
+  const fitness = titleCaseHealthValue(healthValue(["fitness.status", "male.fitness.status"], "Ready"));
   renderKeyValueRows(document.querySelector("[data-male-health-summary]"), [
-    ["Care", `${state.stats.care}/100`],
-    ["Fitness", healthValue(["fitness.status", "male.fitness.status"], "Inactive")],
-    ["Last Activity", healthValue(["health.lastActivity", "male.lastActivity", "fitness.lastWorkout"], "None")]
+    ["Care", `${care}%`],
+    ["Status", maleCareStatus(care)],
+    ["Stamina", `${staminaValue()} ${staminaRankValue()}`],
+    ["Fitness", fitness === "Inactive" ? "Ready" : fitness],
+    ["Last Activity", activity]
   ]);
 
   const buttons = document.querySelector("[data-male-health-buttons]");
