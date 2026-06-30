@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "stamina-health-hud-2";
+const NEURA_ASSET_VERSION = "stamina-health-hud-3";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -725,17 +725,40 @@ function renderProfile() {
   renderConnectionStatus(liveBridge ? "Online" : "Offline");
 }
 
+function normalizeAvatarSex(value) {
+  const sex = String(value || "").trim().toLowerCase();
+  if (sex === "female" || sex === "woman") return "female";
+  if (sex === "male" || sex === "man") return "male";
+  return "";
+}
+
+function snapshotSuggestsSex(snapshot = {}) {
+  if (!snapshot || typeof snapshot !== "object") return "";
+  const hasMaleKeys = ["male.care.score", "male.care.dailyVitamin", "male.care.hair", "fitness.status"]
+    .some((key) => snapshotValue(snapshot, key, "") !== "");
+  if (hasMaleKeys) return "male";
+  const hasFemaleKeys = ["cycle.status", "pregnancy.status", "selfCare.score", "birthControl.status"]
+    .some((key) => snapshotValue(snapshot, key, "") !== "");
+  if (hasFemaleKeys) return "female";
+  return "";
+}
+
+function currentAvatarSex() {
+  return normalizeAvatarSex(snapshotValue(state.lastSnapshot || {}, "sex", ""))
+    || snapshotSuggestsSex(state.lastSnapshot || {})
+    || normalizeAvatarSex(state.profile.sex);
+}
+
 function isFemaleAvatar() {
-  return String(state.profile.sex || "").trim().toLowerCase() === "female";
+  return currentAvatarSex() === "female";
 }
 
 function isMaleAvatar() {
-  return String(state.profile.sex || "").trim().toLowerCase() === "male";
+  return currentAvatarSex() === "male";
 }
 
 function hasKnownAvatarSex() {
-  const sex = String(state.profile.sex || "").trim().toLowerCase();
-  return sex !== "" && sex !== "not set" && sex !== "unknown";
+  return currentAvatarSex() !== "";
 }
 
 function healthValue(keys, fallback = "") {
