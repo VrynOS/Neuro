@@ -102,6 +102,11 @@ const state = {
     activeSection: "cycle",
     detailOpen: false,
     cycleLengthPickerOpen: false,
+    pendingCycle: {
+      status: "",
+      nextStep: "",
+      until: 0
+    },
     bridgeWaiting: false,
     bridgeOffline: false
   },
@@ -175,7 +180,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "server-profile-health-1";
+const NEURA_ASSET_VERSION = "cycle-command-stabilize-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -804,6 +809,44 @@ function setSnapshotValue(key, value) {
   state.lastSnapshot[key] = value;
 }
 
+function cycleStatusText(status) {
+  const value = String(status || "").trim().toLowerCase().replace(/[_-]+/g, " ");
+  if (value === "active") return "Active";
+  if (value === "paused") return "Paused";
+  if (value === "pregnant") return "Pregnant";
+  if (value === "test needed") return "Test Needed";
+  return "Inactive";
+}
+
+function setPendingCycle(status, nextStep = "") {
+  state.health.pendingCycle = {
+    status: cycleStatusText(status),
+    nextStep,
+    until: Date.now() + 6500
+  };
+}
+
+function stabilizeCycleSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== "object") return snapshot;
+  const pending = state.health.pendingCycle || {};
+  if (!pending.status || Date.now() > Number(pending.until || 0)) {
+    state.health.pendingCycle = { status: "", nextStep: "", until: 0 };
+    return snapshot;
+  }
+
+  const incoming = cycleStatusText(snapshotValue(snapshot, "cycle.status", ""));
+  if (incoming === pending.status) {
+    state.health.pendingCycle = { status: "", nextStep: "", until: 0 };
+    return snapshot;
+  }
+
+  return {
+    ...snapshot,
+    "cycle.status": pending.status,
+    "cycle.nextStep": pending.nextStep || snapshotValue(snapshot, "cycle.nextStep", "")
+  };
+}
+
 function scheduleHealthRefresh(reason = "health") {
   if (!liveBridge) return;
   window.setTimeout(() => sendBridge("health-sync"), 650);
@@ -827,6 +870,7 @@ function handleCycleAction(actionKey) {
     renderHealthDetail("cycle", state.health.activeGroups.cycle || 0);
     return;
   }
+  setPendingCycle(action.status, action.nextStep);
   setSnapshotValue("cycle.status", action.status);
   setSnapshotValue("cycle.nextStep", action.nextStep);
   setSnapshotValue("cycle.lastAction", action.label);
@@ -838,6 +882,7 @@ function handleCycleLengthAction(lengthKey) {
   const action = cycleLengthActions.find((item) => item.key === String(lengthKey));
   if (!action) return;
   state.health.cycleLengthPickerOpen = false;
+  setPendingCycle("Active", "Track Care");
   setSnapshotValue("cycle.status", "Active");
   setSnapshotValue("cycle.nextStep", "Track Care");
   setSnapshotValue("cycle.length", action.key);
@@ -2476,6 +2521,7 @@ function applyXpSnapshot(snapshot) {
 
 function applySnapshot(snapshot) {
   if (!snapshot || snapshot.token !== "CDF_WORLD_V1") return;
+  snapshot = stabilizeCycleSnapshot(snapshot);
   const mergedSnapshot = { ...(state.lastSnapshot || {}), ...snapshot };
   state.lastSnapshot = mergedSnapshot;
   renderStats(statsFromSnapshot(mergedSnapshot));
