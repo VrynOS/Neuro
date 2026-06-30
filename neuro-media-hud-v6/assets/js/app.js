@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "male-health-polish-1";
+const NEURA_ASSET_VERSION = "male-health-shared-design-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {

@@ -1229,9 +1229,13 @@ h1 {
 .male-health {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
-  gap: 14px 18px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(3, 18, 28, 0.98), rgba(0, 8, 14, 0.98)),
+    var(--glass-surface);
 }
 
 .male-health[hidden] {
@@ -1240,18 +1244,18 @@ h1 {
 
 .male-health > header strong {
   color: var(--blue);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .male-health-overview {
-  grid-column: 1;
+  grid-column: 1 / -1;
   grid-row: 3;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
+  gap: 0;
 }
 
 .male-health-overview > div {
@@ -1259,17 +1263,17 @@ h1 {
   border: 1px solid rgba(40, 161, 252, 0.16);
   border-radius: 7px;
   background: var(--glass-card);
-  padding: 12px;
+  padding: 12px 14px;
 }
 
 .male-health-overview h2 {
-  margin: 0 0 8px;
+  display: none;
 }
 
 .male-health-stat-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 7px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 18px;
 }
 
 .male-health-stat-grid p {
@@ -1277,11 +1281,11 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 42px;
+  min-height: 40px;
   margin: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--muted);
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .male-health-stat-grid strong {
@@ -1316,11 +1320,15 @@ h1 {
 }
 
 .male-health-detail {
-  grid-column: 2;
-  grid-row: 3;
+  grid-column: 1 / -1;
+  grid-row: 4;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
+  border: 1px solid rgba(40, 161, 252, 0.16);
+  border-radius: 7px;
+  background: var(--glass-card);
+  padding: 14px 16px;
 }
 
 .male-health-detail header {
@@ -1332,7 +1340,7 @@ h1 {
 
 .male-health-detail header span {
   color: var(--blue);
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1348,11 +1356,14 @@ h1 {
   align-content: start;
   min-height: 0;
   overflow: hidden;
-  padding-top: 10px;
+  padding-top: 12px;
 }
 
 .male-health .health-detail-group {
-  min-height: 100%;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 
 .male-health .health-detail-group p {
@@ -1621,6 +1632,10 @@ h1 {
   .health-detail {
     inset: 6px;
     padding: 14px;
+  }
+
+  .male-health-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .health-detail-columns {
