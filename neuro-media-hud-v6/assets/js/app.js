@@ -122,6 +122,7 @@ const healthSectionLabels = {
   pregnancy: "Pregnancy",
   selfCare: "Self Care",
   birthControl: "Birth Control",
+  intimacy: "Intimacy",
   planB: "Plan B Zero"
 };
 
@@ -130,6 +131,7 @@ const healthSectionPurposes = {
   pregnancy: "Shows pregnancy status, test info, alerts, and prenatal vitamin care.",
   selfCare: "Tracks personal care, wellness, salon care, lotion, and multivitamins.",
   birthControl: "Shows birth control status, last taken, and time left.",
+  intimacy: "Shows intimacy records, DNA, protection, and pregnancy-risk decisions.",
   planB: "Shows emergency use status, times taken, last taken, and pregnancy status."
 };
 
@@ -180,7 +182,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-command-stabilize-1";
+const NEURA_ASSET_VERSION = "female-intimacy-health-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -1008,6 +1010,29 @@ function healthDetailGroups(section) {
         ["Last Taken", ["birthControl.lastTaken", "last.bcTaken"], "None"],
         ["BC Time Left", ["birthControl.timeLeft", "bc.timeLeft"], "0"],
         ["Protected", ["birthControl.protected", "bc.protected"], "No"]
+      ] }
+    ],
+    intimacy: [
+      { title: "Intimacy Record", rows: [
+        ["Status", ["intimacy.status"], "No Record"],
+        ["Last Intimacy", ["intimacy.last", "intimacy.lastEventDate"], "None"],
+        ["Partner", ["intimacy.partnerName"], "None"],
+        ["Partner DNA", ["intimacy.partnerDNA", "intimacy.partner"], "None"],
+        ["DNA Match", ["intimacy.dnaMatch"], "None"]
+      ] },
+      { title: "Protection", rows: [
+        ["Birth Control Active", ["intimacy.birthControlActive"], "No"],
+        ["Protection Used", ["intimacy.protectionUsed"], "No"],
+        ["Pregnancy Risk", ["intimacy.pregnancyRisk"], "No"],
+        ["Decision", ["intimacy.pregnancyDecision"], "None"],
+        ["Cycle Phase", ["intimacy.cyclePhase"], "None"],
+        ["Cycle Risk", ["intimacy.cycleRisk"], "NONE"]
+      ] },
+      { title: "Details", rows: [
+        ["Location", ["intimacy.location"], "None"],
+        ["Furniture", ["intimacy.objectName"], "None"],
+        ["Position", ["intimacy.position"], "None"],
+        ["Records", ["intimacy.eventCount"], "0"]
       ] }
     ],
     planB: [
