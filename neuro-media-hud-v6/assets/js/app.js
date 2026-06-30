@@ -173,7 +173,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-lsl-1";
+const NEURA_ASSET_VERSION = "health-sync-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -757,6 +757,7 @@ function setSnapshotValue(key, value) {
 
 function scheduleHealthRefresh(reason = "health") {
   if (!liveBridge) return;
+  window.setTimeout(() => sendBridge("health-sync"), 650);
   window.setTimeout(() => sendBridge("stats"), 900);
   setLastRefresh(`${reason} sync`);
 }
@@ -1981,6 +1982,8 @@ function loadHealth() {
   renderHealth();
   requestStoredProfile(true);
   if (liveBridge) {
+    sendBridge("health-sync");
+    window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
     setLastRefresh("health requested");
   }
@@ -2351,6 +2354,7 @@ function applySnapshot(snapshot) {
 function handleStatsResponse(body) {
   let payload = body;
   if (payload.startsWith("STATS|")) payload = payload.substring(6);
+  if (payload.startsWith("HEALTH|")) payload = payload.substring(7);
   if (!payload || payload === "NO_STATS" || payload.startsWith("NO_STATS|")) {
     const detail = document.querySelector("[data-body-status-detail]");
     if (detail) detail.textContent = "SYNCING";
@@ -2755,7 +2759,7 @@ window.addEventListener("message", (event) => {
   if (handleProfileResponse(body)) return;
   if (handleWalletResponse(body)) return;
   if (handleDmResponse(body)) return;
-  if (body.startsWith("STATS|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
+  if (body.startsWith("STATS|") || body.startsWith("HEALTH|") || body.startsWith("{") || body.startsWith("NO_STATS")) {
     handleStatsResponse(body);
   }
 });
