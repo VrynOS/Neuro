@@ -101,7 +101,9 @@ const state = {
     activeMaleSection: "care",
     activeSection: "cycle",
     detailOpen: false,
-    cycleLengthPickerOpen: false
+    cycleLengthPickerOpen: false,
+    bridgeWaiting: false,
+    bridgeOffline: false
   },
   clock: {
     lastMinuteKey: "",
@@ -173,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "health-sync-1";
+const NEURA_ASSET_VERSION = "health-diag-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -266,7 +268,16 @@ function sendBridge(op, text = "") {
   }).toString();
 
   pendingBridge.set(tick, op);
-  window.setTimeout(() => pendingBridge.delete(tick), 20000);
+  window.setTimeout(() => {
+    if (!pendingBridge.has(tick)) return;
+    pendingBridge.delete(tick);
+    if (op === "health-sync") {
+      state.health.bridgeWaiting = false;
+      state.health.bridgeOffline = true;
+      setLastRefresh("health bridge offline");
+      renderHealth();
+    }
+  }, 6000);
   window.parent.postMessage(`${BRIDGE_PREFIX}${query}`, "*");
   if (op !== "stats") logBridge(`sent: ${op}`);
   return tick;
@@ -1091,7 +1102,15 @@ function renderHealth() {
   const statusTitle = document.querySelector("[data-health-status-title]");
   const statusMessage = document.querySelector("[data-health-status-message]");
 
-  if (statusCard) statusCard.hidden = female || male;
+  if (statusCard) statusCard.hidden = (female || male) && !state.health.bridgeOffline && !state.health.bridgeWaiting;
+  if (state.health.bridgeOffline || state.health.bridgeWaiting) {
+    if (statusTitle) statusTitle.textContent = state.health.bridgeOffline ? "Health Bridge Offline" : "Checking Health Bridge";
+    if (statusMessage) {
+      statusMessage.textContent = state.health.bridgeOffline
+        ? "The web HUD did not receive an LSL health-sync answer. Part 1 needs a working bridge URL."
+        : "Asking Part 1 for the latest Neuro Server health snapshot.";
+    }
+  }
   if (!female && !male) {
     if (statusTitle) statusTitle.textContent = knownSex ? "Health Hidden" : "Loading Health";
     if (statusMessage) {
@@ -1982,6 +2001,8 @@ function loadHealth() {
   renderHealth();
   requestStoredProfile(true);
   if (liveBridge) {
+    state.health.bridgeWaiting = true;
+    state.health.bridgeOffline = false;
     sendBridge("health-sync");
     window.setTimeout(() => sendBridge("health-sync"), 900);
     sendBridge("stats");
@@ -2754,6 +2775,10 @@ window.addEventListener("message", (event) => {
   const body = parts.slice(3).join("|");
   const op = pendingBridge.get(tick) || tick;
   pendingBridge.delete(tick);
+  if (op === "health-sync") {
+    state.health.bridgeWaiting = false;
+    state.health.bridgeOffline = false;
+  }
   if (op !== "stats") logBridge(`${op}: LSL ${status} ${body}`);
   if (handleWebStateResponse(body)) return;
   if (handleProfileResponse(body)) return;
