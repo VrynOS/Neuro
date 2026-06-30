@@ -175,7 +175,7 @@ const cycleLengthActions = [
 
 const AVATAR_ASSET_VERSION = "profile-images-1";
 const avatarPath = (id) => `assets/img/perf/avatars/avatar-${id}.png?v=${AVATAR_ASSET_VERSION}`;
-const NEURA_ASSET_VERSION = "cycle-sync-1";
+const NEURA_ASSET_VERSION = "cycle-controls-1";
 const neuraPath = () => `assets/img/neura.png?v=${NEURA_ASSET_VERSION}`;
 const zodiacPath = (sign) => `assets/img/perf/zodiac/${sign}.png`;
 const zodiacLabels = {
@@ -751,6 +751,13 @@ function healthPercentValue(keys, fallback = 0) {
   return `${Math.round(Math.max(0, Math.min(100, number)))}%`;
 }
 
+function healthIntegerValue(keys, fallback = 0) {
+  const raw = healthValue(keys, fallback);
+  const number = Number(String(raw).replace("%", "").split("/")[0].trim());
+  if (!Number.isFinite(number)) return String(fallback);
+  return String(Math.round(number));
+}
+
 function healthRows(groups) {
   return groups.map((group) => ({
     title: group.title,
@@ -809,14 +816,17 @@ function handleCycleLengthAction(lengthKey) {
 }
 
 function cycleStatusKey() {
-  return String(healthValue(["cycle.status"], "Inactive")).trim().toLowerCase();
+  return String(healthValue(["cycle.status"], "Inactive"))
+    .trim()
+    .toLowerCase()
+    .replace(/[_-]+/g, " ");
 }
 
 function visibleCycleActions() {
   const status = cycleStatusKey();
-  if (status === "active") return ["pause", "stop"];
-  if (status === "paused") return ["resume", "stop"];
-  if (status === "pregnant" || status === "test needed") return [];
+  if (status.includes("active")) return ["pause", "stop"];
+  if (status.includes("paused")) return ["resume", "stop"];
+  if (status.includes("pregnant") || status.includes("test needed")) return [];
   return ["start"];
 }
 
@@ -857,8 +867,8 @@ function healthDetailGroups(section) {
         ["Tampon Status", ["cycle.tamponStatus", "tampon.status"], "Not Needed"],
         ["Last Pad Used", ["cycle.lastPadUsed", "last.padUsed"], "None"],
         ["Last Tampon Used", ["cycle.lastTamponUsed", "last.tamponUsed"], "None"],
-        ["Care Stat", ["cycle.care", "care.self"], "0"],
-        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene],
+        ["Care Stat", ["cycle.care", "care.self"], "0", healthIntegerValue],
+        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene, healthIntegerValue],
         ["Next Change Timer", ["cycle.nextChangeTimer"], "None"],
         ["Care Item XP", ["cycle.careItemXP", "careItemXP"], "0"]
       ] },
@@ -992,7 +1002,9 @@ function renderHealthDetail(section = "cycle", groupIndex = state.health.activeG
         closeButton.textContent = "Close";
         cycleActionBar.append(closeButton);
       } else {
-        visibleCycleActions().forEach((key) => {
+        const actions = visibleCycleActions();
+        cycleActionBar.dataset.cycleStatus = cycleStatusKey();
+        actions.forEach((key) => {
           const action = cycleActions[key];
           const button = document.createElement("button");
           button.type = "button";
