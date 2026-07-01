@@ -771,6 +771,16 @@ function healthIntegerValue(keys, fallback = 0) {
   return String(Math.round(number));
 }
 
+function healthCareStatusValue(keys, fallback = "Needs Care") {
+  const raw = healthValue(keys, fallback);
+  const number = Number(String(raw).replace("%", "").split("/")[0].trim());
+  if (!Number.isFinite(number)) return String(raw || fallback);
+  if (number >= 100) return "Ready";
+  if (number >= 80) return "Good";
+  if (number >= 60) return "Needs Care";
+  return "Low";
+}
+
 function staminaValue() {
   return healthPercentValue(["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100);
 }
@@ -974,8 +984,8 @@ function healthDetailGroups(section) {
     ],
     selfCare: [
       { title: "Self Care Tab", rows: [
-        ["Self Care", ["selfCare.score", "stat.care", "care.self"], 0, healthPercentValue],
-        ["Status", ["selfCare.status"], "Needs Care"],
+        ["Self Care", ["stat.care", "selfCare.score", "care.self"], 0, healthPercentValue],
+        ["Status", ["stat.care", "selfCare.status"], "Needs Care", healthCareStatusValue],
         ["Last Care", ["selfCare.lastCare", "care.lastCare"], "None"],
         ["Next Care Due", ["selfCare.nextDue", "care.nextDue"], "Now"]
       ] },
