@@ -605,16 +605,7 @@ function handleWalletResponse(body) {
 }
 
 function loadSavedProfile() {
-  const storageKey = profileStorageKey();
-  try {
-    let saved = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
-    if (!liveBridge && !Object.keys(saved).length) {
-      saved = JSON.parse(window.localStorage.getItem("neuroProfile") || "{}");
-    }
-    applySavedProfile(saved, false);
-  } catch {
-    window.localStorage.removeItem(storageKey);
-  }
+  if (liveBridge) requestStoredProfile(true);
 }
 
 function applyBridgeIdentityDefaults() {
@@ -626,16 +617,7 @@ function applyBridgeIdentityDefaults() {
 }
 
 function persistProfileLocal() {
-  try {
-    window.localStorage.setItem(profileStorageKey(), JSON.stringify(profileSavePayload()));
-  } catch {
-    // Second Life media can deny browser storage; the LSL gateway is the durable save path.
-  }
-}
-
-function profileStorageKey() {
-  const owner = String(query.get("avatar") || "local").replace(/[^a-z0-9-]/gi, "");
-  return liveBridge ? `neuroProfile:${owner || "local"}` : "neuroProfile";
+  if (liveBridge) sendBridge("profile-save", JSON.stringify(profileSavePayload()));
 }
 
 function profileSavePayload() {
@@ -1405,14 +1387,14 @@ function saveProfileFromForm(form) {
   state.profile = next;
   persistProfileLocal();
   renderProfile();
-  if (liveBridge) sendBridge("profile-save", JSON.stringify(profileSavePayload()));
-  addLocalNotification("Profile Saved", "Role and profile details were saved to the HUD server.", "Profile");
+  addLocalNotification("Profile Saved", "Role and profile details were sent to the Neuro Server.", "Profile");
   closeProfileEditor();
 }
 
 function requestStoredProfile(force = false) {
   if (liveBridge && (force || state.perf.loaded.profile)) {
     sendBridge("profile-load");
+    window.setTimeout(() => sendBridge("profile-load"), 900);
     setLastRefresh("profile loaded");
   }
 }
@@ -1425,7 +1407,6 @@ function handleProfileResponse(body) {
 
   try {
     applySavedProfile(JSON.parse(payload), true);
-    persistProfileLocal();
     renderProfile();
     if (state.perf.loaded.health) renderHealth();
   } catch {
@@ -1525,28 +1506,12 @@ function normalizeDmThread(thread) {
 }
 
 function saveMessagesLocal() {
-  try {
-    localStorage.setItem("neuroMessages", JSON.stringify(state.messages.threads));
-  } catch {
-    logBridge("messages local save blocked");
-  }
+  if (liveBridge) requestDmInbox(true);
 }
 
 function loadMessagesLocal() {
-  if (liveBridge) {
-    state.messages.threads = [];
-    return;
-  }
-  try {
-    const saved = JSON.parse(localStorage.getItem("neuroMessages") || "[]");
-    if (Array.isArray(saved) && saved.length) {
-      state.messages.threads = saved.map(normalizeDmThread);
-    } else {
-      state.messages.threads = [];
-    }
-  } catch {
-    state.messages.threads = [];
-  }
+  state.messages.threads = [];
+  if (liveBridge) requestDmInbox(true);
 }
 
 function requestDmInbox(force = false) {
@@ -1919,6 +1884,7 @@ function requestWebState(force = false) {
   if (!liveBridge) return;
   if (!force && state.webState.liveLoaded) return;
   sendBridge("memory-load");
+  window.setTimeout(() => sendBridge("memory-load"), 900);
   setLastRefresh("memory loaded");
 }
 
@@ -1953,14 +1919,12 @@ function handleWebStateResponse(body) {
   state.webState.liveLoaded = true;
   const payload = body.substring(10);
   if (!payload || payload === "{}") {
-    saveNotificationsLocal(false);
     renderWalletReceipts();
     return true;
   }
 
   try {
     applyWebState(JSON.parse(payload));
-    saveNotificationsLocal(false);
   } catch {
     logBridge("bad state payload");
   }
@@ -1968,35 +1932,12 @@ function handleWebStateResponse(body) {
 }
 
 function loadNotificationsLocal() {
-  if (liveBridge) {
-    state.notifications.items = [];
-    state.notifications.dismissedStats = [];
-    return;
-  }
-  try {
-    const saved = JSON.parse(window.localStorage.getItem("neuroNotifications") || "[]");
-    if (Array.isArray(saved)) {
-      state.notifications.items = saved.slice(0, 8);
-      state.notifications.dismissedStats = [];
-      return;
-    }
-    state.notifications.items = Array.isArray(saved.items) ? saved.items.slice(0, 8) : [];
-    state.notifications.dismissedStats = Array.isArray(saved.dismissedStats) ? saved.dismissedStats : [];
-  } catch {
-    window.localStorage.removeItem("neuroNotifications");
-    state.notifications.items = [];
-  }
+  state.notifications.items = [];
+  state.notifications.dismissedStats = [];
+  if (liveBridge) requestWebState(true);
 }
 
 function saveNotificationsLocal(syncHud = true) {
-  try {
-    window.localStorage.setItem("neuroNotifications", JSON.stringify({
-      items: state.notifications.items.slice(0, 8),
-      dismissedStats: state.notifications.dismissedStats
-    }));
-  } catch {
-    logBridge("local notification cache blocked");
-  }
   if (syncHud) saveWebStateNow("notification", true);
 }
 
