@@ -781,6 +781,21 @@ function healthCareStatusValue(keys, fallback = "Needs Care") {
   return "Low";
 }
 
+function healthDoneFlagValue(keys, fallback = "Not Done") {
+  const raw = healthValue(keys, fallback);
+  const value = String(raw || "").trim().toLowerCase();
+  if (value === "1" || value === "true" || value === "done" || value === "yes") return "Done";
+  if (value === "0" || value === "false" || value === "not done" || value === "no") return "Not Done";
+  return String(raw || fallback);
+}
+
+function healthUnixTimeAgoValue(keys, fallback = "None") {
+  const raw = healthValue(keys, "");
+  const seconds = Number(String(raw || "").trim());
+  if (Number.isFinite(seconds) && seconds > 0) return timeAgo(seconds * 1000);
+  return healthValue(keys, fallback);
+}
+
 function staminaValue() {
   return healthPercentValue(["fitness.stamina", "stamina.current", "male.fitness.stamina"], 100);
 }
@@ -1000,11 +1015,11 @@ function healthDetailGroups(section) {
         ["Next Care Due", ["selfCare.nextDue", "care.nextDue"], "Now"]
       ] },
       { title: "Salon Services", rows: [
-        ["Hair", ["selfCare.hair", "care.hair"], "Not Done"],
-        ["Nails", ["selfCare.nails", "care.nails"], "Not Done"],
-        ["Feet", ["selfCare.feet", "care.feet"], "Not Done"],
-        ["Facial", ["selfCare.facial", "care.facial"], "Not Done"],
-        ["Last Visit", ["selfCare.salonLastVisit", "care.salonLastVisit"], "None"],
+        ["Hair", ["care.hair.done", "selfCare.hair", "care.hair"], "Not Done", healthDoneFlagValue],
+        ["Nails", ["care.nails.done", "selfCare.nails", "care.nails"], "Not Done", healthDoneFlagValue],
+        ["Feet", ["care.feet.done", "selfCare.feet", "care.feet"], "Not Done", healthDoneFlagValue],
+        ["Facial", ["care.facial.done", "selfCare.facial", "care.facial"], "Not Done", healthDoneFlagValue],
+        ["Last Visit", ["care.lastRecordTime", "selfCare.salonLastVisit", "care.salonLastVisit"], "None", healthUnixTimeAgoValue],
         ["Next Due", ["selfCare.salonNextDue", "care.salonNextDue"], "Now"]
       ] },
       { title: "Body Care", rows: [
