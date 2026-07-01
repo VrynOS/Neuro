@@ -879,6 +879,16 @@ function sendHealthCommand(command, label = command) {
   scheduleHealthRefresh("health command");
 }
 
+function syncHealthDetailDialog(section, groupIndex) {
+  const groups = healthDetailGroups(section);
+  const group = groups[Number(groupIndex) || 0];
+  if (!group) return;
+  if (section === "selfCare" && group.title === "Salon Services") {
+    sendBridge("health-command", "care");
+    scheduleHealthRefresh("salon services");
+  }
+}
+
 function handleCycleAction(actionKey) {
   const action = cycleActions[actionKey];
   if (!action) return;
@@ -2682,7 +2692,9 @@ document.addEventListener("click", (event) => {
   const healthSubsectionButton = event.target.closest("[data-health-subsection]");
   if (healthSubsectionButton) {
     const section = healthSubsectionButton.dataset.healthSectionKey || document.querySelector("[data-health-section].is-active")?.dataset.healthSection || "cycle";
-    renderHealthDetail(section, Number(healthSubsectionButton.dataset.healthSubsection));
+    const groupIndex = Number(healthSubsectionButton.dataset.healthSubsection);
+    renderHealthDetail(section, groupIndex);
+    syncHealthDetailDialog(section, groupIndex);
     return;
   }
 
