@@ -165,7 +165,7 @@ const cycleActions = {
     nextStep: "Track Care"
   },
   stop: {
-    label: "Stop Cycle",
+    label: "Reset Cycle",
     command: "stop cycle",
     status: "Inactive",
     nextStep: "Start Cycle"
@@ -926,39 +926,32 @@ function healthDetailGroups(section) {
   const groups = {
     cycle: [
       { title: "Cycle Status", rows: [
-        ["Status", ["cycle.status"], "Inactive"],
+        ["Cycle Status", ["cycle.status"], "Inactive"],
         ["Cycle Day", ["cycle.dayLabel", "cycle.day"], healthValue(["cycle.day"], "1") + " / " + healthValue(["cycle.length"], "28")],
-        ["Phase", ["cycle.phase"], "None"],
-        ["Risk", ["cycle.risk"], "NONE"],
-        ["Next Step", ["cycle.nextStep"], "Start Cycle"]
+        ["Current Phase", ["cycle.phase"], "None"],
+        ["Pregnancy Risk", ["cycle.risk"], "NONE"],
+        ["Next Phase", ["cycle.nextStep"], "Start Cycle"]
       ] },
       { title: "Cycle Timing", rows: [
         ["Flow", ["cycle.flow"], "None"],
-        ["Period Status", ["period.status", "cycle.periodStatus"], "Inactive"],
+        ["Next Period", ["cycle.nextPeriod"], "23 CDF days"],
         ["Fertile Window", ["cycle.fertileWindow"], "Closed"],
         ["Ovulation", ["cycle.ovulation"], "No"],
-        ["Pregnancy Status", ["pregnancy.status"], "Not Pregnant"],
-        ["Next Period", ["cycle.nextPeriod"], "23 CDF days"],
-        ["Next Ovulation", ["cycle.nextOvulation"], "8 CDF days"]
+        ["Pregnancy Status", ["pregnancy.status"], "Not Pregnant"]
       ] },
       { title: "Cycle Care", rows: [
         ["Pad Status", ["cycle.padStatus", "pad.status"], "Not Needed"],
         ["Tampon Status", ["cycle.tamponStatus", "tampon.status"], "Not Needed"],
         ["Last Pad Used", ["cycle.lastPadUsed", "last.padUsed"], "None"],
         ["Last Tampon Used", ["cycle.lastTamponUsed", "last.tamponUsed"], "None"],
-        ["Care Stat", ["cycle.care", "care.self"], "0", healthIntegerValue],
-        ["Hygiene Stat", ["stat.hygiene"], state.stats.hygiene, healthIntegerValue],
-        ["Next Change Timer", ["cycle.nextChangeTimer"], "None"],
-        ["Care Item XP", ["cycle.careItemXP", "careItemXP"], "0"]
+        ["Care Level", ["cycle.care", "care.self"], "0", healthIntegerValue]
       ] },
       { title: "Cycle Relief", rows: [
-        ["Nue Relief", ["nueRelief.name"], "Nue Relief"],
+        ["Medication", ["nueRelief.name"], "Nue Relief"],
         ["Status", ["nueRelief.status"], "Period Only"],
-        ["Taken", ["nueRelief.taken"], "None"],
-        ["Ends", ["nueRelief.ends"], "0"],
-        ["Need", ["nueRelief.need"], "Now"],
-        ["Purpose", ["nueRelief.purpose"], "Used for cycle pain and cramps."],
-        ["Effect", ["nueRelief.effect"], "Pain relief during period/cycle care."]
+        ["Last Taken", ["nueRelief.taken"], "None"],
+        ["Effect Ends", ["nueRelief.ends"], "0"],
+        ["Relief Needed", ["nueRelief.need"], "Now"]
       ] }
     ],
     pregnancy: [
