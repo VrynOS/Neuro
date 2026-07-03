@@ -1,0 +1,279 @@
+/* =====================================================//
+Name of script: neura-heart
+Build: 1005
+Update: Orb Voice Visual Layer
+Date and time: 2026-07-02 00:00:00 -04:00
+Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
+// ===================================================== */
+
+.neura-heart-panel {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  height: auto;
+  padding: 16px;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--panel-radius);
+  box-shadow: none;
+}
+
+.neura-heart-system {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 560px);
+  max-height: 100%;
+  aspect-ratio: 1.05;
+  margin: 0 auto;
+  isolation: isolate;
+}
+
+.neura-heart-orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(440px, 88%);
+  aspect-ratio: 1;
+  border: 1px solid rgba(147, 222, 255, 0.28);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 43%, rgba(234, 248, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 34% 48%, rgba(66, 255, 210, 0.15), transparent 42%),
+    radial-gradient(circle at 70% 52%, rgba(180, 108, 255, 0.17), transparent 44%),
+    radial-gradient(circle at 50% 52%, rgba(1, 12, 20, 0.92) 0 50%, rgba(1, 12, 20, 0.3) 74%, rgba(1, 12, 20, 0.08) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -34px 60px rgba(0, 0, 0, 0.25),
+    0 0 42px rgba(47, 199, 255, 0.16),
+    0 0 34px rgba(180, 108, 255, 0.1);
+  backdrop-filter: blur(6px) saturate(1.16);
+  animation: heartBreath 7.2s ease-in-out infinite;
+}
+
+.neura-heart-orb::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  z-index: 1;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 54px var(--orb-mood-glow),
+    0 0 44px var(--orb-mood-glow);
+  opacity: 0.54;
+  pointer-events: none;
+}
+
+.neura-heart-system.has-heart-alert .neura-heart-orb {
+  animation: heartBreath 7.2s ease-in-out infinite, heartAlert 2.6s ease-in-out infinite;
+}
+
+.neura-heart-system.is-speaking .neura-heart-orb {
+  animation: heartBreath 7.2s ease-in-out infinite, heartSpeakGlow 2.4s ease-out;
+}
+
+.neura-heart-system.is-speaking .orb-waveform path {
+  animation-duration: 1.45s;
+}
+
+.orb-heart-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 1px;
+  color: #7fffe6;
+  filter: drop-shadow(0 0 10px rgba(66, 255, 210, 0.36));
+}
+
+.orb-heart-icon path {
+  fill: none;
+  stroke: url(#orbAccentGradient);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.orb-heart-icon .heart-mark {
+  fill: rgba(255, 91, 208, 0.14);
+  stroke: #ff5bd0;
+  stroke-width: 2;
+}
+
+.orb-center strong {
+  letter-spacing: 0.24em;
+  font-size: 30px;
+}
+
+.orb-sync-pill {
+  min-width: 158px;
+}
+
+.orb-speech {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  width: min(315px, 96%);
+  min-height: 92px;
+  padding: 5px 4px;
+  color: var(--text);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  text-shadow:
+    0 0 10px rgba(47, 199, 255, 0.5),
+    0 0 18px rgba(180, 108, 255, 0.24);
+  transition:
+    opacity 280ms ease,
+    transform 280ms ease;
+}
+
+.orb-speech span {
+  color: #42ffd2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.orb-speech p {
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  color: #eaf8ff;
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.orb-speech em {
+  display: -webkit-box;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  color: rgba(234, 248, 255, 0.75);
+  font-size: 16px;
+  font-style: normal;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.orb-speech[data-heart-tone="good"] {
+  text-shadow:
+    0 0 12px rgba(66, 255, 210, 0.6),
+    0 0 24px rgba(66, 255, 210, 0.22);
+}
+
+.orb-speech[data-heart-tone="alert"],
+.orb-speech[data-heart-tone="urgent"] {
+  text-shadow:
+    0 0 12px rgba(255, 211, 108, 0.58),
+    0 0 24px rgba(180, 108, 255, 0.22);
+}
+
+.orb-speech[data-heart-tone="urgent"] span,
+.orb-speech[data-heart-tone="urgent"] p {
+  color: #ffd36c;
+}
+
+.orb-speech[data-heart-tone="time"] {
+  text-shadow:
+    0 0 12px rgba(180, 108, 255, 0.58),
+    0 0 24px rgba(47, 199, 255, 0.2);
+}
+
+.orb-speech.is-speaking {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: heartVoiceIn 420ms cubic-bezier(0.17, 0.84, 0.32, 1.12) both;
+}
+
+@keyframes heartBreath {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -34px 60px rgba(0, 0, 0, 0.25),
+      0 0 34px rgba(47, 199, 255, 0.13),
+      0 0 26px rgba(180, 108, 255, 0.08);
+  }
+
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      inset 0 -34px 60px rgba(0, 0, 0, 0.2),
+      0 0 50px rgba(66, 255, 210, 0.2),
+      0 0 42px rgba(180, 108, 255, 0.16);
+  }
+}
+
+@keyframes heartAlert {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.018);
+  }
+}
+
+@keyframes heartSpeakGlow {
+  0% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  18% {
+    filter: brightness(1.16) saturate(1.16);
+    transform: scale(1.012);
+  }
+
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes heartVoiceIn {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 860px) {
+  .neura-heart-panel {
+    min-height: 430px;
+  }
+
+  .neura-heart-system {
+    min-height: 390px;
+  }
+
+  .neura-heart-orb {
+    width: min(330px, 88vw);
+  }
+
+  .orb-speech {
+    width: min(250px, 94%);
+    min-height: 78px;
+    padding: 7px 10px;
+  }
+
+  .orb-speech p {
+    font-size: 19px;
+  }
+
+  .orb-speech em {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,709 @@
+﻿<!doctype html>
+<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1075">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="neura-ui-pattern" content="Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js">
+  <title>Neura Build 1001</title>
+  <link rel="stylesheet" href="neura-hud-ui.css?v=1050">
+  <link rel="stylesheet" href="neura-heart.css?v=1005">
+  <link rel="stylesheet" href="neura-profile.css?v=1002">
+  <link rel="stylesheet" href="neura-stats.css?v=1001">
+  <link rel="stylesheet" href="neura-wallet.css?v=1008">
+  <link rel="stylesheet" href="neura-health.css?v=1001">
+  <link rel="stylesheet" href="neura-work.css?v=1001">
+</head>
+<body>
+  <main class="neura-shell" data-neura-shell>
+    <header class="neura-topbar">
+      <section class="neura-brand" aria-label="Neura">
+        <img src="Images/neuro trans.png" alt="" aria-hidden="true">
+        <strong>NEURA</strong>
+        <span>TEC</span>
+      </section>
+      <nav class="neura-tabs" aria-label="HUD sections">
+        <button type="button" data-tab="home" class="is-active"><span class="hud-icon icon-home" aria-hidden="true"></span><em>Home</em></button>
+        <button type="button" data-tab="profile"><span class="hud-icon icon-profile" aria-hidden="true"></span><em>Profile</em></button>
+        <button type="button" data-tab="wallet"><span class="hud-icon icon-wallet" aria-hidden="true"></span><em>Wallet</em></button>
+        <button type="button" data-tab="health"><span class="hud-icon icon-health" aria-hidden="true"></span><em>Health</em></button>
+        <button type="button" data-tab="work"><span class="hud-icon icon-work" aria-hidden="true"></span><em>Work</em></button>
+      </nav>
+      <section class="neura-status-cluster" aria-label="HUD status">
+        <button type="button" class="neura-sync" data-sync-hud aria-label="Sync HUD">
+          <span class="hud-icon icon-sync" aria-hidden="true"></span>
+        </button>
+        <span class="neura-clock" aria-label="Clock">
+          <time data-neura-time>--:--</time>
+        </span>
+      </section>
+    </header>
+
+    <section class="neura-view is-active" data-view="home">
+      <div class="home-grid">
+        <article class="neura-heart-panel" aria-label="Neura Heart">
+          <div class="neura-heart-system" data-neura-heart>
+            <div class="neura-heart-orb">
+              <svg class="orb-visual" viewBox="0 0 360 360" aria-hidden="true">
+                <defs>
+                  <radialGradient id="orbGlassGradient" cx="50%" cy="44%" r="58%">
+                    <stop offset="0" stop-color="#eaf8ff" stop-opacity="0.18"></stop>
+                    <stop offset="0.42" stop-color="#2fc7ff" stop-opacity="0.1"></stop>
+                    <stop offset="1" stop-color="#050b18" stop-opacity="0.36"></stop>
+                  </radialGradient>
+                  <linearGradient id="orbAccentGradient" x1="56" y1="292" x2="316" y2="58" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#42ffd2"></stop>
+                    <stop offset="0.55" stop-color="#2fc7ff"></stop>
+                    <stop offset="1" stop-color="#b46cff"></stop>
+                  </linearGradient>
+                  <linearGradient id="orbTitleGradient" x1="88" y1="180" x2="272" y2="180" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#36f6ff"></stop>
+                    <stop offset="0.55" stop-color="#d8f4ff"></stop>
+                    <stop offset="1" stop-color="#b46cff"></stop>
+                  </linearGradient>
+                  <filter id="orbSoftGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="4" result="glow"></feGaussianBlur>
+                    <feMerge>
+                      <feMergeNode in="glow"></feMergeNode>
+                      <feMergeNode in="SourceGraphic"></feMergeNode>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <circle class="orb-depth-ring" cx="180" cy="180" r="146"></circle>
+                <circle class="orb-glass" cx="180" cy="180" r="132"></circle>
+                <circle class="orb-data-ring" cx="180" cy="180" r="108"></circle>
+                <path class="orb-accent orb-accent-a" d="M52 196 A132 132 0 0 1 119 64"></path>
+                <path class="orb-accent orb-accent-b" d="M179 48 A132 132 0 0 1 300 129"></path>
+                <path class="orb-accent orb-accent-c" d="M314 202 A132 132 0 0 1 247 300"></path>
+                <path class="orb-accent orb-accent-d" d="M160 313 A132 132 0 0 1 73 256"></path>
+                <path class="orb-scan-line" d="M72 101 A146 146 0 0 1 295 100"></path>
+                <g class="orb-neural-map">
+                  <path d="M100 142 L144 116 L199 135 L245 104"></path>
+                  <path d="M112 226 L151 194 L211 214 L260 180"></path>
+                  <path d="M142 116 L151 194 L199 135 L211 214"></path>
+                  <path d="M100 142 L112 226"></path>
+                  <path d="M245 104 L260 180"></path>
+                  <path d="M84 184 L128 154 L173 164 L214 137 L276 156"></path>
+                  <path d="M130 254 L176 234 L219 244 L264 217"></path>
+                  <circle cx="100" cy="142" r="4"></circle>
+                  <circle cx="144" cy="116" r="4"></circle>
+                  <circle cx="199" cy="135" r="4"></circle>
+                  <circle cx="245" cy="104" r="4"></circle>
+                  <circle cx="112" cy="226" r="4"></circle>
+                  <circle cx="151" cy="194" r="4"></circle>
+                  <circle cx="211" cy="214" r="4"></circle>
+                  <circle cx="260" cy="180" r="4"></circle>
+                  <circle cx="84" cy="184" r="2.7"></circle>
+                  <circle cx="173" cy="164" r="2.8"></circle>
+                  <circle cx="276" cy="156" r="2.6"></circle>
+                  <circle cx="130" cy="254" r="2.5"></circle>
+                  <circle cx="219" cy="244" r="2.6"></circle>
+                </g>
+                <g class="orb-particles">
+                  <circle cx="88" cy="188" r="2"></circle>
+                  <circle cx="127" cy="82" r="1.8"></circle>
+                  <circle cx="228" cy="254" r="2.2"></circle>
+                  <circle cx="276" cy="144" r="1.7"></circle>
+                  <circle cx="173" cy="282" r="1.6"></circle>
+                  <circle cx="306" cy="90" r="1.4"></circle>
+                  <circle cx="64" cy="270" r="1.5"></circle>
+                </g>
+              </svg>
+              <div class="orb-center">
+                <svg class="orb-heart-icon" viewBox="0 0 52 52" aria-hidden="true">
+                  <path d="M24 12c-5.4-4-13.4-.5-13.4 6.6 0 1 .2 2 .5 2.9-3.3 1.4-5.1 4.8-4.2 8.2.8 3.3 3.7 5.5 7.1 5.5h3.1"></path>
+                  <path d="M28 12c5.4-4 13.4-.5 13.4 6.6 0 1-.2 2-.5 2.9 3.3 1.4 5.1 4.8 4.2 8.2-.8 3.3-3.7 5.5-7.1 5.5h-3.1"></path>
+                  <path d="M24 12v28"></path>
+                  <path d="M28 12v28"></path>
+                  <path d="M16 19c3.1 0 5.2 1.7 5.2 4.5"></path>
+                  <path d="M36 19c-3.1 0-5.2 1.7-5.2 4.5"></path>
+                  <path d="M15 29c2.9 0 5 1.8 5.2 4.5"></path>
+                  <path d="M37 29c-2.9 0-5 1.8-5.2 4.5"></path>
+                  <path class="heart-mark" d="M26 41s-8.2-5-8.2-10.1c0-2.8 2-4.9 4.5-4.9 1.5 0 2.8.8 3.7 2 .9-1.2 2.2-2 3.7-2 2.5 0 4.5 2.1 4.5 4.9C34.2 36 26 41 26 41z"></path>
+                </svg>
+                <div class="orb-speech" data-heart-message data-heart-tone="calm" aria-live="polite">
+                  <span data-heart-kicker></span>
+                  <p data-heart-title></p>
+                  <em data-heart-body></em>
+                </div>
+                <svg class="orb-waveform" viewBox="0 0 132 34" aria-hidden="true">
+                  <path d="M4 17 H23 L31 8 L42 26 L52 12 L63 22 L74 6 L88 28 L99 17 H128"></path>
+                </svg>
+              </div>
+              <span class="orb-particle particle-a"></span>
+              <span class="orb-particle particle-b"></span>
+              <span class="orb-particle particle-c"></span>
+            </div>
+          </div>
+        </article>
+        <article class="stats-panel" data-stats-bridge="offline">
+          <ul>
+            <li class="stat-row stat-hunger"><span class="hud-icon icon-hunger" aria-hidden="true"></span><em>Hunger</em><i><b></b></i><strong data-stat="hunger">--%</strong></li>
+            <li class="stat-row stat-thirst"><span class="hud-icon icon-thirst" aria-hidden="true"></span><em>Thirst</em><i><b></b></i><strong data-stat="thirst">--%</strong></li>
+            <li class="stat-row stat-sleep"><span class="hud-icon icon-sleep" aria-hidden="true"></span><em>Sleep</em><i><b></b></i><strong data-stat="sleep">--%</strong></li>
+            <li class="stat-row stat-energy"><span class="hud-icon icon-energy" aria-hidden="true"></span><em>Energy</em><i><b></b></i><strong data-stat="energy">--%</strong></li>
+            <li class="stat-row stat-hygiene"><span class="hud-icon icon-hygiene" aria-hidden="true"></span><em>Hygiene</em><i><b></b></i><strong data-stat="hygiene">--%</strong></li>
+            <li class="stat-row stat-fun"><span class="hud-icon icon-fun" aria-hidden="true"></span><em>Fun</em><i><b></b></i><strong data-stat="fun">--%</strong></li>
+            <li class="stat-row stat-care"><span class="hud-icon icon-care" aria-hidden="true"></span><em>Care</em><i><b></b></i><strong data-stat="care">--%</strong></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="neura-view" data-view="profile">
+      <article class="profile-shell" data-profile-shell>
+        <section class="profile-layout">
+          <section class="profile-card" data-profile-card>
+            <div class="profile-identity">
+              <div class="profile-avatar-frame" data-profile-avatar-frame>
+                <span data-profile-avatar-empty>No Image</span>
+                <img alt="" data-profile-avatar-preview hidden>
+              </div>
+              <div class="profile-copy">
+                <span class="profile-title-line"><span class="profile-status-pill is-offline" data-profile-lock>Locked</span></span>
+                <strong data-profile-display>Profile Setup Required</strong>
+                <small><span data-profile-age>Age Not Set</span> / <span data-profile-sex>Sex Not Set</span></small>
+                <small>Role: <b data-profile-role>Not Set</b></small>
+                <small>District: <b data-profile-location>Not Set</b></small>
+              </div>
+            </div>
+
+            <section class="profile-level" aria-label="Profile progression">
+              <span class="level-mark hud-icon icon-xp" aria-hidden="true"></span>
+              <div>
+                <div class="level-row"><span>Level <b data-profile-level>--</b></span><span><b data-profile-xp-current>--</b> / <b data-profile-xp-goal>--</b> XP</span></div>
+                <i><em data-profile-xp-bar></em></i>
+                <small><b data-profile-xp-needed>--</b> XP to next level <span data-profile-verified-note>Server Required</span> <span data-profile-xp-percent>--%</span></small>
+              </div>
+            </section>
+
+            <section class="profile-zodiac" aria-label="Zodiac profile">
+              <div class="zodiac-body">
+                <span class="zodiac-orbit">
+                  <img class="zodiac-mark" alt="" data-zodiac-mark hidden>
+                  <span class="zodiac-empty" data-zodiac-empty>--</span>
+                </span>
+                <div class="zodiac-copy">
+                  <strong data-zodiac-name>Not Set</strong>
+                  <span>Element: <b data-zodiac-element>--</b></span>
+                  <span>Traits: <b data-zodiac-traits>--</b></span>
+                  <small data-zodiac-line>Waiting for server profile.</small>
+                </div>
+              </div>
+            </section>
+
+            <section class="profile-stamina-panel" aria-label="Profile stamina">
+              <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
+              <div>
+                <strong>Stamina</strong>
+                <i><em data-profile-stamina-bar></em></i>
+                <small><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></small>
+              </div>
+            </section>
+
+            <section class="profile-bio-panel" aria-label="Profile bio">
+              <p data-profile-bio>No bio set.</p>
+            </section>
+          </section>
+
+          <section class="profile-editor" data-profile-editor>
+            <form data-profile-form>
+              <header>
+                <div>
+                  <span>Profile Setup</span>
+                  <strong>Server Identity</strong>
+                </div>
+                <button type="button" data-profile-refresh disabled>Refresh</button>
+              </header>
+
+              <div class="editor-grid">
+                <label>Display Name<input name="displayName" type="text" maxlength="32" placeholder="Display name" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
+                <label>Age<input name="age" type="text" maxlength="16" placeholder="Age" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
+                <label>Sex<select name="sex"><option value="">Select sex</option><option value="female">Female</option><option value="male">Male</option><option value="nonbinary">Nonbinary</option></select></label>
+                <label>Role<input name="role" type="text" maxlength="24" placeholder="Role" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
+                <label>District<select name="location"><option value="">Not Set</option><option value="Chi-Core">Chi-Core</option><option value="Eden Palms">Eden Palms</option><option value="Camden Falls">Camden Falls</option></select></label>
+                <label>Zodiac<select name="zodiac"><option value="">Not Set</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
+                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#2fc7ff"></label>
+                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#061725"></label>
+                <label class="editor-full profile-bio-field" aria-label="Profile bio"><textarea name="bio" maxlength="280" placeholder="" autocomplete="off" spellcheck="true"></textarea></label>
+                <input name="stamina" type="hidden" value="0">
+                <input name="staminaGoal" type="hidden" value="100">
+              </div>
+
+              <section class="avatar-picker" aria-label="Profile image">
+                <div class="avatar-current">
+                  <span class="avatar-current-thumb">
+                    <span data-avatar-current-empty>None</span>
+                    <img alt="" data-avatar-current-preview hidden>
+                  </span>
+                  <div>
+                    <strong>Profile Image</strong>
+                    <small data-avatar-current-label>No image selected</small>
+                  </div>
+                </div>
+                <button type="button" class="avatar-more-button" data-avatar-more>More</button>
+              </section>
+
+              <footer>
+                <span data-profile-bridge-status>Profile bridge offline</span>
+                <button type="submit" data-profile-save disabled>Save To Server</button>
+              </footer>
+            </form>
+          </section>
+        </section>
+      </article>
+    </section>
+
+    <section class="neura-view" data-view="wallet">
+      <article class="wallet-shell" data-wallet-shell>
+        <header class="wallet-header">
+          <div>
+            <h2>Wallet</h2>
+          </div>
+          <button type="button" class="wallet-refresh" data-wallet-command="refresh" aria-label="Refresh wallet">
+            <span class="hud-icon icon-sync" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <section class="wallet-main">
+          <section class="wallet-primary">
+            <section class="wallet-list" aria-label="Wallet balances">
+              <article>
+                <div>
+                  <strong>Checking</strong>
+                  <small>Spendable G-Coin</small>
+                </div>
+                <b>GC <em data-wallet-checking>--</em></b>
+              </article>
+              <article>
+                <div>
+                  <strong>Savings</strong>
+                  <small>Stored G-Coin</small>
+                </div>
+                <b>GC <em data-wallet-savings>--</em></b>
+              </article>
+            </section>
+
+            <form class="wallet-transfer-form" data-wallet-transfer-form>
+              <label>Transfer Type
+                <select data-wallet-transfer-type>
+                  <option value="checking-savings">Checking to Savings</option>
+                  <option value="savings-checking">Savings to Checking</option>
+                  <option value="checking-user">Checking to User</option>
+                </select>
+              </label>
+              <label>Amount
+                <input type="number" min="1" step="1" inputmode="numeric" data-wallet-amount placeholder="GC amount">
+              </label>
+              <label class="wallet-user-field" data-wallet-user-field>
+                Recipient
+                <button type="button" class="wallet-user-open" data-wallet-user-open>Recipient</button>
+                <strong data-wallet-selected-user>No user selected</strong>
+              </label>
+              <button type="submit" class="wallet-transfer-button" data-wallet-command="transfer">Transfer</button>
+            </form>
+          </section>
+
+          <section class="wallet-receipts">
+            <header>
+              <span class="hud-icon icon-wallet" aria-hidden="true"></span>
+              <div>
+                <h3>Receipts</h3>
+                <p>Incoming and outgoing G-Coin activity.</p>
+              </div>
+            </header>
+            <section class="wallet-receipt-list" data-wallet-receipts>
+              <article class="wallet-receipt-empty">
+                <strong>No receipts yet</strong>
+                <small>Transfers and incoming G-Coin activity will appear here.</small>
+              </article>
+            </section>
+            <footer>
+              <span>Permission</span>
+              <b data-wallet-permission>pending</b>
+              <span>Last Sync</span>
+              <b data-wallet-updated>--</b>
+            </footer>
+          </section>
+        </section>
+      </article>
+    </section>
+
+    <section class="neura-view" data-view="health">
+      <article class="health-shell" data-health-shell data-health-sex="unknown" data-health-bridge="offline">
+        <header class="health-header">
+          <div>
+            <span>Neura Health</span>
+            <h1>Health</h1>
+          </div>
+          <strong data-health-audience-label>Profile setup required</strong>
+          <button type="button" class="health-refresh" data-health-command="overview" aria-label="Refresh health">
+            <span class="hud-icon icon-sync" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <section class="health-layout">
+          <section class="health-focus">
+            <div class="health-focus-light" aria-hidden="true"></div>
+            <span class="health-kicker" data-health-kicker>Server gated</span>
+            <h2 data-health-title>Set profile sex to unlock Health.</h2>
+            <p data-health-summary>Female profiles open women-specific health tools. Male profiles open men-specific health tools.</p>
+
+            <div class="health-metrics" aria-label="Health snapshot">
+              <article>
+                <span>Care</span>
+                <b data-health-value="care">--</b>
+              </article>
+              <article>
+                <span>Hygiene</span>
+                <b data-health-value="hygiene">--</b>
+              </article>
+              <article>
+                <span>Stamina</span>
+                <b data-health-value="stamina">--</b>
+              </article>
+            </div>
+          </section>
+
+          <section class="health-workspace">
+            <nav class="health-mode-tabs" aria-label="Health sections">
+              <button type="button" class="is-active" data-health-mode="overview">Overview</button>
+              <button type="button" data-health-mode="self-care" data-health-audience="female">Self Care</button>
+              <button type="button" data-health-mode="cycle" data-health-audience="female">Cycle</button>
+              <button type="button" data-health-mode="pregnancy" data-health-audience="female">Pregnancy</button>
+              <button type="button" data-health-mode="birth-control" data-health-audience="female">Birth Control</button>
+              <button type="button" data-health-mode="plan-b" data-health-audience="female">Plan B</button>
+              <button type="button" data-health-mode="care" data-health-audience="male">Care</button>
+              <button type="button" data-health-mode="fitness" data-health-audience="male">Fitness</button>
+              <button type="button" data-health-mode="records" data-health-audience="male">Records</button>
+            </nav>
+
+            <section class="health-panels">
+              <article class="health-panel is-active" data-health-panel="overview">
+                <header>
+                  <span data-health-overview-label>Health overview</span>
+                  <h2 data-health-overview-title>Waiting for server profile.</h2>
+                </header>
+                <div class="health-overview-grid">
+                  <section>
+                    <span>Mode</span>
+                    <b data-health-value="mode">Locked</b>
+                  </section>
+                  <section>
+                    <span>Last Activity</span>
+                    <b data-health-value="lastActivity">--</b>
+                  </section>
+                  <section>
+                    <span>Bridge</span>
+                    <b data-health-value="bridge">Offline</b>
+                  </section>
+                </div>
+              </article>
+
+              <article class="health-panel" data-health-panel="self-care" data-health-audience="female">
+                <header>
+                  <span>Women's Health</span>
+                  <h2>Self Care</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="selfCareStatus">--</b></p>
+                  <p><span>Skin Care</span><b data-health-value="skinCare">--</b></p>
+                  <p><span>Product</span><b data-health-value="skinProduct">--</b></p>
+                  <p><span>Multivitamin</span><b data-health-value="multivitamin">--</b></p>
+                </div>
+                <button type="button" data-health-command="self-care">Open Self Care</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="cycle" data-health-audience="female">
+                <header>
+                  <span>Women's Health</span>
+                  <h2>Cycle</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="cycleStatus">--</b></p>
+                  <p><span>Day</span><b data-health-value="cycleDay">--</b></p>
+                  <p><span>Pain</span><b data-health-value="pain">--</b></p>
+                  <p><span>Next Check</span><b data-health-value="cycleNext">--</b></p>
+                </div>
+                <button type="button" data-health-command="cycle">Open Cycle</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="pregnancy" data-health-audience="female">
+                <header>
+                  <span>Women's Health</span>
+                  <h2>Pregnancy</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="pregnancyStatus">--</b></p>
+                  <p><span>Phase</span><b data-health-value="pregnancyPhase">--</b></p>
+                  <p><span>Day</span><b data-health-value="pregnancyDay">--</b></p>
+                  <p><span>Time Left</span><b data-health-value="pregnancyLeft">--</b></p>
+                </div>
+                <button type="button" data-health-command="pregnancy">Open Pregnancy</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="birth-control" data-health-audience="female">
+                <header>
+                  <span>Women's Health</span>
+                  <h2>Birth Control</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="birthControlStatus">--</b></p>
+                  <p><span>Protected</span><b data-health-value="birthControlProtected">--</b></p>
+                  <p><span>Last Taken</span><b data-health-value="birthControlLastTaken">--</b></p>
+                  <p><span>Time Left</span><b data-health-value="birthControlTimeLeft">--</b></p>
+                </div>
+                <button type="button" data-health-command="birth-control">Open Birth Control</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="plan-b" data-health-audience="female">
+                <header>
+                  <span>Women's Health</span>
+                  <h2>Plan B</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Times Taken</span><b data-health-value="planBTimesTaken">--</b></p>
+                  <p><span>Last Taken</span><b data-health-value="planBLastTaken">--</b></p>
+                  <p><span>Last Use Status</span><b data-health-value="planBLastUseStatus">--</b></p>
+                </div>
+                <button type="button" data-health-command="plan-b">Open Plan B</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="care" data-health-audience="male">
+                <header>
+                  <span>Men's Health</span>
+                  <h2>Care</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="maleCareStatus">--</b></p>
+                  <p><span>Daily Vitamin</span><b data-health-value="maleDailyVitamin">--</b></p>
+                  <p><span>Hair</span><b data-health-value="maleHair">--</b></p>
+                  <p><span>Next Due</span><b data-health-value="maleNextCare">--</b></p>
+                </div>
+                <button type="button" data-health-command="care">Open Care</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="fitness" data-health-audience="male">
+                <header>
+                  <span>Men's Health</span>
+                  <h2>Fitness</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Status</span><b data-health-value="fitnessStatus">--</b></p>
+                  <p><span>Last Workout</span><b data-health-value="lastWorkout">--</b></p>
+                  <p><span>Workout Type</span><b data-health-value="workoutType">--</b></p>
+                  <p><span>Fitness XP</span><b data-health-value="fitnessXp">--</b></p>
+                </div>
+                <button type="button" data-health-command="fitness">Open Fitness</button>
+              </article>
+
+              <article class="health-panel" data-health-panel="records" data-health-audience="male">
+                <header>
+                  <span>Men's Health</span>
+                  <h2>Records</h2>
+                </header>
+                <div class="health-detail-list">
+                  <p><span>Vitamin</span><b data-health-value="recordVitamin">--</b></p>
+                  <p><span>Hair</span><b data-health-value="recordHair">--</b></p>
+                  <p><span>Workout</span><b data-health-value="recordWorkout">--</b></p>
+                  <p><span>Gym Visit</span><b data-health-value="recordGymVisit">--</b></p>
+                </div>
+                <button type="button" data-health-command="records">Open Records</button>
+              </article>
+            </section>
+          </section>
+        </section>
+      </article>
+    </section>
+
+    <section class="neura-view" data-view="work">
+      <article class="work-shell" data-work-shell data-work-bridge="offline" data-work-shift="off">
+        <header class="work-header">
+          <div>
+            <span>Neura Work</span>
+            <h1>Work</h1>
+          </div>
+          <strong data-work-value="bridge">Server Pending</strong>
+          <button type="button" class="work-refresh" data-work-command="refresh" aria-label="Refresh work">
+            <span class="hud-icon icon-sync" aria-hidden="true"></span>
+          </button>
+        </header>
+
+        <section class="work-layout">
+          <section class="work-shift-card">
+            <span class="work-kicker">Current Shift</span>
+            <h2 data-work-value="job">None</h2>
+            <p data-work-value="shiftLine">No active shift.</p>
+            <div class="work-shift-ring" aria-hidden="true">
+              <span></span>
+              <b data-work-value="shift">Off</b>
+            </div>
+            <div class="work-actions">
+              <button type="button" data-work-command="work">Work</button>
+              <button type="button" data-work-command="rent">Rent</button>
+            </div>
+          </section>
+
+          <section class="work-dashboard">
+            <section class="work-stat-grid" aria-label="Work status">
+              <article>
+                <span>Today Earned</span>
+                <b data-work-value="earned">GC 0</b>
+              </article>
+              <article>
+                <span>Work XP</span>
+                <b data-work-value="xp">0</b>
+              </article>
+              <article>
+                <span>Last Shift</span>
+                <b data-work-value="lastShift">None</b>
+              </article>
+            </section>
+
+            <section class="work-panel-grid">
+              <article class="work-panel">
+                <header>
+                  <span>Workforce</span>
+                  <h2>Job Status</h2>
+                </header>
+                <div class="work-detail-list">
+                  <p><span>Job</span><b data-work-value="jobDetail">None</b></p>
+                  <p><span>Shift</span><b data-work-value="shiftDetail">Off</b></p>
+                  <p><span>Today Earned</span><b data-work-value="earnedDetail">GC 0</b></p>
+                  <p><span>Last Shift</span><b data-work-value="lastShiftDetail">None</b></p>
+                </div>
+              </article>
+
+              <article class="work-panel">
+                <header>
+                  <span>Housing</span>
+                  <h2>Rent Status</h2>
+                </header>
+                <div class="work-detail-list">
+                  <p><span>Property</span><b data-work-value="rentProperty">None</b></p>
+                  <p><span>Status</span><b data-work-value="rentStatus">None</b></p>
+                  <p><span>Due</span><b data-work-value="rentDue">GC 0</b></p>
+                  <p><span>Time Left</span><b data-work-value="rentTimeLeft">None</b></p>
+                  <p><span>Last Rent</span><b data-work-value="rentLast">None</b></p>
+                </div>
+              </article>
+            </section>
+          </section>
+        </section>
+      </article>
+    </section>
+
+    <footer class="neura-dock" aria-label="HUD actions">
+      <section class="neura-actions">
+        <button type="button" aria-label="Notifications" data-action="notify"><span class="hud-icon icon-notify" aria-hidden="true"></span><em>Notify</em><sup>0</sup></button>
+        <button type="button" aria-label="Settings" data-action="settings"><span class="hud-icon icon-settings" aria-hidden="true"></span><em>Settings</em></button>
+      </section>
+    </footer>
+
+    <section class="action-window" data-action-window hidden role="dialog" aria-modal="true" aria-labelledby="action-window-title">
+      <header class="action-window-bar">
+        <div>
+          <span data-action-window-kicker>NEURA</span>
+          <h2 id="action-window-title" data-action-window-title>Window</h2>
+        </div>
+        <button type="button" class="action-window-close" data-action-close aria-label="Close window">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+        </button>
+      </header>
+
+      <div class="action-window-body">
+        <article class="action-panel" data-action-panel="notify">
+          <h3>Notifications</h3>
+          <p>No server notifications.</p>
+        </article>
+        <article class="action-panel" data-action-panel="settings">
+          <h3>Settings</h3>
+          <p>Server settings bridge not connected.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="avatar-window" data-avatar-window hidden role="dialog" aria-modal="true" aria-labelledby="avatar-window-title">
+      <header class="avatar-window-bar">
+        <div>
+          <span>Profile Image</span>
+          <h2 id="avatar-window-title">Choose Image</h2>
+        </div>
+        <button type="button" class="avatar-window-close" data-avatar-close aria-label="Close image picker">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+        </button>
+      </header>
+      <div class="avatar-window-body">
+        <section class="avatar-window-grid" aria-label="Profile image gallery">
+          <button type="button" data-avatar-option="Images/Pro.png"><img src="Images/Pro.png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (1).png"><img src="Images/Pro (1).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (2).png"><img src="Images/Pro (2).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (3).png"><img src="Images/Pro (3).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (4).png"><img src="Images/Pro (4).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (5).png"><img src="Images/Pro (5).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (6).png"><img src="Images/Pro (6).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (7).png"><img src="Images/Pro (7).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro (8).png"><img src="Images/Pro (8).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (1).png"><img src="Images/Pro Gal (1).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (2).png"><img src="Images/Pro Gal (2).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (3).png"><img src="Images/Pro Gal (3).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (4).png"><img src="Images/Pro Gal (4).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (5).png"><img src="Images/Pro Gal (5).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (6).png"><img src="Images/Pro Gal (6).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (7).png"><img src="Images/Pro Gal (7).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal (8).png"><img src="Images/Pro Gal (8).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro Gal G.png"><img src="Images/Pro Gal G.png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (1).png"><img src="Images/Pro C (1).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (2).png"><img src="Images/Pro C (2).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (3).png"><img src="Images/Pro C (3).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (4).png"><img src="Images/Pro C (4).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (5).png"><img src="Images/Pro C (5).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (6).png"><img src="Images/Pro C (6).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (7).png"><img src="Images/Pro C (7).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro C (8).png"><img src="Images/Pro C (8).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (1).png"><img src="Images/Pro U (1).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (2).png"><img src="Images/Pro U (2).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (3).png"><img src="Images/Pro U (3).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (6).png"><img src="Images/Pro U (6).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (7).png"><img src="Images/Pro U (7).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (8).png"><img src="Images/Pro U (8).png" alt="" loading="lazy" decoding="async"></button>
+          <button type="button" data-avatar-option="Images/Pro U (9).png"><img src="Images/Pro U (9).png" alt="" loading="lazy" decoding="async"></button>
+        </section>
+      </div>
+      <footer class="avatar-window-footer">
+        <span data-avatar-selection>No image selected</span>
+        <button type="button" data-avatar-choose disabled>Choose</button>
+      </footer>
+    </section>
+
+    <section class="wallet-user-window" data-wallet-user-window hidden role="dialog" aria-modal="true" aria-labelledby="wallet-user-window-title">
+      <header class="wallet-user-window-bar">
+        <div>
+          <span>Wallet</span>
+          <h2 id="wallet-user-window-title">Recipients</h2>
+        </div>
+        <button type="button" class="wallet-user-window-close" data-wallet-user-close aria-label="Close recipient picker">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+        </button>
+      </header>
+      <section class="wallet-user-window-body" data-wallet-user-list>
+        <article class="wallet-user-empty">
+          <strong>No registered users loaded</strong>
+          <small>Neura will ask the G-Coin wallet server for registered HUD users.</small>
+        </article>
+      </section>
+      <footer class="wallet-user-window-footer">
+        <span data-wallet-user-status>No recipient selected</span>
+        <button type="button" data-wallet-user-choose disabled>Choose</button>
+      </footer>
+    </section>
+  </main>
+  <script type="module" src="neura-hud-ui.js?v=1050"></script>
+  <script type="module" src="neura-media-gateway.js?v=1001"></script>
+  <script type="module" src="neura-profile.js?v=1005"></script>
+  <script type="module" src="neura-stats.js?v=1001"></script>
+  <script type="module" src="neura-wallet.js?v=1005"></script>
+  <script type="module" src="neura-health.js?v=1001"></script>
+  <script type="module" src="neura-work.js?v=1001"></script>
+  <script type="module" src="neura-heart.js?v=1007"></script>
+</body>
+</html>

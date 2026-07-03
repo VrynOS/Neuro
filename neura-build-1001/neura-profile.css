@@ -1,0 +1,158 @@
+/* =====================================================//
+Name of script: neura-profile
+Build: 1002
+Update: Profile Stamina Polish
+Date and time: 2026-07-02 00:00:00 -04:00
+Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
+// ===================================================== */
+
+.profile-shell {
+  border-color: color-mix(in srgb, var(--profile-accent), white 12%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -18px 36px rgba(0, 0, 0, 0.16),
+    0 0 24px color-mix(in srgb, var(--profile-accent), transparent 74%);
+}
+
+.profile-card,
+.profile-editor {
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 58%);
+}
+
+.profile-level,
+.profile-zodiac,
+.profile-stamina-panel,
+.profile-bio-panel,
+.avatar-picker,
+.profile-editor input,
+.profile-editor select,
+.profile-editor textarea {
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 62%);
+}
+
+.profile-status-pill {
+  border-color: color-mix(in srgb, var(--profile-accent), white 16%);
+}
+
+.profile-avatar-frame,
+.avatar-current-thumb {
+  border-radius: 50%;
+  border-color: color-mix(in srgb, var(--profile-accent), white 18%);
+}
+
+.profile-avatar-frame img,
+.avatar-current-thumb img {
+  border-radius: inherit;
+}
+
+.avatar-more-button {
+  min-width: 66px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--button-radius);
+}
+
+.avatar-window {
+  --profile-accent: var(--accent);
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 48%);
+}
+
+.profile-zodiac,
+.profile-bio-panel {
+  padding-top: 12px;
+}
+
+.profile-stamina-panel {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 66px;
+  padding: 10px 12px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--profile-accent), transparent 88%), transparent 58%),
+    rgba(1, 10, 18, 0.25);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 62%);
+  border-radius: var(--panel-radius);
+}
+
+.stamina-mark {
+  width: 30px;
+  height: 30px;
+  justify-self: center;
+  background: var(--profile-accent);
+}
+
+.profile-stamina-panel div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.profile-stamina-panel strong {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.profile-stamina-panel i {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  background: rgba(3, 15, 24, 0.58);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 74%);
+  border-radius: 1px;
+}
+
+.profile-stamina-panel em {
+  display: block;
+  width: var(--stamina, 0%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--profile-accent), rgba(255, 255, 255, 0.74));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--profile-accent), transparent 48%);
+}
+
+.profile-stamina-panel small {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(234, 248, 255, 0.62);
+  font-size: 12px;
+}
+
+.avatar-window-grid {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.avatar-window-grid button {
+  border-radius: var(--button-radius);
+}
+
+.avatar-window-grid button.is-pending {
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), white 18%);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 14%),
+    0 0 22px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 42%),
+    0 0 10px rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.avatar-window-grid button.is-active:not(.is-pending) {
+  border-color: rgba(255, 211, 108, 0.58);
+  box-shadow: 0 0 14px rgba(255, 211, 108, 0.22);
+}
+
+.avatar-window-grid img {
+  border-radius: calc(var(--button-radius) - 2px);
+}
+
+@media (max-width: 860px) {
+  .avatar-more-button {
+    justify-self: start;
+    width: auto;
+  }
+
+  .avatar-window-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

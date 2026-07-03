@@ -1,0 +1,12 @@
+/* =====================================================//
+Name of script: neura-open-close
+Build: 1002
+Update: Open State Label
+Date and time: 2026-07-01 16:16:00 -04:00
+Team: Jynx Glitch Violet.™️ Jah-Vryn™️ Jah'Vict™️.
+// ===================================================== */
+
+:root {
+  --neura-open-close-active: #23f7ff;
+  --neura-open-close-idle: #05131b;
+}

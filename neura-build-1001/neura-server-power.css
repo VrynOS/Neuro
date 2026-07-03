@@ -1,0 +1,12 @@
+/* =====================================================//
+Name of script: neura-server-power
+Build: 1001
+Update: Power Button
+Date and time: 2026-07-01 15:39:40 -04:00
+Team: Jynx Glitch Violet.™️ Jah-Vryn™️ Jah'Vict™️.
+// ===================================================== */
+
+:root {
+  --neura-power-on: #00ff40;
+  --neura-power-off: #ff0d05;
+}
