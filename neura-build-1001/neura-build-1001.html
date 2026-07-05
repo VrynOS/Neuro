@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1075">
+<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1076">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1050">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1002">
+  <link rel="stylesheet" href="neura-profile.css?v=1003">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1008">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -150,7 +150,7 @@
     </section>
 
     <section class="neura-view" data-view="profile">
-      <article class="profile-shell" data-profile-shell>
+      <article class="profile-shell" data-profile-shell data-profile-mode="setup" data-profile-server-ready="0">
         <section class="profile-layout">
           <section class="profile-card" data-profile-card>
             <div class="profile-identity">
@@ -248,6 +248,53 @@
                 <button type="submit" data-profile-save disabled>Save To Server</button>
               </footer>
             </form>
+          </section>
+
+          <section class="profile-saved-panel" data-profile-saved-panel aria-label="Saved profile">
+            <header>
+              <div>
+                <span>Profile</span>
+                <strong>Server Synced</strong>
+              </div>
+              <button type="button" data-profile-edit>Edit Profile</button>
+            </header>
+
+            <div class="profile-saved-grid">
+              <article>
+                <span>Display Name</span>
+                <strong data-profile-view-display>Not Set</strong>
+              </article>
+              <article>
+                <span>Age / Sex</span>
+                <strong><b data-profile-view-age>Not Set</b> / <b data-profile-view-sex>Not Set</b></strong>
+              </article>
+              <article>
+                <span>Role</span>
+                <strong data-profile-view-role>Not Set</strong>
+              </article>
+              <article>
+                <span>District</span>
+                <strong data-profile-view-location>Not Set</strong>
+              </article>
+              <article>
+                <span>Zodiac</span>
+                <strong data-profile-view-zodiac>Not Set</strong>
+              </article>
+              <article>
+                <span>Stamina</span>
+                <strong data-profile-view-stamina>0 / 100</strong>
+              </article>
+            </div>
+
+            <section class="profile-saved-bio" aria-label="Saved profile bio">
+              <span>Bio</span>
+              <p data-profile-view-bio>No bio set.</p>
+            </section>
+
+            <footer>
+              <span>Last Sync</span>
+              <strong data-profile-view-updated>--</strong>
+            </footer>
           </section>
         </section>
       </article>
@@ -699,7 +746,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1050"></script>
   <script type="module" src="neura-media-gateway.js?v=1001"></script>
-  <script type="module" src="neura-profile.js?v=1005"></script>
+  <script type="module" src="neura-profile.js?v=1006"></script>
   <script type="module" src="neura-stats.js?v=1001"></script>
   <script type="module" src="neura-wallet.js?v=1005"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

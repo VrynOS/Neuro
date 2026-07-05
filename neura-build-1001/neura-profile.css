@@ -1,12 +1,13 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1002
-Update: Profile Stamina Polish
+Build: 1003
+Update: First Run Saved Profile View
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
 
 .profile-shell {
+  font-size: 14px;
   border-color: color-mix(in srgb, var(--profile-accent), white 12%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
@@ -15,7 +16,8 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 }
 
 .profile-card,
-.profile-editor {
+.profile-editor,
+.profile-saved-panel {
   border-color: color-mix(in srgb, var(--profile-accent), transparent 58%);
 }
 
@@ -32,6 +34,42 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-status-pill {
   border-color: color-mix(in srgb, var(--profile-accent), white 16%);
+}
+
+.profile-status-pill.is-synced {
+  color: #7fffe6;
+  border-color: color-mix(in srgb, var(--profile-accent), white 26%);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--profile-accent), transparent 58%);
+}
+
+.profile-copy strong {
+  font-size: 30px;
+}
+
+.profile-copy small,
+.level-row,
+.zodiac-copy span,
+.zodiac-copy small,
+.profile-bio-panel p {
+  font-size: 16px;
+}
+
+.profile-level small,
+.profile-stamina-panel small,
+.avatar-current small {
+  font-size: 13px;
+}
+
+.profile-editor header span,
+.profile-editor footer span,
+.profile-editor label {
+  font-size: 12px;
+}
+
+.profile-editor input,
+.profile-editor select,
+.profile-editor textarea {
+  font-size: 14px;
 }
 
 .profile-avatar-frame,
@@ -60,6 +98,121 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-zodiac,
 .profile-bio-panel {
   padding-top: 12px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-editor {
+  display: none;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-saved-panel {
+  display: grid;
+}
+
+.profile-saved-panel {
+  display: none;
+  grid-template-rows: auto minmax(0, auto) 1fr auto;
+  gap: 13px;
+  min-height: 0;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--profile-accent), transparent 86%), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
+    rgba(1, 10, 18, 0.36);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 58%);
+  border-radius: var(--panel-radius);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 22px rgba(0, 0, 0, 0.18);
+}
+
+.profile-saved-panel header,
+.profile-saved-panel footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.profile-saved-panel header span,
+.profile-saved-panel footer span,
+.profile-saved-grid span,
+.profile-saved-bio span {
+  color: var(--profile-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.profile-saved-panel header strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.profile-saved-panel button {
+  min-height: 38px;
+  padding: 0 16px;
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(47, 199, 255, 0.04)),
+    rgba(1, 10, 18, 0.56);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 54%);
+  border-radius: var(--button-radius);
+  cursor: pointer;
+}
+
+.profile-saved-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-saved-grid article,
+.profile-saved-bio {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-height: 82px;
+  padding: 12px;
+  background: rgba(1, 10, 18, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 66%);
+  border-radius: var(--panel-radius);
+}
+
+.profile-saved-grid strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-saved-grid b {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.profile-saved-bio {
+  min-height: 132px;
+}
+
+.profile-saved-bio p {
+  margin: 0;
+  color: rgba(234, 248, 255, 0.74);
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.profile-saved-panel footer strong {
+  color: rgba(234, 248, 255, 0.74);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .profile-stamina-panel {
@@ -154,5 +307,13 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
   .avatar-window-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-saved-grid {
+    grid-template-columns: 1fr;
   }
 }

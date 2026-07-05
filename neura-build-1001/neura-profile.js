@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1005
-// Update: HUD Save Read Bridge
+// Build: 1006
+// Update: Profile First Run Saved View
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -14,8 +14,12 @@ const profileState = {
   selectedAvatarSrc: "",
   pendingAvatarSrc: "",
   profileReady: false,
+  serverReady: false,
+  editingProfile: false,
   bridgeOnline: false,
-  lastCommand: null
+  lastCommand: null,
+  lastServerPayload: {},
+  lastIdentityPayload: {}
 };
 
 const zodiacProfiles = {
@@ -63,6 +67,47 @@ function setProfileRefreshEnabled(enabled) {
   if (refreshButton) refreshButton.disabled = !enabled;
 }
 
+function profileIsTrue(value) {
+  const text = String(value || "").trim().toLowerCase();
+  return text === "1" || text === "true" || text === "ready" || text === "yes";
+}
+
+function profileGatewayCanPost() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("bridge") === "sl" && window.parent && window.parent !== window;
+}
+
+function profileUpdatedLabel(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "--";
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return raw;
+  return date.toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function renderProfileMode() {
+  const shell = document.querySelector("[data-profile-shell]");
+  if (!shell) return;
+  const mode = profileState.serverReady && !profileState.editingProfile ? "view" : "setup";
+  shell.dataset.profileMode = mode;
+  shell.dataset.profileServerReady = profileState.serverReady ? "1" : "0";
+}
+
+function updateProfileLock() {
+  const lock = document.querySelector("[data-profile-lock]");
+  if (!lock) return;
+
+  const synced = profileState.serverReady && !profileState.editingProfile;
+  lock.textContent = synced ? "Synced" : profileState.profileReady ? "Ready" : "Locked";
+  lock.classList.toggle("is-offline", !synced && !profileState.profileReady);
+  lock.classList.toggle("is-synced", synced);
+}
+
 function syncProfileReady() {
   const form = document.querySelector("[data-profile-form]");
   if (!form) return false;
@@ -71,12 +116,9 @@ function syncProfileReady() {
   const hasRequired = required.every((name) => String(data.get(name) || "").trim());
   const hasAvatar = Boolean(profileState.selectedAvatarSrc);
   profileState.profileReady = hasRequired && hasAvatar;
-  const lock = document.querySelector("[data-profile-lock]");
-  if (lock) {
-    lock.textContent = profileState.profileReady ? "Ready" : "Locked";
-    lock.classList.toggle("is-offline", !profileState.profileReady);
-  }
+  updateProfileLock();
   setProfileSaveEnabled(profileState.profileReady);
+  renderProfileMode();
   return profileState.profileReady;
 }
 
@@ -108,6 +150,7 @@ function syncProfilePreview() {
   const bio = profileValue(data.get("bio"), "No bio set.");
   const stamina = profileValue(data.get("stamina"), "0");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
+  const updated = profileState.lastServerPayload.updated || profileState.lastIdentityPayload.updated || "";
 
   shell.style.setProperty("--profile-accent", accent);
   shell.style.setProperty("--profile-bg", background);
@@ -119,6 +162,14 @@ function syncProfilePreview() {
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
   setText("[data-profile-bio]", bio);
+  setText("[data-profile-view-display]", displayName);
+  setText("[data-profile-view-age]", age);
+  setText("[data-profile-view-sex]", sex);
+  setText("[data-profile-view-role]", role);
+  setText("[data-profile-view-location]", location);
+  setText("[data-profile-view-bio]", bio);
+  setText("[data-profile-view-stamina]", `${stamina} / ${staminaGoal}`);
+  setText("[data-profile-view-updated]", profileUpdatedLabel(updated));
 
   const zodiac = String(data.get("zodiac") || "");
   const profile = zodiacProfiles[zodiac];
@@ -133,6 +184,7 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", profile[1]);
     setText("[data-zodiac-traits]", profile[2]);
     setText("[data-zodiac-line]", profile[3]);
+    setText("[data-profile-view-zodiac]", profile[0]);
   } else {
     zodiacMark?.removeAttribute("src");
     if (zodiacMark) zodiacMark.hidden = true;
@@ -141,6 +193,7 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", "--");
     setText("[data-zodiac-traits]", "--");
     setText("[data-zodiac-line]", "Waiting for server profile.");
+    setText("[data-profile-view-zodiac]", "Not Set");
   }
 
   syncProfileReady();
@@ -230,7 +283,7 @@ function profilePayload() {
     stamina: String(data.get("stamina") || "0").trim(),
     staminaGoal: String(data.get("staminaGoal") || "100").trim(),
     avatar: profileState.selectedAvatarSrc,
-    ready: String(syncProfileReady())
+    ready: syncProfileReady() ? "1" : "0"
   };
 }
 
@@ -300,6 +353,12 @@ function sendProfileSave() {
     return;
   }
 
+  if (!profileGatewayCanPost()) {
+    setProfileBridgeStatus("Profile bridge offline");
+    window.neuraHeart?.speak?.("Profile Bridge", "Open the HUD through the media bridge before saving to the server.", "alert");
+    return;
+  }
+
   const payload = profilePayload();
   dispatchProfileCommand("save", [profileSaveMessage(payload)], payload);
   setProfileBridgeStatus("Profile save sent to HUD");
@@ -336,6 +395,10 @@ function setProfileFormValue(name, value) {
 }
 
 function applyProfileData(payload = {}) {
+  profileState.lastServerPayload = { ...payload };
+  profileState.serverReady = profileIsTrue(payload.ready);
+  if (profileState.serverReady) profileState.editingProfile = false;
+
   if (payload.age !== undefined) setProfileFormValue("age", payload.age);
   if (payload.sex !== undefined) setProfileFormValue("sex", String(payload.sex).toLowerCase());
   if (payload.role !== undefined) setProfileFormValue("role", payload.role);
@@ -349,12 +412,13 @@ function applyProfileData(payload = {}) {
   if (payload.avatar) setProfileAvatar(payload.avatar);
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
-  setProfileBridgeStatus(payload.ready === "1" || payload.ready === "true" ? "Profile synced" : "Profile data loaded");
+  setProfileBridgeStatus(profileState.serverReady ? "Profile synced" : "Profile setup required");
   syncProfilePreview();
   document.querySelector("[data-profile-form]")?.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
 function applyProfileIdentity(payload = {}) {
+  profileState.lastIdentityPayload = { ...payload };
   if (payload.displayName !== undefined) setProfileFormValue("displayName", payload.displayName);
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
@@ -383,7 +447,7 @@ function receiveProfile(message) {
 
   if (command === "NEURA_PROFILE_SAVE_OK") {
     profileState.bridgeOnline = true;
-    setProfileBridgeStatus("Profile saved");
+    setProfileBridgeStatus("Profile saved. Waiting for server profile.");
     return;
   }
 
@@ -420,6 +484,13 @@ function setupProfilePreview() {
   });
 
   document.querySelector("[data-profile-refresh]")?.addEventListener("click", sendProfileRead);
+  document.querySelector("[data-profile-edit]")?.addEventListener("click", () => {
+    profileState.editingProfile = true;
+    renderProfileMode();
+    updateProfileLock();
+    setProfileBridgeStatus("Editing saved profile");
+    window.neuraHeart?.speak?.("Profile", "Profile editor is open.", "calm");
+  });
 
   syncProfilePreview();
   syncAvatarWindow();
@@ -456,7 +527,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1005,
+  build: 1006,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
@@ -468,6 +539,8 @@ window.neuraProfile = Object.freeze({
   receive: receiveProfile,
   sync: syncProfilePreview,
   setAvatar: setProfileAvatar,
+  mode: () => (profileState.serverReady && !profileState.editingProfile ? "view" : "setup"),
+  serverReady: () => profileState.serverReady,
   lastCommand: () => profileState.lastCommand
 });
 
