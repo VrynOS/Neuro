@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-hud-ui
-// Build: 1050
-// Update: Profile Split
+// Build: 1051
+// Update: Settings Hud Resizer
 // Pattern: Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
@@ -9,7 +9,7 @@
 
 const uiLinkPattern = Object.freeze({
   pattern: "UI_LSL_TO_HTML_CSS_JS",
-  build: 1048,
+  build: 1051,
   lsl: "Hud/Neura Hud UI.lsl",
   html: "Web/neura-build-1001.html",
   css: "Web/neura-hud-ui.css",
@@ -19,11 +19,16 @@ const uiLinkPattern = Object.freeze({
 
 window.neuraHudUiPattern = uiLinkPattern;
 
+const HUD_SCALE_MIN = 85;
+const HUD_SCALE_MAX = 130;
+const HUD_SCALE_STEP = 5;
+
 const state = {
   activeTab: "home",
   activeAction: "",
   profileReady: false,
-  serverOnline: false
+  serverOnline: false,
+  hudScale: 100
 };
 
 const actionTitles = {
@@ -100,9 +105,54 @@ function tickClock() {
   node.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit", hour12: true });
 }
 
+function clampHudScale(value) {
+  const numeric = Number.parseInt(value, 10);
+  if (!Number.isFinite(numeric)) return 100;
+  const rounded = Math.round(numeric / HUD_SCALE_STEP) * HUD_SCALE_STEP;
+  return Math.max(HUD_SCALE_MIN, Math.min(HUD_SCALE_MAX, rounded));
+}
+
+function hudScaleCommand(value) {
+  const scale = (clampHudScale(value) / 100).toFixed(2);
+  return `NEURA_HUD_SCALE|feature=NEURA_UI|schema=1|scale=${scale}`;
+}
+
+function renderHudScale(sendCommand = false) {
+  const value = clampHudScale(state.hudScale);
+  state.hudScale = value;
+
+  const output = document.querySelector("[data-hud-scale-output]");
+  if (output) output.textContent = `${value}%`;
+
+  const control = document.querySelector("[data-hud-scale-control]");
+  if (control) control.value = String(value);
+
+  document.querySelectorAll("[data-hud-scale-preset]").forEach((button) => {
+    const preset = Number.parseInt(button.dataset.hudScalePreset || "", 10);
+    button.classList.toggle("is-active", preset === value);
+  });
+
+  if (!sendCommand) return;
+
+  document.dispatchEvent(new CustomEvent("neura:ui-command", {
+    detail: {
+      feature: "NEURA_UI",
+      action: "hud-scale",
+      scale: (value / 100).toFixed(2),
+      command: hudScaleCommand(value)
+    }
+  }));
+}
+
 document.addEventListener("click", (event) => {
   if (event.target.closest("[data-sync-hud]")) {
     window.location.reload();
+    return;
+  }
+  const scalePreset = event.target.closest("[data-hud-scale-preset]");
+  if (scalePreset) {
+    state.hudScale = clampHudScale(scalePreset.dataset.hudScalePreset);
+    renderHudScale(true);
     return;
   }
   const actionButton = event.target.closest("[data-action]");
@@ -119,6 +169,20 @@ document.addEventListener("click", (event) => {
   setActiveTab(tabButton.dataset.tab || "home");
 });
 
+document.addEventListener("input", (event) => {
+  const scaleControl = event.target.closest("[data-hud-scale-control]");
+  if (!scaleControl) return;
+  state.hudScale = clampHudScale(scaleControl.value);
+  renderHudScale(false);
+});
+
+document.addEventListener("change", (event) => {
+  const scaleControl = event.target.closest("[data-hud-scale-control]");
+  if (!scaleControl) return;
+  state.hudScale = clampHudScale(scaleControl.value);
+  renderHudScale(true);
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   if (state.activeAction) {
@@ -127,5 +191,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 renderGate();
+renderHudScale(false);
 tickClock();
 window.setInterval(tickClock, 30000);
