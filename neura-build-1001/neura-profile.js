@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1012
-// Update: Avatar Path Encode
+// Build: 1013
+// Update: Profile Save First
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -399,9 +399,6 @@ function profileSaveMessage(payload = profilePayload()) {
     district: payload.district,
     zodiac: payload.zodiac,
     bio: payload.bio,
-    avatar: payload.avatar,
-    avatarPath: payload.avatar,
-    image: payload.avatar,
     accent: payload.accent,
     background: payload.background,
     stamina: payload.stamina,
@@ -638,7 +635,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1012,
+  build: 1013,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
