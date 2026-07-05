@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1009
-// Update: Avatar Save Sync
+// Build: 1010
+// Update: Avatar Save Lock
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -18,6 +18,7 @@ const profileState = {
   identityReady: false,
   editingProfile: false,
   bridgeOnline: false,
+  pendingSaveAvatarSrc: "",
   lastCommand: null,
   lastServerPayload: {},
   lastIdentityPayload: {}
@@ -377,6 +378,8 @@ function profileSaveMessage(payload = profilePayload()) {
     zodiac: payload.zodiac,
     bio: payload.bio,
     avatar: payload.avatar,
+    avatarPath: payload.avatar,
+    image: payload.avatar,
     accent: payload.accent,
     background: payload.background,
     stamina: payload.stamina,
@@ -426,6 +429,7 @@ function sendProfileSave() {
   }
 
   const payload = profilePayload();
+  profileState.pendingSaveAvatarSrc = payload.avatar;
   dispatchProfileCommand("save", [profileSaveMessage(payload)], payload);
   setProfileBridgeStatus("Profile save sent to HUD");
   window.neuraHeart?.speak?.("Profile Save", "Profile data was sent to the Profile HUD bridge.", "good");
@@ -475,7 +479,12 @@ function applyProfileData(payload = {}) {
   if (payload.bio !== undefined) setProfileFormValue("bio", payload.bio);
   if (payload.stamina !== undefined) setProfileFormValue("stamina", payload.stamina);
   if (payload.staminaGoal !== undefined) setProfileFormValue("staminaGoal", payload.staminaGoal);
-  if (payload.avatar !== undefined) setProfileAvatar(payload.avatar);
+  if (payload.avatar) {
+    setProfileAvatar(payload.avatar);
+    profileState.pendingSaveAvatarSrc = "";
+  } else if (profileState.pendingSaveAvatarSrc) {
+    setProfileAvatar(profileState.pendingSaveAvatarSrc);
+  }
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
   setProfileBridgeStatus(profileState.serverReady ? "Profile synced" : "Profile setup required");
@@ -514,6 +523,10 @@ function receiveProfile(message) {
 
   if (command === "NEURA_PROFILE_SAVE_OK") {
     profileState.bridgeOnline = true;
+    if (payload.avatar) {
+      setProfileAvatar(payload.avatar);
+      profileState.pendingSaveAvatarSrc = "";
+    }
     setProfileBridgeStatus("Profile saved. Waiting for server profile.");
     return;
   }
@@ -595,7 +608,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1009,
+  build: 1010,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
