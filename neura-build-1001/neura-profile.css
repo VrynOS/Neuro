@@ -1,7 +1,7 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1004
-Update: Saved Profile System Panel
+Build: 1005
+Update: Avatar Save And Bio Fit
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
@@ -110,10 +110,11 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-saved-panel {
   display: none;
-  grid-template-rows: auto minmax(0, auto) 1fr auto;
-  gap: 13px;
+  grid-template-rows: auto auto minmax(70px, 1fr) auto;
+  gap: 8px;
   min-height: 0;
-  padding: 16px;
+  overflow: hidden;
+  padding: 12px;
   background:
     radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--profile-accent), transparent 86%), transparent 38%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
@@ -148,13 +149,13 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: block;
   margin-top: 4px;
   color: var(--text);
-  font-size: 28px;
+  font-size: 23px;
   font-weight: 400;
 }
 
 .profile-saved-panel button {
-  min-height: 38px;
-  padding: 0 16px;
+  min-height: 34px;
+  padding: 0 14px;
   color: var(--text);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(47, 199, 255, 0.04)),
@@ -167,16 +168,17 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-saved-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
+  min-height: 0;
 }
 
 .profile-saved-grid article,
 .profile-saved-bio {
   display: grid;
   align-content: start;
-  gap: 7px;
-  min-height: 82px;
-  padding: 12px;
+  gap: 5px;
+  min-height: 58px;
+  padding: 9px 10px;
   background: rgba(1, 10, 18, 0.3);
   border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 66%);
   border-radius: var(--panel-radius);
@@ -186,7 +188,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   min-width: 0;
   overflow: hidden;
   color: var(--text);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -215,14 +217,18 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 }
 
 .profile-saved-bio {
-  min-height: 132px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .profile-saved-bio p {
   margin: 0;
+  min-height: 0;
+  overflow: auto;
   color: rgba(234, 248, 255, 0.74);
-  font-size: 16px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.32;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 
@@ -244,6 +250,16 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
     rgba(1, 10, 18, 0.25);
   border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 62%);
   border-radius: var(--panel-radius);
+}
+
+.profile-bio-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.profile-bio-panel p {
+  overflow: auto;
+  overflow-wrap: anywhere;
 }
 
 .stamina-mark {
