@@ -155,8 +155,7 @@
           <section class="profile-card" data-profile-card>
             <div class="profile-identity">
               <div class="profile-avatar-frame" data-profile-avatar-frame>
-                <span data-profile-avatar-empty>No Image</span>
-                <img alt="" data-profile-avatar-preview hidden>
+                <span class="profile-sigil-mark" data-profile-sigil-preview>CORE</span>
               </div>
               <div class="profile-copy">
                 <span class="profile-title-line"><span class="profile-status-pill is-offline" data-profile-lock>Locked</span></span>
@@ -227,18 +226,17 @@
                 <label class="editor-full profile-bio-field" aria-label="Profile bio"><textarea name="bio" maxlength="280" placeholder="" autocomplete="off" spellcheck="true"></textarea></label>
                 <input name="stamina" type="hidden" value="0">
                 <input name="staminaGoal" type="hidden" value="100">
-                <input name="avatar" type="hidden" value="" data-profile-avatar-value>
+                <input name="sigil" type="hidden" value="core" data-profile-sigil-value>
               </div>
 
-              <section class="avatar-picker" aria-label="Profile image">
+              <section class="avatar-picker" aria-label="Profile sigil">
                 <div class="avatar-current">
                   <span class="avatar-current-thumb">
-                    <span data-avatar-current-empty>None</span>
-                    <img alt="" data-avatar-current-preview hidden>
+                    <span class="profile-sigil-mark is-small" data-sigil-current-preview>CORE</span>
                   </span>
                   <div>
-                    <strong>Profile Image</strong>
-                    <small data-avatar-current-label>No image selected</small>
+                    <strong>Profile Sigil</strong>
+                    <small data-avatar-current-label>Core selected</small>
                   </div>
                 </div>
                 <button type="button" class="avatar-more-button" data-avatar-more>More</button>
@@ -278,8 +276,8 @@
                 <strong class="profile-swatch-line"><i data-profile-view-bg-swatch></i><b data-profile-view-background>#061725</b></strong>
               </article>
               <article>
-                <span>Avatar</span>
-                <strong data-profile-view-avatar>Not Set</strong>
+                <span>Sigil</span>
+                <strong data-profile-view-sigil>Core</strong>
               </article>
               <article>
                 <span>Last Sync</span>
@@ -687,52 +685,31 @@
     <section class="avatar-window" data-avatar-window hidden role="dialog" aria-modal="true" aria-labelledby="avatar-window-title">
       <header class="avatar-window-bar">
         <div>
-          <span>Profile Image</span>
-          <h2 id="avatar-window-title">Choose Image</h2>
+          <span>Profile Sigil</span>
+          <h2 id="avatar-window-title">Choose Sigil</h2>
         </div>
         <button type="button" class="avatar-window-close" data-avatar-close aria-label="Close image picker">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
         </button>
       </header>
       <div class="avatar-window-body">
-        <section class="avatar-window-grid" aria-label="Profile image gallery">
-          <button type="button" data-avatar-option="Images/Pro.png"><img src="Images/Pro.png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (1).png"><img src="Images/Pro (1).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (2).png"><img src="Images/Pro (2).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (3).png"><img src="Images/Pro (3).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (4).png"><img src="Images/Pro (4).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (5).png"><img src="Images/Pro (5).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (6).png"><img src="Images/Pro (6).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (7).png"><img src="Images/Pro (7).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro (8).png"><img src="Images/Pro (8).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (1).png"><img src="Images/Pro Gal (1).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (2).png"><img src="Images/Pro Gal (2).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (3).png"><img src="Images/Pro Gal (3).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (4).png"><img src="Images/Pro Gal (4).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (5).png"><img src="Images/Pro Gal (5).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (6).png"><img src="Images/Pro Gal (6).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (7).png"><img src="Images/Pro Gal (7).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal (8).png"><img src="Images/Pro Gal (8).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro Gal G.png"><img src="Images/Pro Gal G.png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (1).png"><img src="Images/Pro C (1).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (2).png"><img src="Images/Pro C (2).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (3).png"><img src="Images/Pro C (3).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (4).png"><img src="Images/Pro C (4).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (5).png"><img src="Images/Pro C (5).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (6).png"><img src="Images/Pro C (6).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (7).png"><img src="Images/Pro C (7).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro C (8).png"><img src="Images/Pro C (8).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (1).png"><img src="Images/Pro U (1).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (2).png"><img src="Images/Pro U (2).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (3).png"><img src="Images/Pro U (3).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (6).png"><img src="Images/Pro U (6).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (7).png"><img src="Images/Pro U (7).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (8).png"><img src="Images/Pro U (8).png" alt="" loading="lazy" decoding="async"></button>
-          <button type="button" data-avatar-option="Images/Pro U (9).png"><img src="Images/Pro U (9).png" alt="" loading="lazy" decoding="async"></button>
+        <section class="avatar-window-grid sigil-window-grid" aria-label="Profile sigil gallery">
+          <button type="button" data-avatar-option="core"><span class="profile-sigil-mark">CORE</span><small>Core</small></button>
+          <button type="button" data-avatar-option="spark"><span class="profile-sigil-mark">SPRK</span><small>Spark</small></button>
+          <button type="button" data-avatar-option="fire"><span class="profile-sigil-mark">FIRE</span><small>Fire</small></button>
+          <button type="button" data-avatar-option="wave"><span class="profile-sigil-mark">WAVE</span><small>Wave</small></button>
+          <button type="button" data-avatar-option="star"><span class="profile-sigil-mark">STAR</span><small>Star</small></button>
+          <button type="button" data-avatar-option="moon"><span class="profile-sigil-mark">MOON</span><small>Moon</small></button>
+          <button type="button" data-avatar-option="sun"><span class="profile-sigil-mark">SUN</span><small>Sun</small></button>
+          <button type="button" data-avatar-option="leaf"><span class="profile-sigil-mark">LEAF</span><small>Leaf</small></button>
+          <button type="button" data-avatar-option="bolt"><span class="profile-sigil-mark">BOLT</span><small>Bolt</small></button>
+          <button type="button" data-avatar-option="gem"><span class="profile-sigil-mark">GEM</span><small>Gem</small></button>
+          <button type="button" data-avatar-option="crown"><span class="profile-sigil-mark">CRWN</span><small>Crown</small></button>
+          <button type="button" data-avatar-option="shield"><span class="profile-sigil-mark">SHLD</span><small>Shield</small></button>
         </section>
       </div>
       <footer class="avatar-window-footer">
-        <span data-avatar-selection>No image selected</span>
+        <span data-avatar-selection>No sigil selected</span>
         <button type="button" data-avatar-choose disabled>Choose</button>
       </footer>
     </section>
@@ -761,7 +738,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1003"></script>
-  <script type="module" src="neura-profile.js?v=1016"></script>
+  <script type="module" src="neura-profile.js?v=1017"></script>
   <script type="module" src="neura-stats.js?v=1001"></script>
   <script type="module" src="neura-wallet.js?v=1005"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

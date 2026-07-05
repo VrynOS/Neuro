@@ -1,7 +1,7 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1005
-Update: Avatar Save And Bio Fit
+Build: 1006
+Update: Profile Sigil Save
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
@@ -76,11 +76,6 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .avatar-current-thumb {
   border-radius: 50%;
   border-color: color-mix(in srgb, var(--profile-accent), white 18%);
-}
-
-.profile-avatar-frame img,
-.avatar-current-thumb img {
-  border-radius: inherit;
 }
 
 .avatar-more-button {
@@ -311,6 +306,11 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 }
 
 .avatar-window-grid button {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 86px;
+  padding: 8px 6px;
   border-radius: var(--button-radius);
 }
 
@@ -328,8 +328,38 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   box-shadow: 0 0 14px rgba(255, 211, 108, 0.22);
 }
 
-.avatar-window-grid img {
-  border-radius: calc(var(--button-radius) - 2px);
+.sigil-window-grid small {
+  color: rgba(234, 248, 255, 0.74);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-sigil-mark {
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  color: var(--profile-accent);
+  background:
+    radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--profile-accent), transparent 74%), transparent 58%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(1, 10, 18, 0.42)),
+    rgba(1, 10, 18, 0.64);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), white 12%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 20px color-mix(in srgb, var(--profile-accent), transparent 54%);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.profile-sigil-mark.is-small {
+  width: 42px;
+  height: 42px;
+  font-size: 9px;
 }
 
 @media (max-width: 860px) {
