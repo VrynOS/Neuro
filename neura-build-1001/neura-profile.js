@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1014
-// Update: Avatar Key Save
+// Build: 1015
+// Update: Avatar Key Status
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -456,9 +456,10 @@ function sendProfileSave() {
   }
 
   const payload = profilePayload();
+  const avatarKey = profileAvatarKey(payload.avatar);
   profileState.pendingSaveAvatarSrc = payload.avatar;
   dispatchProfileCommand("save", [profileSaveMessage(payload)], payload);
-  setProfileBridgeStatus("Profile save sent to HUD");
+  setProfileBridgeStatus(avatarKey ? `Profile save sent. Image key ${avatarKey}` : "Profile save sent to HUD");
   window.neuraHeart?.speak?.("Profile Save", "Profile data was sent to the Profile HUD bridge.", "good");
 }
 
@@ -643,7 +644,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1014,
+  build: 1015,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
