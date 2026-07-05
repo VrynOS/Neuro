@@ -1,6 +1,6 @@
 // =====================================================//
 // Name of script: neura-stats
-// Build: 1002
+// Build: 1003
 // Update: Stats Read Command
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
@@ -112,7 +112,7 @@ if (statsGatewayCanPost()) {
 }
 
 window.neuraStats = Object.freeze({
-  build: 1002,
+  build: 1003,
   feature: "NEURA_STATS",
   receive: receiveStats,
   render: renderStats,

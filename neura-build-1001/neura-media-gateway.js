@@ -1,6 +1,6 @@
 // =====================================================//
 // Name of script: neura-media-gateway
-// Build: 1004
+// Build: 1005
 // Update: Stats Command Bridge
 // Date and time: 2026-07-03 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
@@ -10,7 +10,7 @@ const NEURA_GATEWAY_PREFIX = "NEURA_GATEWAY|";
 const NEURA_GATEWAY_ACK_PREFIX = "NEURA_GATEWAY_ACK|";
 
 const gatewayState = {
-  build: 1004,
+  build: 1005,
   pending: new Map(),
   online: false,
   lastStatus: "",
