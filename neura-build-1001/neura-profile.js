@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1006
-// Update: Profile First Run Saved View
+// Build: 1007
+// Update: Core Identity Required Fields
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -15,6 +15,7 @@ const profileState = {
   pendingAvatarSrc: "",
   profileReady: false,
   serverReady: false,
+  identityReady: false,
   editingProfile: false,
   bridgeOnline: false,
   lastCommand: null,
@@ -93,16 +94,17 @@ function profileUpdatedLabel(value) {
 function renderProfileMode() {
   const shell = document.querySelector("[data-profile-shell]");
   if (!shell) return;
-  const mode = profileState.serverReady && !profileState.editingProfile ? "view" : "setup";
+  const savedProfileReady = profileState.serverReady && profileState.identityReady;
+  const mode = savedProfileReady && !profileState.editingProfile ? "view" : "setup";
   shell.dataset.profileMode = mode;
-  shell.dataset.profileServerReady = profileState.serverReady ? "1" : "0";
+  shell.dataset.profileServerReady = savedProfileReady ? "1" : "0";
 }
 
 function updateProfileLock() {
   const lock = document.querySelector("[data-profile-lock]");
   if (!lock) return;
 
-  const synced = profileState.serverReady && !profileState.editingProfile;
+  const synced = profileState.serverReady && profileState.identityReady && !profileState.editingProfile;
   lock.textContent = synced ? "Synced" : profileState.profileReady ? "Ready" : "Locked";
   lock.classList.toggle("is-offline", !synced && !profileState.profileReady);
   lock.classList.toggle("is-synced", synced);
@@ -112,10 +114,9 @@ function syncProfileReady() {
   const form = document.querySelector("[data-profile-form]");
   if (!form) return false;
   const data = new FormData(form);
-  const required = ["displayName", "age", "sex", "role", "location", "zodiac"];
+  const required = ["displayName", "age", "sex", "location"];
   const hasRequired = required.every((name) => String(data.get(name) || "").trim());
-  const hasAvatar = Boolean(profileState.selectedAvatarSrc);
-  profileState.profileReady = hasRequired && hasAvatar;
+  profileState.profileReady = hasRequired;
   updateProfileLock();
   setProfileSaveEnabled(profileState.profileReady);
   renderProfileMode();
@@ -348,8 +349,8 @@ function dispatchProfileCommand(action, messages, payload = profilePayload()) {
 function sendProfileSave() {
   syncProfilePreview();
   if (!profileState.profileReady) {
-    setProfileBridgeStatus("Complete profile fields and image first");
-    window.neuraHeart?.speak?.("Profile", "Profile setup still needs required fields and an image.", "alert");
+    setProfileBridgeStatus("Name, age, sex, and district required");
+    window.neuraHeart?.speak?.("Profile", "Profile setup needs name, age, sex, and district.", "alert");
     return;
   }
 
@@ -420,6 +421,7 @@ function applyProfileData(payload = {}) {
 function applyProfileIdentity(payload = {}) {
   profileState.lastIdentityPayload = { ...payload };
   if (payload.displayName !== undefined) setProfileFormValue("displayName", payload.displayName);
+  profileState.identityReady = Boolean(String(payload.displayName || "").trim());
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
   if (payload.displayName) setProfileBridgeStatus("Identity synced");
@@ -527,7 +529,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1006,
+  build: 1007,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
@@ -539,7 +541,7 @@ window.neuraProfile = Object.freeze({
   receive: receiveProfile,
   sync: syncProfilePreview,
   setAvatar: setProfileAvatar,
-  mode: () => (profileState.serverReady && !profileState.editingProfile ? "view" : "setup"),
+  mode: () => (profileState.serverReady && profileState.identityReady && !profileState.editingProfile ? "view" : "setup"),
   serverReady: () => profileState.serverReady,
   lastCommand: () => profileState.lastCommand
 });
