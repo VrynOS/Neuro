@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-stats
-// Build: 1001
-// Update: Initial Stats Display Layer
+// Build: 1002
+// Update: Stats Read Command
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -10,6 +10,7 @@ const STAT_KEYS = Object.freeze(["hunger", "thirst", "sleep", "energy", "hygiene
 
 const statsState = {
   bridgeOnline: false,
+  lastCommand: null,
   values: new Map()
 };
 
@@ -66,6 +67,38 @@ function receiveStats(message) {
   renderStats(payload);
 }
 
+function statsGatewayCanPost() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("bridge") === "sl" && window.parent && window.parent !== window;
+}
+
+function statsReadMessage() {
+  return "NEURA_STATS_READ|feature=NEURA_STATS|schema=1";
+}
+
+function statsHandshakeMessage() {
+  return "NEURA_STATS_HANDSHAKE|feature=NEURA_STATS|schema=1";
+}
+
+function dispatchStatsCommand(action, messages) {
+  const commandList = Array.isArray(messages) ? messages : [messages].filter(Boolean);
+  const detail = {
+    feature: "NEURA_STATS",
+    action,
+    message: commandList[0] || "",
+    messages: commandList,
+    updated: new Date().toISOString()
+  };
+  statsState.lastCommand = detail;
+  document.dispatchEvent(new CustomEvent("neura:stats-command", { detail }));
+  return detail;
+}
+
+function readStats() {
+  if (!statsGatewayCanPost()) return null;
+  return dispatchStatsCommand("read", [statsHandshakeMessage(), statsReadMessage()]);
+}
+
 function markStatsOffline() {
   statsState.bridgeOnline = false;
   document.querySelector(".stats-panel")?.setAttribute("data-stats-bridge", "offline");
@@ -74,10 +107,20 @@ function markStatsOffline() {
 markStatsOffline();
 renderStats();
 
+if (statsGatewayCanPost()) {
+  window.setTimeout(readStats, 900);
+}
+
 window.neuraStats = Object.freeze({
-  build: 1001,
+  build: 1002,
   feature: "NEURA_STATS",
   receive: receiveStats,
   render: renderStats,
+  read: readStats,
+  messages: () => ({
+    handshake: statsHandshakeMessage(),
+    read: statsReadMessage()
+  }),
+  lastCommand: () => statsState.lastCommand,
   values: () => Object.fromEntries(statsState.values)
 });

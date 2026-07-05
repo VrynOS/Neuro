@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-media-gateway
-// Build: 1003
-// Update: UI Command Bridge
+// Build: 1004
+// Update: Stats Command Bridge
 // Date and time: 2026-07-03 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -10,7 +10,7 @@ const NEURA_GATEWAY_PREFIX = "NEURA_GATEWAY|";
 const NEURA_GATEWAY_ACK_PREFIX = "NEURA_GATEWAY_ACK|";
 
 const gatewayState = {
-  build: 1003,
+  build: 1004,
   pending: new Map(),
   online: false,
   lastStatus: "",
@@ -135,6 +135,16 @@ function gatewaySendProfile(detail = {}) {
   window.setTimeout(gatewayPoll, 1200);
 }
 
+function gatewaySendStats(detail = {}) {
+  const messages = Array.isArray(detail.messages)
+    ? detail.messages
+    : [detail.message].filter(Boolean);
+
+  messages.forEach((message) => gatewayMessage(message));
+  window.setTimeout(gatewayPoll, 450);
+  window.setTimeout(gatewayPoll, 1200);
+}
+
 function gatewaySendHealth(detail = {}) {
   const section = String(detail.section || "overview").trim() || "overview";
   gatewayMessage(`NEURA_HEALTH_COMMAND|feature=NEURA_HEALTH|schema=1|section=${section}`);
@@ -182,6 +192,7 @@ window.addEventListener("message", (event) => {
 });
 
 document.addEventListener("neura:profile-command", (event) => gatewaySendProfile(event.detail));
+document.addEventListener("neura:stats-command", (event) => gatewaySendStats(event.detail));
 document.addEventListener("neura:health-command", (event) => gatewaySendHealth(event.detail));
 document.addEventListener("neura:work-command", (event) => gatewaySendWork(event.detail));
 document.addEventListener("neura:wallet-command", (event) => gatewaySendWallet(event.detail));
