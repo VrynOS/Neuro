@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1010
-// Update: Avatar Save Lock
+// Build: 1012
+// Update: Avatar Path Encode
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -107,14 +107,21 @@ function normalizeProfileAvatarSrc(src) {
     value = value.replace(/%20/g, " ");
   }
 
+  value = value.replace(/\\/g, "/").trim();
+
   const marker = "Images/";
   const markerAt = value.toLowerCase().indexOf(marker.toLowerCase());
   if (markerAt !== -1) value = `${marker}${value.slice(markerAt + marker.length)}`;
+  else if (value.toLowerCase().slice(0, marker.length) !== marker.toLowerCase()) return "";
 
   const pngAt = value.toLowerCase().indexOf(".png");
   if (pngAt !== -1) value = value.slice(0, pngAt + 4);
+  else return "";
 
-  return value.replace(/\\/g, "/").trim();
+  if (value.includes("..")) return "";
+  if (/[|=\r\n]/.test(value)) return "";
+
+  return value.trim();
 }
 
 function syncProfileAvatarValue(src = profileState.selectedAvatarSrc) {
@@ -130,6 +137,14 @@ function profilePreviewAvatarSrc() {
       || preview?.getAttribute("src")
       || current?.getAttribute("src")
       || ""
+  );
+}
+
+function currentProfileAvatarSrc(data) {
+  return normalizeProfileAvatarSrc(
+    data?.get("avatar")
+      || profilePreviewAvatarSrc()
+      || profileState.pendingAvatarSrc
   );
 }
 
@@ -193,7 +208,7 @@ function syncProfilePreview() {
   const bio = profileValue(data.get("bio"), "No bio set.");
   const stamina = profileValue(data.get("stamina"), "0");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
-  const avatar = normalizeProfileAvatarSrc(data.get("avatar") || profilePreviewAvatarSrc());
+  const avatar = currentProfileAvatarSrc(data);
   const updated = profileState.lastServerPayload.updated || profileState.lastIdentityPayload.updated || "";
 
   shell.style.setProperty("--profile-accent", accent);
@@ -280,7 +295,7 @@ function setPendingAvatar(src) {
   const cleanSrc = normalizeProfileAvatarSrc(src);
   if (!cleanSrc) return;
   profileState.pendingAvatarSrc = cleanSrc;
-  syncAvatarWindow();
+  setProfileAvatar(cleanSrc);
 }
 
 function setProfileAvatar(src) {
@@ -291,6 +306,7 @@ function setProfileAvatar(src) {
 
   if (!cleanSrc) {
     profileState.selectedAvatarSrc = "";
+    profileState.pendingAvatarSrc = "";
     preview.removeAttribute("src");
     preview.hidden = true;
     if (empty) empty.hidden = false;
@@ -306,6 +322,7 @@ function setProfileAvatar(src) {
     syncProfileAvatarValue("");
     syncAvatarWindow();
     syncProfileReady();
+    syncProfilePreview();
     return;
   }
 
@@ -325,6 +342,7 @@ function setProfileAvatar(src) {
   setText("[data-avatar-current-label]", "Image selected");
   syncAvatarWindow();
   syncProfileReady();
+  syncProfilePreview();
 }
 
 function choosePendingAvatar() {
@@ -349,19 +367,23 @@ function profilePayload() {
     bio: String(data.get("bio") || "").trim(),
     stamina: String(data.get("stamina") || "0").trim(),
     staminaGoal: String(data.get("staminaGoal") || "100").trim(),
-    avatar: normalizeProfileAvatarSrc(data.get("avatar") || profilePreviewAvatarSrc()),
+    avatar: currentProfileAvatarSrc(data),
     ready: syncProfileReady() ? "1" : "0"
   };
 }
 
-function profileCommandValue(value) {
+function profileCommandValue(key, value) {
+  if (key === "avatar" || key === "avatarPath" || key === "image") {
+    return encodeURIComponent(normalizeProfileAvatarSrc(value));
+  }
+
   return String(value ?? "").replace(/[|=\r\n]/g, " ").trim();
 }
 
 function profileMessage(command, fields) {
   const parts = [command];
   Object.entries(fields).forEach(([key, value]) => {
-    parts.push(`${key}=${profileCommandValue(value)}`);
+    parts.push(`${key}=${profileCommandValue(key, value)}`);
   });
   return parts.join("|");
 }
@@ -479,15 +501,20 @@ function applyProfileData(payload = {}) {
   if (payload.bio !== undefined) setProfileFormValue("bio", payload.bio);
   if (payload.stamina !== undefined) setProfileFormValue("stamina", payload.stamina);
   if (payload.staminaGoal !== undefined) setProfileFormValue("staminaGoal", payload.staminaGoal);
-  if (payload.avatar) {
-    setProfileAvatar(payload.avatar);
-    profileState.pendingSaveAvatarSrc = "";
-  } else if (profileState.pendingSaveAvatarSrc) {
-    setProfileAvatar(profileState.pendingSaveAvatarSrc);
+  if (payload.avatar !== undefined) {
+    const serverAvatar = normalizeProfileAvatarSrc(payload.avatar);
+    setProfileAvatar(serverAvatar);
+    if (serverAvatar && serverAvatar === normalizeProfileAvatarSrc(profileState.pendingSaveAvatarSrc)) {
+      profileState.pendingSaveAvatarSrc = "";
+    }
   }
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
-  setProfileBridgeStatus(profileState.serverReady ? "Profile synced" : "Profile setup required");
+  setProfileBridgeStatus(
+    profileState.pendingSaveAvatarSrc
+      ? "Profile synced. Image not confirmed."
+      : profileState.serverReady ? "Profile synced" : "Profile setup required"
+  );
   syncProfilePreview();
   document.querySelector("[data-profile-form]")?.dispatchEvent(new Event("change", { bubbles: true }));
 }
@@ -526,6 +553,9 @@ function receiveProfile(message) {
     if (payload.avatar) {
       setProfileAvatar(payload.avatar);
       profileState.pendingSaveAvatarSrc = "";
+    } else if (profileState.pendingSaveAvatarSrc) {
+      setProfileBridgeStatus("Profile saved. Image not confirmed.");
+      return;
     }
     setProfileBridgeStatus("Profile saved. Waiting for server profile.");
     return;
@@ -608,7 +638,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1010,
+  build: 1012,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
