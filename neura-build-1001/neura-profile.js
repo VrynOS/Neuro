@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1007
-// Update: Core Identity Required Fields
+// Build: 1008
+// Update: Saved View And Avatar Normalize
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -54,6 +54,11 @@ function setText(selector, value) {
   if (node) node.textContent = value;
 }
 
+function setSwatch(selector, value) {
+  const node = document.querySelector(selector);
+  if (node) node.style.background = value;
+}
+
 function setProfileBridgeStatus(message) {
   setText("[data-profile-bridge-status]", message);
 }
@@ -89,6 +94,26 @@ function profileUpdatedLabel(value) {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+function normalizeProfileAvatarSrc(src) {
+  let value = String(src || "").trim();
+  if (!value) return "";
+
+  try {
+    value = decodeURIComponent(value);
+  } catch {
+    value = value.replace(/%20/g, " ");
+  }
+
+  const marker = "Images/";
+  const markerAt = value.indexOf(marker);
+  if (markerAt !== -1) value = value.slice(markerAt);
+
+  const pngAt = value.toLowerCase().indexOf(".png");
+  if (pngAt !== -1) value = value.slice(0, pngAt + 4);
+
+  return value.replace(/\\/g, "/").trim();
 }
 
 function renderProfileMode() {
@@ -163,14 +188,16 @@ function syncProfilePreview() {
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
   setText("[data-profile-bio]", bio);
-  setText("[data-profile-view-display]", displayName);
-  setText("[data-profile-view-age]", age);
-  setText("[data-profile-view-sex]", sex);
-  setText("[data-profile-view-role]", role);
-  setText("[data-profile-view-location]", location);
-  setText("[data-profile-view-bio]", bio);
-  setText("[data-profile-view-stamina]", `${stamina} / ${staminaGoal}`);
+  setText("[data-profile-view-status]", profileState.serverReady ? "Saved" : "Setup");
+  setText("[data-profile-view-gate]", profileState.profileReady ? "Complete" : "Missing");
+  setText("[data-profile-view-accent]", accent);
+  setText("[data-profile-view-background]", background);
+  setText("[data-profile-view-avatar]", profileState.selectedAvatarSrc ? "Saved" : "Not Set");
   setText("[data-profile-view-updated]", profileUpdatedLabel(updated));
+  setText("[data-profile-view-server]", profileState.bridgeOnline ? "Online" : "Offline");
+  setText("[data-profile-view-note]", profileState.serverReady ? "Profile data saved." : "Waiting for profile save.");
+  setSwatch("[data-profile-view-accent-swatch]", accent);
+  setSwatch("[data-profile-view-bg-swatch]", background);
 
   const zodiac = String(data.get("zodiac") || "");
   const profile = zodiacProfiles[zodiac];
@@ -185,7 +212,6 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", profile[1]);
     setText("[data-zodiac-traits]", profile[2]);
     setText("[data-zodiac-line]", profile[3]);
-    setText("[data-profile-view-zodiac]", profile[0]);
   } else {
     zodiacMark?.removeAttribute("src");
     if (zodiacMark) zodiacMark.hidden = true;
@@ -194,7 +220,6 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", "--");
     setText("[data-zodiac-traits]", "--");
     setText("[data-zodiac-line]", "Waiting for server profile.");
-    setText("[data-profile-view-zodiac]", "Not Set");
   }
 
   syncProfileReady();
@@ -234,25 +259,27 @@ function closeAvatarWindow() {
 }
 
 function setPendingAvatar(src) {
-  if (!src) return;
-  profileState.pendingAvatarSrc = src;
+  const cleanSrc = normalizeProfileAvatarSrc(src);
+  if (!cleanSrc) return;
+  profileState.pendingAvatarSrc = cleanSrc;
   syncAvatarWindow();
 }
 
 function setProfileAvatar(src) {
+  const cleanSrc = normalizeProfileAvatarSrc(src);
   const preview = document.querySelector("[data-profile-avatar-preview]");
   const empty = document.querySelector("[data-profile-avatar-empty]");
-  if (!preview || !src) return;
+  if (!preview || !cleanSrc) return;
 
-  profileState.selectedAvatarSrc = src;
-  preview.src = src;
+  profileState.selectedAvatarSrc = cleanSrc;
+  preview.src = cleanSrc;
   preview.hidden = false;
   if (empty) empty.hidden = true;
 
   const currentPreview = document.querySelector("[data-avatar-current-preview]");
   const currentEmpty = document.querySelector("[data-avatar-current-empty]");
   if (currentPreview) {
-    currentPreview.src = src;
+    currentPreview.src = cleanSrc;
     currentPreview.hidden = false;
   }
   if (currentEmpty) currentEmpty.hidden = true;
@@ -283,7 +310,7 @@ function profilePayload() {
     bio: String(data.get("bio") || "").trim(),
     stamina: String(data.get("stamina") || "0").trim(),
     staminaGoal: String(data.get("staminaGoal") || "100").trim(),
-    avatar: profileState.selectedAvatarSrc,
+    avatar: normalizeProfileAvatarSrc(profileState.selectedAvatarSrc),
     ready: syncProfileReady() ? "1" : "0"
   };
 }
@@ -529,7 +556,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1007,
+  build: 1008,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

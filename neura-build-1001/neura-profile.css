@@ -1,7 +1,7 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1003
-Update: First Run Saved Profile View
+Build: 1004
+Update: Saved Profile System Panel
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
@@ -195,6 +195,23 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-saved-grid b {
   color: inherit;
   font-weight: inherit;
+}
+
+.profile-swatch-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.profile-swatch-line i {
+  display: inline-block;
+  width: 28px;
+  height: 14px;
+  border: 1px solid rgba(234, 248, 255, 0.32);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 12px color-mix(in srgb, var(--profile-accent), transparent 68%);
 }
 
 .profile-saved-bio {
