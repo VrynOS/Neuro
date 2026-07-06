@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-wallet
-// Build: 1005
-// Update: Media Gateway Commands
+// Build: 1006
+// Update: Server Command Payloads
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -68,6 +68,15 @@ function walletCommand(command) {
   window.neuraHeart?.speak?.("Wallet", `Wallet ${command} command queued for the G-Coin host bridge.`, "calm");
 }
 
+function walletTransferCommand() {
+  const route = document.querySelector("[data-wallet-transfer-type]")?.value || "";
+  const amount = document.querySelector("[data-wallet-amount]")?.value || "";
+  const target = walletState.selectedUser?.id || "";
+  const parts = ["transfer", `route=${route}`, `amount=${amount}`];
+  if (target) parts.push(`target=${target}`);
+  return parts.join("|");
+}
+
 function openWalletUserWindow() {
   const windowNode = document.querySelector("[data-wallet-user-window]");
   if (!windowNode) return;
@@ -101,7 +110,7 @@ document.addEventListener("submit", (event) => {
   const form = event.target.closest("[data-wallet-transfer-form]");
   if (!form) return;
   event.preventDefault();
-  walletCommand("transfer");
+  walletCommand(walletTransferCommand());
 });
 
 document.addEventListener("keydown", (event) => {
@@ -113,7 +122,7 @@ document.addEventListener("keydown", (event) => {
 renderWallet();
 
 window.neuraWallet = Object.freeze({
-  build: 1005,
+  build: 1006,
   feature: "NEURA_WALLET_HOST",
   receive: receiveWallet,
   render: renderWallet,
