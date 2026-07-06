@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1051">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1007">
+  <link rel="stylesheet" href="neura-profile.css?v=1008">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1008">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -193,19 +193,11 @@
             <section class="profile-stamina-panel" aria-label="Profile stamina">
               <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
               <div>
-                <strong>Stamina Level <b data-profile-stamina-level>--</b></strong>
+                <div class="stamina-row"><span>Stamina Level <b data-profile-stamina-level>--</b></span><span><b data-profile-stamina-xp>--</b> / <b data-profile-stamina-xp-goal>--</b> XP</span></div>
                 <i><em data-profile-stamina-bar></em></i>
-                <small><span><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></span><span data-profile-stamina-percent>--%</span></small>
+                <small><span><b data-profile-stamina-xp-needed>--</b> XP to next stamina level</span><span data-profile-stamina-xp-percent>--%</span></small>
+                <small><span>Current</span><span><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></span></small>
               </div>
-            </section>
-
-            <section class="profile-stamina-detail" aria-label="Stamina training">
-              <div>
-                <span>Training XP</span>
-                <strong><b data-profile-stamina-xp>--</b> / <b data-profile-stamina-xp-goal>--</b></strong>
-              </div>
-              <i><em data-profile-stamina-xp-bar></em></i>
-              <small><span><b data-profile-stamina-xp-needed>--</b> XP to next stamina level</span><span data-profile-stamina-xp-percent>--%</span></small>
             </section>
           </section>
 
@@ -743,7 +735,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1020"></script>
+  <script type="module" src="neura-profile.js?v=1021"></script>
   <script type="module" src="neura-stats.js?v=1003"></script>
   <script type="module" src="neura-wallet.js?v=1005"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

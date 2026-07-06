@@ -1,7 +1,7 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1007
-Update: Stamina Profile Panel
+Build: 1008
+Update: Single Stamina Bar
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
@@ -24,7 +24,6 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-level,
 .profile-zodiac,
 .profile-stamina-panel,
-.profile-stamina-detail,
 .avatar-picker,
 .profile-editor input,
 .profile-editor select,
@@ -55,7 +54,6 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-level small,
 .profile-stamina-panel small,
-.profile-stamina-detail small,
 .avatar-current small {
   font-size: 13px;
 }
@@ -90,8 +88,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 48%);
 }
 
-.profile-zodiac,
-.profile-stamina-detail {
+.profile-zodiac {
   padding-top: 12px;
 }
 
@@ -260,19 +257,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   min-width: 0;
 }
 
-.profile-stamina-panel strong {
-  color: var(--text);
-  font-size: 17px;
-  font-weight: 500;
-}
-
-.profile-stamina-panel strong b {
-  color: var(--profile-accent);
-  font-size: 19px;
-}
-
-.profile-stamina-panel i,
-.profile-stamina-detail i {
+.profile-stamina-panel i {
   display: block;
   height: 7px;
   overflow: hidden;
@@ -281,57 +266,30 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   border-radius: 1px;
 }
 
-.profile-stamina-panel em,
-.profile-stamina-detail em {
+.profile-stamina-panel em {
   display: block;
+  width: var(--stamina, 0%);
   height: 100%;
   background: linear-gradient(90deg, var(--profile-accent), rgba(255, 255, 255, 0.74));
   box-shadow: 0 0 12px color-mix(in srgb, var(--profile-accent), transparent 48%);
 }
 
-.profile-stamina-panel em {
-  width: var(--stamina, 0%);
-}
-
-.profile-stamina-detail em {
-  width: var(--stamina-xp, 0%);
-}
-
 .profile-stamina-panel small,
-.profile-stamina-detail small {
+.stamina-row {
   display: flex;
   justify-content: space-between;
   color: rgba(234, 248, 255, 0.62);
   font-size: 12px;
 }
 
-.profile-stamina-detail {
-  display: grid;
-  gap: 8px;
-  min-height: 64px;
-  padding: 10px 12px;
-  background: rgba(1, 10, 18, 0.22);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 62%);
-  border-radius: var(--panel-radius);
-}
-
-.profile-stamina-detail div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-width: 0;
-}
-
-.profile-stamina-detail span {
-  color: rgba(234, 248, 255, 0.72);
-}
-
-.profile-stamina-detail strong {
+.stamina-row {
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
+}
+
+.stamina-row b {
+  color: var(--profile-accent);
 }
 
 .avatar-window-grid {
