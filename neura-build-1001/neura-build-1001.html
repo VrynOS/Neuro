@@ -1,11 +1,11 @@
 ﻿<!doctype html>
-<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1082">
+<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1083">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="neura-ui-pattern" content="Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js">
   <title>Neura Build 1001</title>
-  <link rel="stylesheet" href="neura-hud-ui.css?v=1051">
+  <link rel="stylesheet" href="neura-hud-ui.css?v=1052">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
   <link rel="stylesheet" href="neura-profile.css?v=1011">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
@@ -35,6 +35,12 @@
         <span class="neura-clock" aria-label="Clock">
           <time data-neura-time>--:--</time>
         </span>
+        <section class="neura-dock" aria-label="HUD actions">
+          <section class="neura-actions">
+            <button type="button" aria-label="Notifications" title="Notifications" data-action="notify"><span class="hud-icon icon-notify" aria-hidden="true"></span><sup aria-hidden="true" hidden>0</sup></button>
+            <button type="button" aria-label="Settings" title="Settings" data-action="settings"><span class="hud-icon icon-settings" aria-hidden="true"></span></button>
+          </section>
+        </section>
       </section>
     </header>
 
@@ -651,13 +657,6 @@
         </section>
       </article>
     </section>
-
-    <footer class="neura-dock" aria-label="HUD actions">
-      <section class="neura-actions">
-        <button type="button" aria-label="Notifications" data-action="notify"><span class="hud-icon icon-notify" aria-hidden="true"></span><em>Notify</em><sup>0</sup></button>
-        <button type="button" aria-label="Settings" data-action="settings"><span class="hud-icon icon-settings" aria-hidden="true"></span><em>Settings</em></button>
-      </section>
-    </footer>
 
     <section class="action-window" data-action-window hidden role="dialog" aria-modal="true" aria-labelledby="action-window-title">
       <header class="action-window-bar">
