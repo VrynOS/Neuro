@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1023
-// Update: Premium Profile HUD Pass
+// Build: 1024
+// Update: Profile Readability Pass
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -267,7 +267,7 @@ function syncProfilePreview() {
   setText("[data-profile-view-sigil]", sigilLabel(sigil));
   setText("[data-profile-view-updated]", profileUpdatedLabel(updated));
   setText("[data-profile-view-server]", profileState.bridgeOnline ? "Online" : "Offline");
-  setText("[data-profile-view-note]", profileState.serverReady ? "Profile data saved." : "Waiting for profile save.");
+  setText("[data-profile-view-note]", profileState.serverReady ? "Server profile is synced and ready." : "Waiting for profile save.");
   setSwatch("[data-profile-view-accent-swatch]", accent);
   setSwatch("[data-profile-view-bg-swatch]", background);
   setText("[data-profile-id-name]", displayName);
@@ -661,7 +661,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1023,
+  build: 1024,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

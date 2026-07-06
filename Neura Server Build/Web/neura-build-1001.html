@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1051">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1010">
+  <link rel="stylesheet" href="neura-profile.css?v=1011">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -249,47 +249,32 @@
           <section class="profile-saved-panel" data-profile-saved-panel aria-label="Saved profile">
             <header>
               <div>
-                <span>Profile</span>
+                <span>Profile Matrix</span>
                 <strong>Server Synced</strong>
               </div>
-              <button type="button" data-profile-edit>Edit Profile</button>
             </header>
 
             <div class="profile-saved-grid">
-              <article>
+              <article data-profile-matrix-card="status">
                 <span>Profile Status</span>
                 <strong data-profile-view-status>Saved</strong>
               </article>
-              <article>
+              <article data-profile-matrix-card="gate">
                 <span>Identity Gate</span>
                 <strong data-profile-view-gate>Complete</strong>
               </article>
-              <article>
-                <span>Theme Accent</span>
-                <strong class="profile-swatch-line"><i data-profile-view-accent-swatch></i><b data-profile-view-accent>#2fc7ff</b></strong>
+              <article data-profile-matrix-card="server">
+                <span>Server Link</span>
+                <strong data-profile-view-server>Online</strong>
               </article>
-              <article>
-                <span>Glass Color</span>
-                <strong class="profile-swatch-line"><i data-profile-view-bg-swatch></i><b data-profile-view-background>#061725</b></strong>
-              </article>
-              <article>
-                <span>Sigil</span>
-                <strong data-profile-view-sigil>Core</strong>
-              </article>
-              <article>
+              <article data-profile-matrix-card="sync">
                 <span>Last Sync</span>
                 <strong data-profile-view-updated>--</strong>
               </article>
             </div>
 
-            <section class="profile-saved-bio" aria-label="Saved profile bio">
-              <span>Server Link</span>
-              <p data-profile-view-note>Profile data saved.</p>
-            </section>
-
             <footer>
-              <span>Profile Server</span>
-              <strong data-profile-view-server>Online</strong>
+              <button type="button" data-profile-edit>EDIT PROFILE</button>
             </footer>
           </section>
 
@@ -308,13 +293,14 @@
               <div class="profile-id-lines">
                 <p><span>Role</span><b data-profile-id-role>Not Set</b></p>
                 <p><span>Sigil</span><b data-profile-id-sigil>Core</b></p>
-                <p><span>Zodiac</span><b data-profile-id-zodiac>Not Set</b></p>
               </div>
               <div class="profile-id-city" aria-hidden="true"></div>
-              <footer>
-                <div><span>Accent</span><i data-profile-id-accent-swatch></i></div>
-                <div><span>Glass</span><i data-profile-id-bg-swatch></i></div>
-                <b data-profile-id-since>Resident Since 2026</b>
+              <footer class="profile-id-verify">
+                <span class="profile-id-qr" aria-hidden="true"></span>
+                <div>
+                  <strong>Neura Verified</strong>
+                  <small data-profile-id-since>Resident Since 2026</small>
+                </div>
               </footer>
             </div>
           </section>
@@ -766,7 +752,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1023"></script>
+  <script type="module" src="neura-profile.js?v=1024"></script>
   <script type="module" src="neura-stats.js?v=1004"></script>
   <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>
