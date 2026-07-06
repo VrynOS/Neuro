@@ -1,95 +1,589 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1009
-Update: Stamina Layout Cache Bump
-Date and time: 2026-07-02 00:00:00 -04:00
+Build: 1010
+Update: Premium Profile HUD Pass
+Date and time: 2026-07-06 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
 
 .profile-shell {
-  font-size: 14px;
+  --profile-accent: #2fc7ff;
+  --profile-bg: #061725;
+  --profile-edge: color-mix(in srgb, var(--profile-accent), transparent 48%);
+  --profile-faint: color-mix(in srgb, var(--profile-accent), transparent 84%);
+  --profile-glow: color-mix(in srgb, var(--profile-accent), transparent 62%);
+  --profile-card-bg:
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--profile-accent), transparent 85%), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0)),
+    color-mix(in srgb, var(--profile-bg), rgba(0, 8, 15, 0.92) 52%);
+  height: 100%;
+  min-height: 0;
+  padding: 12px;
+  overflow: hidden;
+  font-size: 13px;
+  background:
+    radial-gradient(circle at 14% 8%, color-mix(in srgb, var(--profile-accent), transparent 82%), transparent 32%),
+    radial-gradient(circle at 84% 16%, color-mix(in srgb, var(--profile-bg), white 8%), transparent 34%),
+    linear-gradient(135deg, color-mix(in srgb, var(--profile-bg), black 8%), rgba(1, 9, 16, 0.74)),
+    rgba(1, 9, 16, 0.38);
   border-color: color-mix(in srgb, var(--profile-accent), white 12%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -18px 36px rgba(0, 0, 0, 0.16),
-    0 0 24px color-mix(in srgb, var(--profile-accent), transparent 74%);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -18px 36px rgba(0, 0, 0, 0.2),
+    0 0 24px var(--profile-glow);
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(292px, 0.9fr) minmax(330px, 1fr) minmax(260px, 0.74fr);
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
 }
 
 .profile-card,
 .profile-editor,
-.profile-saved-panel {
-  border-color: color-mix(in srgb, var(--profile-accent), transparent 58%);
+.profile-saved-panel,
+.profile-id-card {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--profile-card-bg);
+  border: 1px solid var(--profile-edge);
+  border-radius: var(--panel-radius);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    inset 0 -22px 42px rgba(0, 0, 0, 0.22),
+    0 0 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(6px) saturate(1.08);
+}
+
+.profile-card::before,
+.profile-editor::before,
+.profile-saved-panel::before,
+.profile-id-card::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 0;
+  width: 52px;
+  height: 4px;
+  background:
+    repeating-linear-gradient(90deg, var(--profile-accent) 0 3px, transparent 3px 7px);
+  filter: drop-shadow(0 0 6px var(--profile-accent));
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.profile-card > *,
+.profile-editor > *,
+.profile-saved-panel > *,
+.profile-id-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 10px;
+}
+
+.profile-identity {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 98px;
+}
+
+.profile-avatar-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background:
+    conic-gradient(from 18deg, transparent, color-mix(in srgb, var(--profile-accent), transparent 30%), transparent 42%, color-mix(in srgb, var(--profile-bg), white 18%), transparent 72%),
+    radial-gradient(circle, color-mix(in srgb, var(--profile-accent), transparent 78%), rgba(1, 10, 18, 0.74) 64%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), white 18%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 8px rgba(1, 10, 18, 0.34),
+    inset 0 0 28px rgba(0, 0, 0, 0.28),
+    0 0 24px var(--profile-glow);
+}
+
+.profile-avatar-frame::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 18%);
+  border-radius: inherit;
+  box-shadow: inset 0 0 18px var(--profile-faint);
+  pointer-events: none;
+}
+
+.profile-copy {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-title-line {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.profile-status-pill {
+  min-height: 24px;
+  padding: 0 10px;
+  color: color-mix(in srgb, var(--profile-accent), white 20%);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent),
+    rgba(1, 10, 18, 0.58);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 30%);
+  border-radius: 999px;
+  box-shadow: 0 0 12px var(--profile-faint);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-status-pill.is-synced {
+  color: #7fffe6;
+  border-color: color-mix(in srgb, var(--profile-accent), white 22%);
+  box-shadow: 0 0 16px var(--profile-glow);
+}
+
+.profile-copy strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-copy small {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(234, 248, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-copy small b {
+  color: color-mix(in srgb, var(--profile-accent), white 16%);
+  font-weight: 700;
 }
 
 .profile-level,
 .profile-zodiac,
 .profile-stamina-panel,
 .avatar-picker,
-.profile-editor input,
-.profile-editor select,
-.profile-editor textarea {
-  border-color: color-mix(in srgb, var(--profile-accent), transparent 62%);
+.profile-saved-grid article,
+.profile-saved-bio {
+  background:
+    linear-gradient(135deg, var(--profile-faint), transparent 60%),
+    rgba(1, 10, 18, 0.3);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 64%);
+  border-radius: calc(var(--panel-radius) - 1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -14px 28px rgba(0, 0, 0, 0.16);
 }
 
-.profile-status-pill {
-  border-color: color-mix(in srgb, var(--profile-accent), white 16%);
+.profile-level,
+.profile-stamina-panel {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 54px;
+  padding: 8px 10px;
 }
 
-.profile-status-pill.is-synced {
-  color: #7fffe6;
-  border-color: color-mix(in srgb, var(--profile-accent), white 26%);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--profile-accent), transparent 58%);
+.level-mark,
+.stamina-mark {
+  width: 28px;
+  height: 28px;
+  justify-self: center;
+  background: var(--profile-accent);
+  filter: drop-shadow(0 0 8px var(--profile-glow));
 }
 
-.profile-copy strong {
-  font-size: 30px;
+.profile-level > div,
+.profile-stamina-panel > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
 }
 
-.profile-copy small,
 .level-row,
+.stamina-row,
+.profile-level small,
+.profile-stamina-panel small {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  color: rgba(234, 248, 255, 0.64);
+  font-size: 11px;
+  line-height: 1.16;
+}
+
+.level-row,
+.stamina-row {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.level-row b,
+.stamina-row b {
+  color: color-mix(in srgb, var(--profile-accent), white 16%);
+  font-weight: 800;
+}
+
+.profile-level i,
+.profile-stamina-panel i {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  background: rgba(3, 15, 24, 0.68);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 76%);
+  border-radius: 1px;
+}
+
+.profile-level em,
+.profile-stamina-panel em {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--profile-accent), rgba(255, 255, 255, 0.74));
+  box-shadow: 0 0 12px var(--profile-glow);
+}
+
+.profile-stamina-panel em {
+  width: var(--stamina, 0%);
+}
+
+.profile-zodiac {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.profile-zodiac::after {
+  content: "";
+  position: absolute;
+  right: -22px;
+  bottom: -34px;
+  width: 142px;
+  height: 142px;
+  background:
+    radial-gradient(circle, transparent 0 38%, color-mix(in srgb, var(--profile-accent), transparent 70%) 39% 40%, transparent 41%),
+    radial-gradient(circle, color-mix(in srgb, var(--profile-accent), transparent 86%), transparent 66%);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.zodiac-body {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 0;
+}
+
+.zodiac-orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  color: rgba(234, 248, 255, 0.66);
+  background:
+    conic-gradient(from 90deg, transparent, color-mix(in srgb, var(--profile-accent), transparent 18%), transparent 48%, color-mix(in srgb, var(--profile-bg), white 24%), transparent 76%),
+    radial-gradient(circle, rgba(1, 10, 18, 0.22) 0 54%, rgba(1, 10, 18, 0.76) 55%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), white 14%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 18px var(--profile-faint),
+    0 0 20px var(--profile-glow);
+}
+
+.zodiac-orbit::before,
+.zodiac-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 42%);
+  border-radius: inherit;
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.zodiac-orbit::after {
+  inset: 16px;
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 68%);
+}
+
+.zodiac-mark {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 8px color-mix(in srgb, var(--profile-accent), transparent 30%))
+    saturate(1.24)
+    contrast(1.08);
+}
+
+.zodiac-empty {
+  color: color-mix(in srgb, var(--profile-accent), white 20%);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.zodiac-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.zodiac-copy strong {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--profile-accent), white 14%);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .zodiac-copy span,
 .zodiac-copy small {
-  font-size: 16px;
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(234, 248, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.profile-level small,
-.profile-stamina-panel small,
-.avatar-current small {
-  font-size: 13px;
+.zodiac-copy span b {
+  color: var(--profile-accent);
+  font-weight: 800;
+}
+
+.zodiac-copy small {
+  color: rgba(234, 248, 255, 0.58);
+  font-style: italic;
+}
+
+.profile-editor {
+  padding: 12px;
+}
+
+.profile-editor form {
+  display: grid;
+  grid-template-rows: auto auto minmax(74px, 1fr) auto;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+
+.profile-editor header,
+.profile-editor footer,
+.profile-saved-panel header,
+.profile-saved-panel footer,
+.profile-id-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
 }
 
 .profile-editor header span,
 .profile-editor footer span,
+.profile-saved-panel header span,
+.profile-saved-panel footer span,
+.profile-saved-grid span,
+.profile-saved-bio span,
+.profile-id-card header span,
+.profile-id-topline span,
+.profile-id-lines span,
+.profile-id-face footer span {
+  color: var(--profile-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.profile-editor header strong,
+.profile-saved-panel header strong,
+.profile-id-card header strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-height: 0;
+}
+
 .profile-editor label {
-  font-size: 12px;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  color: rgba(234, 248, 255, 0.62);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
 .profile-editor input,
 .profile-editor select,
 .profile-editor textarea {
-  font-size: 14px;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    rgba(1, 10, 18, 0.62);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 62%);
+  border-radius: var(--button-radius);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.16);
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.profile-avatar-frame,
+.profile-editor input:focus,
+.profile-editor select:focus,
+.profile-editor textarea:focus {
+  border-color: color-mix(in srgb, var(--profile-accent), white 20%);
+  outline: 2px solid color-mix(in srgb, var(--profile-accent), transparent 78%);
+  outline-offset: 1px;
+}
+
+.color-field input {
+  padding: 4px;
+}
+
+.avatar-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-content: center;
+  align-items: center;
+  align-self: start;
+  min-height: 76px;
+  padding: 10px;
+}
+
+.avatar-current {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+
 .avatar-current-thumb {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background:
+    radial-gradient(circle, var(--profile-faint), rgba(1, 10, 18, 0.62) 70%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), white 12%);
   border-radius: 50%;
-  border-color: color-mix(in srgb, var(--profile-accent), white 18%);
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.2),
+    0 0 16px var(--profile-glow);
+}
+
+.avatar-current strong {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar-current small {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: rgba(234, 248, 255, 0.58);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar-more-button,
+.profile-editor button,
+.profile-saved-panel button,
+.avatar-window-footer button,
+.avatar-window-close {
+  min-height: 34px;
+  padding: 0 12px;
+  color: color-mix(in srgb, var(--profile-accent), white 20%);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.015)),
+    rgba(1, 10, 18, 0.58);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 52%);
+  border-radius: var(--button-radius);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 12px color-mix(in srgb, var(--profile-accent), transparent 86%);
+  cursor: pointer;
 }
 
 .avatar-more-button {
   min-width: 66px;
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: var(--button-radius);
 }
 
-.avatar-window {
-  --profile-accent: var(--accent);
-  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 48%);
+.profile-editor button:disabled,
+.avatar-window-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.profile-zodiac {
-  padding-top: 12px;
+.profile-saved-panel {
+  display: none;
+  grid-template-rows: auto auto minmax(62px, 1fr) auto;
+  gap: 8px;
+  padding: 12px;
 }
 
 .profile-shell[data-profile-mode="view"] .profile-editor {
@@ -98,63 +592,6 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-shell[data-profile-mode="view"] .profile-saved-panel {
   display: grid;
-}
-
-.profile-saved-panel {
-  display: none;
-  grid-template-rows: auto auto minmax(70px, 1fr) auto;
-  gap: 8px;
-  min-height: 0;
-  overflow: hidden;
-  padding: 12px;
-  background:
-    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--profile-accent), transparent 86%), transparent 38%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)),
-    rgba(1, 10, 18, 0.36);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 58%);
-  border-radius: var(--panel-radius);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 22px rgba(0, 0, 0, 0.18);
-}
-
-.profile-saved-panel header,
-.profile-saved-panel footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.profile-saved-panel header span,
-.profile-saved-panel footer span,
-.profile-saved-grid span,
-.profile-saved-bio span {
-  color: var(--profile-accent);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.profile-saved-panel header strong {
-  display: block;
-  margin-top: 4px;
-  color: var(--text);
-  font-size: 23px;
-  font-weight: 400;
-}
-
-.profile-saved-panel button {
-  min-height: 34px;
-  padding: 0 14px;
-  color: var(--text);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(47, 199, 255, 0.04)),
-    rgba(1, 10, 18, 0.56);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 54%);
-  border-radius: var(--button-radius);
-  cursor: pointer;
 }
 
 .profile-saved-grid {
@@ -169,19 +606,17 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: grid;
   align-content: start;
   gap: 5px;
-  min-height: 58px;
-  padding: 9px 10px;
-  background: rgba(1, 10, 18, 0.3);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 66%);
-  border-radius: var(--panel-radius);
+  min-height: 54px;
+  padding: 8px 9px;
 }
 
-.profile-saved-grid strong {
+.profile-saved-grid strong,
+.profile-saved-panel footer strong {
   min-width: 0;
   overflow: hidden;
   color: var(--text);
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -191,13 +626,25 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   font-weight: inherit;
 }
 
+.profile-saved-bio p {
+  margin: 0;
+  min-height: 0;
+  overflow: auto;
+  color: rgba(234, 248, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 .profile-swatch-line {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 
-.profile-swatch-line i {
+.profile-swatch-line i,
+.profile-id-face footer i {
   display: inline-block;
   width: 28px;
   height: 14px;
@@ -205,170 +652,456 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   border-radius: 2px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 0 12px color-mix(in srgb, var(--profile-accent), transparent 68%);
+    0 0 12px var(--profile-glow);
 }
 
-.profile-saved-bio {
+.profile-id-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 9px;
+  padding: 12px;
+}
+
+.profile-id-face {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 10px;
   min-height: 0;
   overflow: hidden;
-}
-
-.profile-saved-bio p {
-  margin: 0;
-  min-height: 0;
-  overflow: auto;
-  color: rgba(234, 248, 255, 0.74);
-  font-size: 15px;
-  line-height: 1.32;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.profile-saved-panel footer strong {
-  color: rgba(234, 248, 255, 0.74);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.profile-stamina-panel {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 10px;
-  align-items: center;
-  min-height: 66px;
-  padding: 10px 12px;
+  padding: 14px;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--profile-accent), transparent 88%), transparent 58%),
-    rgba(1, 10, 18, 0.25);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 62%);
-  border-radius: var(--panel-radius);
+    linear-gradient(160deg, color-mix(in srgb, var(--profile-bg), white 8%), rgba(1, 7, 14, 0.78)),
+    radial-gradient(circle at 84% 16%, var(--profile-faint), transparent 34%);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 38%);
+  border-radius: calc(var(--panel-radius) + 2px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 24px var(--profile-faint);
 }
 
-.stamina-mark {
-  width: 30px;
-  height: 30px;
-  justify-self: center;
-  background: var(--profile-accent);
+.profile-id-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 12%, color-mix(in srgb, var(--profile-accent), transparent 88%) 12% 12.4%, transparent 12.4%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 9px);
+  opacity: 0.38;
+  pointer-events: none;
 }
 
-.profile-stamina-panel div {
-  display: grid;
-  gap: 5px;
+.profile-id-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   min-width: 0;
 }
 
-.profile-stamina-panel i {
-  display: block;
-  height: 7px;
+.profile-id-topline i {
+  width: 10px;
+  height: 10px;
+  background: #63ff8a;
+  border-radius: 50%;
+  box-shadow: 0 0 14px #63ff8a;
+}
+
+.profile-id-face > strong {
+  min-width: 0;
   overflow: hidden;
-  background: rgba(3, 15, 24, 0.58);
-  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 74%);
-  border-radius: 1px;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.profile-stamina-panel em {
-  display: block;
-  width: var(--stamina, 0%);
-  height: 100%;
-  background: linear-gradient(90deg, var(--profile-accent), rgba(255, 255, 255, 0.74));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--profile-accent), transparent 48%);
+.profile-id-face > small {
+  min-width: 0;
+  overflow: hidden;
+  color: color-mix(in srgb, var(--profile-accent), white 16%);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.profile-stamina-panel small,
-.stamina-row {
+.profile-id-lines {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--profile-accent), transparent 68%);
+}
+
+.profile-id-lines p {
   display: flex;
   justify-content: space-between;
-  color: rgba(234, 248, 255, 0.62);
-  font-size: 12px;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+  color: rgba(234, 248, 255, 0.76);
+  font-size: 13px;
 }
 
-.stamina-row {
+.profile-id-lines b {
+  min-width: 0;
+  overflow: hidden;
   color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.stamina-row b {
-  color: var(--profile-accent);
+.profile-id-city {
+  position: relative;
+  min-height: 82px;
+  overflow: hidden;
+  border-top: 1px solid color-mix(in srgb, var(--profile-accent), transparent 76%);
 }
 
-.avatar-window-grid {
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 8px;
+.profile-id-city::before {
+  content: "";
+  position: absolute;
+  inset: 14px 0 0;
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--profile-accent), transparent 80%) 0 2px, transparent 2px),
+    linear-gradient(to top, color-mix(in srgb, var(--profile-accent), transparent 78%) 0 34%, transparent 34%) 8px bottom / 16px 58px repeat-x,
+    linear-gradient(to top, color-mix(in srgb, var(--profile-accent), transparent 86%) 0 52%, transparent 52%) 2px bottom / 24px 70px repeat-x;
+  opacity: 0.42;
+  filter: drop-shadow(0 0 10px var(--profile-glow));
 }
 
-.avatar-window-grid button {
+.profile-id-face footer {
   display: grid;
-  justify-items: center;
-  gap: 6px;
-  min-height: 86px;
-  padding: 8px 6px;
-  border-radius: var(--button-radius);
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-items: end;
 }
 
-.avatar-window-grid button.is-pending {
-  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), white 18%);
-  box-shadow:
-    inset 0 0 0 2px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 14%),
-    0 0 22px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 42%),
-    0 0 10px rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px);
+.profile-id-face footer div {
+  display: grid;
+  gap: 4px;
 }
 
-.avatar-window-grid button.is-active:not(.is-pending) {
-  border-color: rgba(255, 211, 108, 0.58);
-  box-shadow: 0 0 14px rgba(255, 211, 108, 0.22);
-}
-
-.sigil-window-grid small {
-  color: rgba(234, 248, 255, 0.74);
+.profile-id-face footer b {
+  grid-column: 1 / -1;
+  color: rgba(234, 248, 255, 0.68);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .profile-sigil-mark {
+  --sigil-size: 74px;
+  position: relative;
   display: grid;
   place-items: center;
-  width: 74px;
-  height: 74px;
+  width: var(--sigil-size);
+  height: var(--sigil-size);
   color: var(--profile-accent);
   background:
-    radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--profile-accent), transparent 74%), transparent 58%),
+    radial-gradient(circle at 50% 38%, var(--profile-faint), transparent 58%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(1, 10, 18, 0.42)),
     rgba(1, 10, 18, 0.64);
   border: 1px solid color-mix(in srgb, var(--profile-accent), white 12%);
   border-radius: 50%;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 0 20px color-mix(in srgb, var(--profile-accent), transparent 54%);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+    inset 0 0 18px rgba(0, 0, 0, 0.2),
+    0 0 20px var(--profile-glow);
+  font-size: 0;
+  line-height: 0;
 }
 
-.profile-sigil-mark.is-small {
-  width: 42px;
-  height: 42px;
-  font-size: 9px;
+.profile-avatar-frame .profile-sigil-mark {
+  --sigil-size: 68px;
+}
+
+.profile-sigil-mark.is-small,
+.avatar-current-thumb .profile-sigil-mark {
+  --sigil-size: 36px;
+}
+
+.avatar-window-grid .profile-sigil-mark {
+  --sigil-size: 52px;
+}
+
+.profile-sigil-mark::before {
+  content: "";
+  width: 34%;
+  height: 34%;
+  background: currentColor;
+  border: 2px solid color-mix(in srgb, currentColor, white 40%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 12px currentColor,
+    inset 0 0 10px rgba(255, 255, 255, 0.22);
+}
+
+.profile-sigil-mark::after {
+  content: "";
+  position: absolute;
+  inset: 14%;
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 42%);
+  border-radius: inherit;
+  box-shadow: 0 0 10px var(--profile-faint);
+  pointer-events: none;
+}
+
+.profile-sigil-mark[data-sigil="spark"]::before,
+.avatar-window-grid button[data-avatar-option="spark"] .profile-sigil-mark::before {
+  clip-path: polygon(50% 0, 62% 36%, 100% 48%, 62% 62%, 50% 100%, 38% 62%, 0 48%, 38% 36%);
+  border: 0;
+  border-radius: 0;
+}
+
+.profile-sigil-mark[data-sigil="fire"]::before,
+.avatar-window-grid button[data-avatar-option="fire"] .profile-sigil-mark::before {
+  width: 38%;
+  height: 46%;
+  border: 0;
+  border-radius: 54% 54% 54% 8%;
+  transform: rotate(-45deg);
+  background:
+    radial-gradient(circle at 65% 64%, rgba(255, 255, 255, 0.86), transparent 20%),
+    linear-gradient(135deg, color-mix(in srgb, currentColor, white 34%), currentColor);
+}
+
+.profile-sigil-mark[data-sigil="wave"]::before,
+.avatar-window-grid button[data-avatar-option="wave"] .profile-sigil-mark::before {
+  width: 48%;
+  height: 24%;
+  border: 0;
+  border-radius: 999px 0 999px 0;
+  box-shadow:
+    0 -8px 0 -3px currentColor,
+    0 8px 0 -3px currentColor,
+    0 0 12px currentColor;
+}
+
+.profile-sigil-mark[data-sigil="star"]::before,
+.avatar-window-grid button[data-avatar-option="star"] .profile-sigil-mark::before {
+  width: 44%;
+  height: 44%;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 61% 34%, 97% 34%, 67% 54%, 79% 90%, 50% 68%, 21% 90%, 33% 54%, 3% 34%, 39% 34%);
+}
+
+.profile-sigil-mark[data-sigil="moon"]::before,
+.avatar-window-grid button[data-avatar-option="moon"] .profile-sigil-mark::before {
+  width: 36%;
+  height: 36%;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  box-shadow:
+    9px 0 0 0 currentColor,
+    0 0 14px currentColor;
+}
+
+.profile-sigil-mark[data-sigil="sun"]::before,
+.avatar-window-grid button[data-avatar-option="sun"] .profile-sigil-mark::before {
+  width: 28%;
+  height: 28%;
+  border: 0;
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, currentColor, transparent 76%),
+    0 0 16px currentColor;
+}
+
+.profile-sigil-mark[data-sigil="leaf"]::before,
+.avatar-window-grid button[data-avatar-option="leaf"] .profile-sigil-mark::before {
+  width: 40%;
+  height: 48%;
+  border: 0;
+  border-radius: 4% 72% 4% 72%;
+  transform: rotate(45deg);
+}
+
+.profile-sigil-mark[data-sigil="bolt"]::before,
+.avatar-window-grid button[data-avatar-option="bolt"] .profile-sigil-mark::before {
+  width: 34%;
+  height: 54%;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(62% 0, 100% 0, 62% 42%, 100% 42%, 34% 100%, 48% 55%, 12% 55%);
+}
+
+.profile-sigil-mark[data-sigil="gem"]::before,
+.avatar-window-grid button[data-avatar-option="gem"] .profile-sigil-mark::before {
+  width: 44%;
+  height: 40%;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(22% 0, 78% 0, 100% 36%, 50% 100%, 0 36%);
+}
+
+.profile-sigil-mark[data-sigil="crown"]::before,
+.avatar-window-grid button[data-avatar-option="crown"] .profile-sigil-mark::before {
+  width: 48%;
+  height: 36%;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(0 100%, 0 36%, 23% 62%, 38% 0, 50% 58%, 68% 0, 78% 62%, 100% 36%, 100% 100%);
+}
+
+.profile-sigil-mark[data-sigil="shield"]::before,
+.avatar-window-grid button[data-avatar-option="shield"] .profile-sigil-mark::before {
+  width: 42%;
+  height: 48%;
+  border: 0;
+  border-radius: 24% 24% 46% 46%;
+  clip-path: polygon(50% 0, 100% 18%, 88% 72%, 50% 100%, 12% 72%, 0 18%);
+}
+
+.avatar-window {
+  --profile-accent: inherit;
+  --profile-faint: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 84%);
+  --profile-glow: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 62%);
+  width: min(760px, calc(100% - 58px));
+  height: min(540px, calc(100% - 58px));
+  background:
+    radial-gradient(circle at 24% 0%, var(--profile-faint), transparent 34%),
+    linear-gradient(180deg, rgba(5, 18, 29, 0.94), rgba(1, 8, 14, 0.96)),
+    rgba(1, 8, 14, 0.94);
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 44%);
+}
+
+.avatar-window-bar,
+.avatar-window-footer {
+  padding: 12px 14px;
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 72%);
+}
+
+.avatar-window-bar span,
+.avatar-window-footer span {
+  color: color-mix(in srgb, var(--profile-accent, var(--accent)), white 14%);
+}
+
+.avatar-window-bar h2 {
+  color: color-mix(in srgb, var(--profile-accent, var(--accent)), white 8%);
+  font-size: 18px;
+}
+
+.avatar-window-body {
+  padding: 14px;
+}
+
+.avatar-window-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 4px 2px 2px;
+}
+
+.avatar-window-grid button {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: center;
+  justify-items: start;
+  gap: 10px;
+  aspect-ratio: auto;
+  min-height: 72px;
+  padding: 9px 10px;
+  overflow: hidden;
+  color: var(--text);
+  background:
+    linear-gradient(135deg, var(--profile-faint), transparent 58%),
+    rgba(1, 10, 18, 0.46);
+  border: 1px solid color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 70%);
+  border-radius: var(--button-radius);
+  cursor: pointer;
+}
+
+.avatar-window-grid button.is-pending {
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), white 18%);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 18%),
+    0 0 20px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 48%);
+  transform: translateY(-1px);
+}
+
+.avatar-window-grid button.is-active:not(.is-pending) {
+  border-color: color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 30%);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--profile-accent, var(--accent)), transparent 70%);
+}
+
+.sigil-window-grid small {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(234, 248, 255, 0.76);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .profile-layout,
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: minmax(282px, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .profile-id-card {
+    display: none;
+  }
+
+  .profile-card {
+    grid-template-rows: auto auto minmax(92px, 1fr) auto;
+  }
 }
 
 @media (max-width: 860px) {
-  .avatar-more-button {
-    justify-self: start;
-    width: auto;
+  .profile-shell {
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .profile-layout,
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: minmax(276px, 0.9fr) minmax(0, 1.1fr);
+    height: 100%;
+  }
+
+  .profile-identity {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 10px;
+    min-height: 90px;
+  }
+
+  .profile-avatar-frame {
+    width: 88px;
+  }
+
+  .profile-copy strong {
+    font-size: 21px;
+  }
+
+  .editor-grid,
+  .profile-saved-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-editor header strong,
+  .profile-saved-panel header strong {
+    font-size: 18px;
   }
 
   .avatar-window-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .profile-shell[data-profile-mode="view"] .profile-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-saved-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
