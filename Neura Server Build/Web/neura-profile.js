@@ -1,13 +1,14 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1018
-// Update: Profile Progress Display
+// Build: 1019
+// Update: XP Server Display
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
 
 const PROFILE_FEATURE = "NEURA_PROFILE";
 const PROFILE_NEURON_FEATURE = "NEURA_PROFILE_NEURON";
+const XP_FEATURE = "NEURA_XP";
 const PROFILE_SCHEMA = "1";
 
 const profileState = {
@@ -21,7 +22,8 @@ const profileState = {
   pendingSaveSigil: "",
   lastCommand: null,
   lastServerPayload: {},
-  lastIdentityPayload: {}
+  lastIdentityPayload: {},
+  lastXpPayload: {}
 };
 
 const zodiacProfiles = {
@@ -219,9 +221,9 @@ function syncProfilePreview() {
   const bio = profileValue(data.get("bio"), "No bio set.");
   const stamina = profileValue(data.get("stamina"), "100");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
-  const level = profileValue(profileState.lastServerPayload.level, "1");
-  const xp = profileValue(profileState.lastServerPayload.xp, "0");
-  const xpGoal = profileValue(profileState.lastServerPayload.xpGoal, "100");
+  const level = profileValue(profileState.lastXpPayload.level || profileState.lastServerPayload.level, "1");
+  const xp = profileValue(profileState.lastXpPayload.xp || profileState.lastServerPayload.xp, "0");
+  const xpGoal = profileValue(profileState.lastXpPayload.xpNext || profileState.lastServerPayload.xpGoal, "2500");
   const sigil = currentProfileSigil(data);
   const updated = profileState.lastServerPayload.updated || profileState.lastIdentityPayload.updated || "";
 
@@ -392,6 +394,10 @@ function profileReadMessages() {
     profileMessage("NEURA_PROFILE_NEURON_READ", {
       feature: PROFILE_NEURON_FEATURE,
       schema: PROFILE_SCHEMA
+    }),
+    profileMessage("NEURA_XP_READ", {
+      feature: XP_FEATURE,
+      schema: PROFILE_SCHEMA
     })
   ];
 }
@@ -505,6 +511,13 @@ function applyProfileIdentity(payload = {}) {
   document.querySelector("[data-profile-form]")?.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
+function applyXpData(payload = {}) {
+  profileState.lastXpPayload = { ...payload };
+  profileState.bridgeOnline = true;
+  setProfileRefreshEnabled(true);
+  syncProfilePreview();
+}
+
 function receiveProfile(message) {
   const payload = typeof message === "string" ? parseProfilePayload(message) : { ...(message || {}) };
   const command = profileCommandName(message, payload);
@@ -549,6 +562,11 @@ function receiveProfile(message) {
 
   if (command === "NEURA_PROFILE_NEURON_DATA" && payload.feature === PROFILE_NEURON_FEATURE) {
     applyProfileIdentity(payload);
+    return;
+  }
+
+  if (command === "NEURA_XP_DATA" && payload.feature === XP_FEATURE) {
+    applyXpData(payload);
     return;
   }
 
@@ -613,7 +631,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1017,
+  build: 1019,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

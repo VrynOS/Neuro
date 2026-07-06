@@ -16,7 +16,7 @@ export const neuraProfileBridge = Object.freeze({
   hudBuild: 1006,
   serverBuild: 1017,
   neuronBuild: 1004,
-  webBuild: 1018,
+  webBuild: 1019,
   hudLsl: "Hud/Neura Profile Hud.lsl",
   serverLsl: "Server/Neura Profile Server.lsl",
   neuronLsl: "Neuron/Neura Profile Neuron.lsl",
