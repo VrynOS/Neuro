@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1051">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1005">
+  <link rel="stylesheet" href="neura-profile.css?v=1007">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1008">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -193,14 +193,19 @@
             <section class="profile-stamina-panel" aria-label="Profile stamina">
               <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
               <div>
-                <strong>Stamina</strong>
+                <strong>Stamina Level <b data-profile-stamina-level>--</b></strong>
                 <i><em data-profile-stamina-bar></em></i>
-                <small><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></small>
+                <small><span><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></span><span data-profile-stamina-percent>--%</span></small>
               </div>
             </section>
 
-            <section class="profile-bio-panel" aria-label="Profile bio">
-              <p data-profile-bio>No bio set.</p>
+            <section class="profile-stamina-detail" aria-label="Stamina training">
+              <div>
+                <span>Training XP</span>
+                <strong><b data-profile-stamina-xp>--</b> / <b data-profile-stamina-xp-goal>--</b></strong>
+              </div>
+              <i><em data-profile-stamina-xp-bar></em></i>
+              <small><span><b data-profile-stamina-xp-needed>--</b> XP to next stamina level</span><span data-profile-stamina-xp-percent>--%</span></small>
             </section>
           </section>
 
@@ -223,7 +228,7 @@
                 <label>Zodiac<select name="zodiac"><option value="">Not Set</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
                 <label class="color-field">Accent Color<input name="accentColor" type="color" value="#2fc7ff"></label>
                 <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#061725"></label>
-                <label class="editor-full profile-bio-field" aria-label="Profile bio"><textarea name="bio" maxlength="280" placeholder="" autocomplete="off" spellcheck="true"></textarea></label>
+                <input name="bio" type="hidden" value="">
                 <input name="stamina" type="hidden" value="100">
                 <input name="staminaGoal" type="hidden" value="100">
                 <input name="sigil" type="hidden" value="core" data-profile-sigil-value>
@@ -738,7 +743,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1019"></script>
+  <script type="module" src="neura-profile.js?v=1020"></script>
   <script type="module" src="neura-stats.js?v=1003"></script>
   <script type="module" src="neura-wallet.js?v=1005"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

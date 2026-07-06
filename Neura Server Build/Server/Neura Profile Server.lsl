@@ -1,13 +1,13 @@
 // =====================================================//
 // Name of script: Neura Profile Server
-// Build: 1017
-// Update: Read Official Stamina Progress
+// Build: 1018
+// Update: Send Stamina Level Aliases
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
 
 string DISPLAY_TITLE = "Neura Profile Server";
-integer BUILD_NUMBER = 1017;
+integer BUILD_NUMBER = 1018;
 
 string FEATURE_ID = "NEURA_PROFILE";
 integer SCHEMA_VERSION = 1;
@@ -303,6 +303,9 @@ sendProfile()
         + "|background=" + stored("bg")
         + "|stamina=" + staminaCurrent
         + "|staminaGoal=" + staminaMax
+        + "|staminaLevel=" + staminaLevel
+        + "|staminaXp=" + staminaXp
+        + "|staminaXpGoal=" + (string)xpGoal
         + "|level=" + staminaLevel
         + "|xp=" + staminaXp
         + "|xpGoal=" + (string)xpGoal

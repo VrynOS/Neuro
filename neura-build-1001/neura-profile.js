@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1019
-// Update: XP Server Display
+// Build: 1020
+// Update: Stamina Level Display
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -173,16 +173,32 @@ function syncProfileReady() {
   return profileState.profileReady;
 }
 
-function syncStaminaPreview(staminaValue = "0", staminaGoalValue = "100") {
+function syncStaminaPreview(staminaValue = "0", staminaGoalValue = "100", levelValue = "1", xpValue = "0", xpGoalValue = "100") {
   const staminaNumber = Number.parseInt(staminaValue, 10);
   const goalNumber = Number.parseInt(staminaGoalValue, 10);
+  const levelNumber = Number.parseInt(levelValue, 10);
+  const xpNumber = Number.parseInt(xpValue, 10);
+  const xpGoalNumber = Number.parseInt(xpGoalValue, 10);
   const stamina = Number.isFinite(staminaNumber) ? String(staminaNumber) : "0";
   const goal = Number.isFinite(goalNumber) && goalNumber > 0 ? String(goalNumber) : "100";
   const percent = Math.max(0, Math.min(100, (Number(stamina) / Number(goal)) * 100));
+  const level = Number.isFinite(levelNumber) && levelNumber > 0 ? levelNumber : 1;
+  const xp = Number.isFinite(xpNumber) && xpNumber >= 0 ? xpNumber : 0;
+  const xpGoal = Number.isFinite(xpGoalNumber) && xpGoalNumber > 0 ? xpGoalNumber : 100;
+  const xpPercent = Math.max(0, Math.min(100, (xp / xpGoal) * 100));
+  const xpNeeded = Math.max(0, xpGoal - xp);
   const bar = document.querySelector("[data-profile-stamina-bar]");
+  const xpBar = document.querySelector("[data-profile-stamina-xp-bar]");
   setText("[data-profile-stamina]", stamina);
   setText("[data-profile-stamina-goal]", goal);
+  setText("[data-profile-stamina-level]", String(level));
+  setText("[data-profile-stamina-xp]", String(xp));
+  setText("[data-profile-stamina-xp-goal]", String(xpGoal));
+  setText("[data-profile-stamina-xp-needed]", String(xpNeeded));
+  setText("[data-profile-stamina-percent]", `${Math.round(percent)}%`);
+  setText("[data-profile-stamina-xp-percent]", `${Math.round(xpPercent)}%`);
   if (bar) bar.style.setProperty("--stamina", `${percent}%`);
+  if (xpBar) xpBar.style.setProperty("--stamina-xp", `${xpPercent}%`);
 }
 
 function syncXpPreview(levelValue = "1", xpValue = "0", xpGoalValue = "100") {
@@ -201,7 +217,7 @@ function syncXpPreview(levelValue = "1", xpValue = "0", xpGoalValue = "100") {
   setText("[data-profile-xp-goal]", String(goal));
   setText("[data-profile-xp-needed]", String(needed));
   setText("[data-profile-xp-percent]", `${Math.round(percent)}%`);
-  setText("[data-profile-verified-note]", "Server Synced");
+  setText("[data-profile-verified-note]", profileIsTrue(profileState.lastXpPayload.verified) ? "Verified" : "Verify Required");
   if (bar) bar.style.width = `${percent}%`;
 }
 
@@ -218,9 +234,11 @@ function syncProfilePreview() {
   const location = profileValue(data.get("location"), "Not Set");
   const accent = profileValue(data.get("accentColor"), "#2fc7ff");
   const background = profileValue(data.get("backgroundColor"), "#061725");
-  const bio = profileValue(data.get("bio"), "No bio set.");
   const stamina = profileValue(data.get("stamina"), "100");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
+  const staminaLevel = profileValue(profileState.lastServerPayload.staminaLevel || profileState.lastServerPayload.level, "1");
+  const staminaXp = profileValue(profileState.lastServerPayload.staminaXp || profileState.lastServerPayload.xp, "0");
+  const staminaXpGoal = profileValue(profileState.lastServerPayload.staminaXpGoal || profileState.lastServerPayload.xpGoal, "100");
   const level = profileValue(profileState.lastXpPayload.level || profileState.lastServerPayload.level, "1");
   const xp = profileValue(profileState.lastXpPayload.xp || profileState.lastServerPayload.xp, "0");
   const xpGoal = profileValue(profileState.lastXpPayload.xpNext || profileState.lastServerPayload.xpGoal, "2500");
@@ -236,7 +254,6 @@ function syncProfilePreview() {
   setText("[data-profile-sex]", sex);
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
-  setText("[data-profile-bio]", bio);
   setText("[data-profile-view-status]", profileState.serverReady ? "Saved" : "Setup");
   setText("[data-profile-view-gate]", profileState.profileReady ? "Complete" : "Missing");
   setText("[data-profile-view-accent]", accent);
@@ -272,7 +289,7 @@ function syncProfilePreview() {
   }
 
   syncProfileReady();
-  syncStaminaPreview(stamina, staminaGoal);
+  syncStaminaPreview(stamina, staminaGoal, staminaLevel, staminaXp, staminaXpGoal);
   syncXpPreview(level, xp, xpGoal);
 }
 
