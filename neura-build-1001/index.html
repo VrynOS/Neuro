@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="neura-heart.css?v=1005">
   <link rel="stylesheet" href="neura-profile.css?v=1009">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
-  <link rel="stylesheet" href="neura-wallet.css?v=1010">
+  <link rel="stylesheet" href="neura-wallet.css?v=1011">
   <link rel="stylesheet" href="neura-health.css?v=1001">
   <link rel="stylesheet" href="neura-work.css?v=1001">
 </head>
@@ -324,6 +324,11 @@
                 </div>
                 <b>GC <em data-wallet-savings>--</em></b>
               </article>
+              <aside class="wallet-summary">
+                <span>Account Summary</span>
+                <strong>GC <em data-wallet-total>--</em></strong>
+                <small>Live G-Coin balance</small>
+              </aside>
             </section>
 
             <form class="wallet-transfer-form" data-wallet-transfer-form>
@@ -342,7 +347,7 @@
                 <button type="button" class="wallet-user-open" data-wallet-user-open>Recipient</button>
                 <strong data-wallet-selected-user>No user selected</strong>
               </label>
-              <button type="submit" class="wallet-transfer-button">Transfer</button>
+              <button type="submit" class="wallet-transfer-button">Send Transfer</button>
             </form>
           </section>
 
@@ -350,7 +355,7 @@
             <header>
               <span class="hud-icon icon-wallet" aria-hidden="true"></span>
               <div>
-                <h3>Receipts</h3>
+                <h3>Recent Activity</h3>
                 <p>Incoming and outgoing G-Coin activity.</p>
               </div>
             </header>

@@ -1,61 +1,69 @@
 /* =====================================================//
 Name of script: neura-wallet
-Build: 1010
-Update: Large Three Panel Wallet
+Build: 1011
+Update: Wallet Console Redesign
 Date and time: 2026-07-02 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================*/
 
 .wallet-shell {
   width: 100%;
-  min-height: clamp(520px, 68vh, 720px);
-  padding: clamp(20px, 2.1vw, 32px);
-  border: 1px solid rgba(35, 224, 235, 0.46);
+  min-height: clamp(560px, 70vh, 760px);
+  padding: clamp(22px, 2vw, 32px);
+  border: 1px solid rgba(38, 232, 242, 0.32);
   background:
-    radial-gradient(circle at 18% 16%, rgba(35, 224, 235, 0.15), transparent 30%),
-    radial-gradient(circle at 72% 80%, rgba(40, 255, 173, 0.08), transparent 32%),
-    linear-gradient(145deg, rgba(3, 18, 29, 0.9), rgba(1, 6, 13, 0.84));
-  box-shadow: inset 0 1px 0 rgba(176, 249, 255, 0.14), 0 20px 44px rgba(0, 0, 0, 0.26);
-  backdrop-filter: blur(12px) saturate(1.15);
+    radial-gradient(circle at 12% 8%, rgba(38, 232, 242, 0.16), transparent 28%),
+    radial-gradient(circle at 88% 80%, rgba(32, 255, 177, 0.09), transparent 34%),
+    linear-gradient(135deg, rgba(2, 18, 29, 0.92), rgba(1, 7, 15, 0.88));
+  box-shadow: inset 0 1px 0 rgba(197, 250, 255, 0.14), 0 24px 56px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px) saturate(1.18);
 }
 
 .wallet-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin: 0 0 18px;
+  gap: 18px;
+  margin: 0 0 24px;
 }
 
 .wallet-header h2 {
   margin: 0;
-  color: #34f6ff;
-  font-size: clamp(1.8rem, 2.4vw, 2.55rem);
-  font-weight: 800;
+  color: #36f7ff;
+  font-size: clamp(2rem, 2.8vw, 3rem);
+  font-weight: 900;
+  line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-shadow: 0 0 22px rgba(54, 247, 255, 0.24);
 }
 
-.wallet-header span {
+.wallet-header h2::after {
+  content: "Manage your G-Coin";
   display: block;
-  margin-top: 4px;
-  color: rgba(218, 246, 255, 0.66);
-  font-size: 0.72rem;
-  text-transform: uppercase;
+  margin-top: 7px;
+  color: rgba(225, 249, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
 }
 
 .wallet-refresh {
-  width: 54px;
-  height: 50px;
-  min-width: 54px;
+  width: 58px;
+  height: 54px;
+  min-width: 58px;
   padding: 0;
   display: grid;
   place-items: center;
+  border: 1px solid rgba(54, 247, 255, 0.46);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(14, 52, 70, 0.88), rgba(3, 15, 28, 0.94));
+  box-shadow: inset 0 1px 0 rgba(214, 251, 255, 0.1), 0 0 20px rgba(54, 247, 255, 0.12);
 }
 
 .wallet-main {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1fr) minmax(330px, 1fr);
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1fr) minmax(320px, 0.95fr);
   gap: clamp(18px, 2vw, 28px);
   align-items: stretch;
 }
@@ -68,67 +76,115 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .wallet-transfer-form,
 .wallet-receipts {
   min-width: 0;
-  min-height: 390px;
-  padding: clamp(16px, 1.6vw, 24px);
-  border: 1px solid rgba(35, 224, 235, 0.4);
+  min-height: 430px;
+  border: 1px solid rgba(54, 247, 255, 0.34);
   background:
-    linear-gradient(180deg, rgba(5, 22, 35, 0.88), rgba(1, 7, 14, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(151, 244, 255, 0.06), 0 18px 34px rgba(0, 0, 0, 0.22);
+    linear-gradient(180deg, rgba(2, 18, 31, 0.92), rgba(0, 6, 14, 0.86));
+  box-shadow: inset 0 0 0 1px rgba(190, 251, 255, 0.06), 0 18px 38px rgba(0, 0, 0, 0.26);
 }
 
 .wallet-list {
   display: grid;
   gap: 18px;
   align-content: start;
-  margin-bottom: 0;
+  padding: 22px;
+}
+
+.wallet-list::before,
+.wallet-transfer-form::before {
+  color: #36f7ff;
+  font-size: 1.16rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .wallet-list::before {
   content: "Accounts";
-  color: #34f6ff;
-  font-size: 1.08rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .wallet-list article {
+  position: relative;
+  min-height: 116px;
+  padding: 22px 24px 22px 112px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 20px;
-  min-height: 118px;
-  padding: 20px;
-  border: 1px solid rgba(35, 224, 235, 0.55);
+  gap: 18px;
+  border: 1px solid rgba(54, 247, 255, 0.5);
   background:
-    radial-gradient(circle at 12% 50%, rgba(35, 224, 235, 0.18), transparent 34%),
-    linear-gradient(90deg, rgba(9, 46, 61, 0.9), rgba(3, 15, 25, 0.82));
-  box-shadow: 0 0 22px rgba(35, 224, 235, 0.1);
+    radial-gradient(circle at 44px 50%, rgba(54, 247, 255, 0.22), transparent 42px),
+    linear-gradient(90deg, rgba(8, 55, 70, 0.88), rgba(2, 20, 32, 0.78));
+  box-shadow: 0 0 26px rgba(54, 247, 255, 0.11);
+}
+
+.wallet-list article::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  width: 62px;
+  height: 62px;
+  transform: translateY(-50%);
+  border: 2px solid rgba(54, 247, 255, 0.7);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(54, 247, 255, 0.16), rgba(0, 8, 18, 0.72));
+  box-shadow: 0 0 24px rgba(54, 247, 255, 0.2);
 }
 
 .wallet-list strong {
   display: block;
-  color: rgba(238, 251, 255, 0.92);
-  font-size: 1.45rem;
-  letter-spacing: 0.02em;
+  color: rgba(243, 253, 255, 0.96);
+  font-size: 1.55rem;
+  font-weight: 900;
 }
 
 .wallet-list small {
   display: block;
-  margin-top: 2px;
-  color: rgba(238, 251, 255, 0.66);
-  font-size: 0.95rem;
+  margin-top: 4px;
+  color: rgba(187, 236, 245, 0.78);
+  font-size: 1rem;
 }
 
 .wallet-list b {
   color: #28ffad;
   font-size: 1.65rem;
   font-weight: 900;
-  text-align: right;
   white-space: nowrap;
+  text-shadow: 0 0 16px rgba(40, 255, 173, 0.2);
+}
+
+.wallet-summary {
+  min-height: 112px;
+  padding: 20px 22px;
+  display: grid;
+  gap: 7px;
+  align-content: center;
+  border: 1px solid rgba(54, 247, 255, 0.28);
+  background: linear-gradient(180deg, rgba(4, 25, 39, 0.78), rgba(0, 7, 15, 0.7));
+}
+
+.wallet-summary span {
+  color: #36f7ff;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wallet-summary strong {
+  color: #28ffad;
+  font-size: 1.75rem;
+  font-weight: 900;
+}
+
+.wallet-summary small {
+  color: rgba(222, 249, 255, 0.68);
+  font-size: 0.92rem;
 }
 
 .wallet-transfer-form {
+  padding: 22px 24px;
   display: grid;
   gap: 18px;
   align-content: start;
@@ -136,19 +192,15 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .wallet-transfer-form::before {
   content: "Transfer G-Coin";
-  color: #34f6ff;
-  font-size: 1.08rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .wallet-transfer-form label {
   display: grid;
   gap: 10px;
-  color: #34f6ff;
-  font-size: 0.96rem;
-  font-weight: 800;
+  color: #36f7ff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -157,10 +209,12 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .wallet-user-open {
   width: 100%;
   min-height: 58px;
-  border: 1px solid rgba(35, 224, 235, 0.55);
-  background: rgba(0, 5, 12, 0.78);
-  color: rgba(234, 252, 255, 0.92);
-  font-size: 1.08rem;
+  border: 1px solid rgba(54, 247, 255, 0.46);
+  border-radius: 5px;
+  background: rgba(0, 7, 15, 0.84);
+  color: rgba(243, 253, 255, 0.96);
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 
 .wallet-transfer-form select,
@@ -171,54 +225,159 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .wallet-user-open {
   display: grid;
   place-items: center;
-  color: #29b8ff;
+  color: #36f7ff;
 }
 
 .wallet-user-field strong {
+  display: grid;
+  min-height: 44px;
+  align-items: center;
   color: #28ffad;
   font-size: 1.08rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
 .wallet-transfer-button {
-  min-height: 66px;
-  margin-top: 8px;
+  min-height: 70px;
   width: 100%;
-  justify-self: center;
-  border: 1px solid rgba(35, 224, 235, 0.75);
+  margin-top: 4px;
+  border: 1px solid rgba(54, 247, 255, 0.76);
+  border-radius: 6px;
   background:
-    linear-gradient(180deg, rgba(12, 58, 76, 0.98), rgba(3, 18, 30, 0.98));
-  color: rgba(238, 251, 255, 0.96);
-  box-shadow: inset 0 0 0 1px rgba(151, 244, 255, 0.12), 0 0 24px rgba(35, 224, 235, 0.18);
-  font-size: 1.25rem;
+    linear-gradient(180deg, rgba(12, 69, 91, 0.98), rgba(2, 21, 36, 0.98));
+  color: rgba(247, 254, 255, 0.98);
+  box-shadow: inset 0 0 0 1px rgba(205, 252, 255, 0.13), 0 0 26px rgba(54, 247, 255, 0.22);
+  font-size: 1.28rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wallet-transfer-button:hover,
+.wallet-transfer-button:focus-visible,
+.wallet-user-open:hover,
+.wallet-user-open:focus-visible {
+  border-color: rgba(40, 255, 173, 0.8);
+  color: #28ffad;
+  outline: 0;
+}
+
+.wallet-receipts {
+  padding: 22px 24px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+}
+
+.wallet-receipts header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.wallet-receipts header .hud-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  background: #dffbff;
+}
+
+.wallet-receipts h3 {
+  margin: 0;
+  color: #36f7ff;
+  font-size: 1.16rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.wallet-receipts p {
+  margin: 4px 0 0;
+  color: rgba(222, 249, 255, 0.68);
+  font-size: 0.95rem;
+}
+
+.wallet-receipt-list {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.wallet-receipt-list article {
+  min-height: 72px;
+  padding: 15px 18px;
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(54, 247, 255, 0.26);
+  background: linear-gradient(90deg, rgba(5, 29, 43, 0.82), rgba(0, 8, 17, 0.7));
+}
+
+.wallet-receipt-list article strong {
+  color: #28ffad;
+  font-size: 0.92rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.wallet-receipt-list article small {
+  color: rgba(243, 253, 255, 0.9);
+  font-size: 1rem;
+}
+
+.wallet-receipt-empty {
+  min-height: 260px;
+  padding: 28px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border: 1px solid rgba(54, 247, 255, 0.22);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(54, 247, 255, 0.14), transparent 78px),
+    linear-gradient(180deg, rgba(3, 22, 34, 0.72), rgba(0, 7, 15, 0.68));
+}
+
+.wallet-receipt-empty strong {
+  color: #28ffad;
+  font-size: 1.1rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.wallet-refresh,
-.wallet-user-open,
-.wallet-transfer-button {
-  border-radius: 3px;
+.wallet-receipt-empty small {
+  margin-top: 8px;
+  color: rgba(222, 249, 255, 0.72);
+  font-size: 0.98rem;
 }
 
-.wallet-refresh {
-  border: 1px solid rgba(48, 171, 234, 0.42);
-  background: linear-gradient(180deg, rgba(22, 45, 62, 0.92), rgba(3, 12, 21, 0.94));
+.wallet-receipts footer {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  padding-top: 8px;
+  color: rgba(222, 249, 255, 0.58);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.wallet-receipts footer b {
+  color: rgba(243, 253, 255, 0.92);
 }
 
 .wallet-user-window {
   position: fixed;
   inset: 50% auto auto 50%;
   z-index: 35;
-  width: min(820px, calc(100vw - 56px));
-  max-height: min(680px, calc(100vh - 72px));
+  width: min(920px, calc(100vw - 56px));
+  max-height: min(720px, calc(100vh - 64px));
   transform: translate(-50%, -50%);
   display: grid;
   grid-template-rows: auto 1fr auto;
-  border: 1px solid rgba(72, 205, 255, 0.45);
-  background: linear-gradient(145deg, rgba(5, 21, 35, 0.96), rgba(3, 9, 18, 0.94));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 34px rgba(47, 199, 255, 0.14);
+  border: 1px solid rgba(54, 247, 255, 0.52);
+  background: linear-gradient(145deg, rgba(3, 20, 33, 0.98), rgba(0, 7, 16, 0.96));
+  box-shadow: 0 26px 78px rgba(0, 0, 0, 0.58), 0 0 36px rgba(54, 247, 255, 0.15);
   backdrop-filter: blur(16px) saturate(1.2);
 }
 
@@ -231,43 +390,44 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(111, 218, 255, 0.2);
+  gap: 16px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(54, 247, 255, 0.22);
 }
 
 .wallet-user-window-footer {
-  border-top: 1px solid rgba(111, 218, 255, 0.2);
+  border-top: 1px solid rgba(54, 247, 255, 0.22);
   border-bottom: 0;
 }
 
 .wallet-user-window-bar span,
 .wallet-user-window-footer span {
-  color: rgba(218, 246, 255, 0.62);
-  font-size: 0.68rem;
+  color: rgba(222, 249, 255, 0.64);
+  font-size: 0.78rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
 .wallet-user-window-bar h2 {
-  margin: 2px 0 0;
-  color: #2daeff;
-  font-size: 1.1rem;
-  font-weight: 500;
+  margin: 3px 0 0;
+  color: #36f7ff;
+  font-size: 1.28rem;
+  font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .wallet-user-window-close {
-  width: 34px;
-  height: 32px;
-  min-width: 34px;
+  width: 40px;
+  height: 38px;
+  min-width: 40px;
   padding: 0;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(48, 171, 234, 0.42);
-  background: linear-gradient(180deg, rgba(22, 45, 62, 0.94), rgba(3, 12, 21, 0.96));
-  color: #9eeeff;
-  border-radius: 3px;
+  border: 1px solid rgba(54, 247, 255, 0.42);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(14, 52, 70, 0.94), rgba(3, 12, 21, 0.96));
+  color: #b9f8ff;
 }
 
 .wallet-user-window-close svg {
@@ -279,183 +439,80 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 }
 
 .wallet-user-window-body {
-  min-height: 320px;
+  min-height: 420px;
   overflow: auto;
-  padding: 16px;
+  padding: 18px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .wallet-user-option {
-  min-height: 52px;
-  padding: 0 14px;
-  border: 1px solid rgba(48, 171, 234, 0.3);
-  background: linear-gradient(180deg, rgba(10, 31, 48, 0.92), rgba(3, 12, 21, 0.94));
-  color: rgba(238, 251, 255, 0.94);
+  min-height: 58px;
+  padding: 0 18px;
+  border: 1px solid rgba(54, 247, 255, 0.3);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(7, 33, 50, 0.92), rgba(1, 11, 22, 0.94));
+  color: rgba(243, 253, 255, 0.94);
   text-align: left;
-  border-radius: 3px;
 }
 
 .wallet-user-option strong {
   display: block;
-  font-size: 0.92rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 .wallet-user-option:hover,
 .wallet-user-option:focus-visible {
-  border-color: rgba(40, 255, 173, 0.72);
+  border-color: rgba(40, 255, 173, 0.78);
   color: #28ffad;
   outline: 0;
 }
 
 .wallet-user-empty {
-  padding: 16px;
-  border: 1px solid rgba(48, 171, 234, 0.2);
-  background: rgba(0, 5, 12, 0.64);
-}
-
-.wallet-user-empty strong,
-.wallet-user-empty small {
-  display: block;
+  grid-column: 1 / -1;
+  min-height: 160px;
+  padding: 22px;
+  display: grid;
+  place-content: center;
+  border: 1px solid rgba(54, 247, 255, 0.2);
+  background: rgba(0, 7, 15, 0.68);
+  text-align: center;
 }
 
 .wallet-user-empty strong {
   color: #ffffff;
-  font-size: 0.84rem;
+  font-size: 1rem;
 }
 
 .wallet-user-empty small {
-  margin-top: 4px;
-  color: rgba(230, 250, 255, 0.68);
-  font-size: 0.72rem;
+  display: block;
+  margin-top: 6px;
+  color: rgba(222, 249, 255, 0.68);
+  font-size: 0.88rem;
 }
 
 .wallet-user-window-footer button {
-  min-width: 96px;
-  min-height: 28px;
-  border: 1px solid rgba(48, 171, 234, 0.42);
-  background: linear-gradient(180deg, rgba(22, 45, 62, 0.94), rgba(3, 12, 21, 0.96));
-  color: rgba(238, 251, 255, 0.95);
-  border-radius: 3px;
-  box-shadow: inset 0 1px 0 rgba(210, 246, 255, 0.1), 0 0 12px rgba(47, 199, 255, 0.08);
-  font-size: 0.72rem;
-  font-weight: 400;
+  min-width: 116px;
+  min-height: 36px;
+  border: 1px solid rgba(54, 247, 255, 0.46);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(14, 52, 70, 0.94), rgba(3, 12, 21, 0.96));
+  color: rgba(243, 253, 255, 0.95);
+  font-size: 0.82rem;
+  font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .wallet-user-window-footer button:disabled {
   border-color: rgba(65, 103, 124, 0.42);
-  background: linear-gradient(180deg, rgba(13, 28, 39, 0.72), rgba(3, 10, 17, 0.86));
-  box-shadow: inset 0 1px 0 rgba(210, 246, 255, 0.04);
   color: rgba(153, 184, 199, 0.54);
   cursor: default;
 }
 
-.wallet-receipts {
-  display: grid;
-  gap: 18px;
-  align-content: start;
-}
-
-.wallet-receipts header {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.wallet-receipts header .hud-icon {
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  background: #eafaff;
-}
-
-.wallet-receipts h3 {
-  margin: 0;
-  color: #34f6ff;
-  font-size: 1.08rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.wallet-receipts p {
-  margin: 2px 0 0;
-  color: rgba(230, 250, 255, 0.72);
-  font-size: 0.94rem;
-}
-
-.wallet-receipt-list {
-  display: grid;
-  gap: 12px;
-}
-
-.wallet-receipt-list article {
-  display: grid;
-  gap: 3px;
-  min-height: 72px;
-  padding: 16px 18px;
-  border: 1px solid rgba(35, 224, 235, 0.28);
-  background: linear-gradient(90deg, rgba(5, 24, 39, 0.78), rgba(0, 5, 12, 0.62));
-}
-
-.wallet-receipt-list article strong {
-  color: #28ffad;
-  font-size: 0.92rem;
-  text-transform: uppercase;
-}
-
-.wallet-receipt-list article small {
-  color: rgba(238, 251, 255, 0.9);
-  font-size: 1rem;
-}
-
-.wallet-receipt-empty {
-  min-height: 220px;
-  padding: 26px;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  border: 1px solid rgba(35, 224, 235, 0.18);
-  background:
-    radial-gradient(circle at 50% 38%, rgba(35, 224, 235, 0.13), transparent 34%),
-    rgba(0, 5, 12, 0.7);
-}
-
-.wallet-receipt-empty strong {
-  display: block;
-  color: #28ffad;
-  font-size: 1.05rem;
-  text-transform: uppercase;
-}
-
-.wallet-receipt-empty small {
-  display: block;
-  color: rgba(230, 250, 255, 0.68);
-  font-size: 0.95rem;
-}
-
-.wallet-receipts footer {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 5px 12px;
-  margin-top: 10px;
-  color: rgba(230, 250, 255, 0.58);
-  font-size: 0.86rem;
-  text-transform: uppercase;
-}
-
-.wallet-receipts footer b {
-  color: rgba(234, 252, 255, 0.9);
-}
-
-@media (max-width: 1080px) {
-  .wallet-shell {
-    width: 100%;
-  }
-
+@media (max-width: 1120px) {
   .wallet-main {
     grid-template-columns: 1fr;
   }
@@ -464,4 +521,11 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
     display: grid;
     gap: 18px;
   }
+
+  .wallet-list,
+  .wallet-transfer-form,
+  .wallet-receipts {
+    min-height: 0;
+  }
 }
+
