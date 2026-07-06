@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-stats
-// Build: 1003
-// Update: Stats Read Command
+// Build: 1004
+// Update: Ignore Handshake During Stat Render
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -62,6 +62,7 @@ function parseStatsPayload(message) {
 function receiveStats(message) {
   const payload = typeof message === "string" ? parseStatsPayload(message) : message;
   if (!payload || payload.feature !== "NEURA_STATS") return;
+  if (!String(message || "").startsWith("NEURA_STATS_DATA")) return;
   statsState.bridgeOnline = true;
   document.querySelector(".stats-panel")?.setAttribute("data-stats-bridge", "online");
   renderStats(payload);
@@ -112,7 +113,7 @@ if (statsGatewayCanPost()) {
 }
 
 window.neuraStats = Object.freeze({
-  build: 1003,
+  build: 1004,
   feature: "NEURA_STATS",
   receive: receiveStats,
   render: renderStats,
