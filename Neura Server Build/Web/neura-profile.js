@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1021
-// Update: Single Stamina Progress Bar
+// Build: 1023
+// Update: Premium Profile HUD Pass
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -60,6 +60,13 @@ function setText(selector, value) {
 function setSwatch(selector, value) {
   const node = document.querySelector(selector);
   if (node) node.style.background = value;
+}
+
+function setSigilPreview(selector, sigil) {
+  document.querySelectorAll(selector).forEach((node) => {
+    node.textContent = sigilMark(sigil);
+    node.dataset.sigil = sigil;
+  });
 }
 
 function setProfileBridgeStatus(message) {
@@ -239,6 +246,9 @@ function syncProfilePreview() {
   const xp = profileValue(profileState.lastXpPayload.xp || profileState.lastServerPayload.xp, "0");
   const xpGoal = profileValue(profileState.lastXpPayload.xpNext || profileState.lastServerPayload.xpGoal, "2500");
   const sigil = currentProfileSigil(data);
+  const zodiac = String(data.get("zodiac") || "");
+  const profile = zodiacProfiles[zodiac];
+  const previewReady = ["displayName", "age", "sex", "location"].every((name) => String(data.get(name) || "").trim());
   const updated = profileState.lastServerPayload.updated || profileState.lastIdentityPayload.updated || "";
 
   shell.style.setProperty("--profile-accent", accent);
@@ -251,7 +261,7 @@ function syncProfilePreview() {
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
   setText("[data-profile-view-status]", profileState.serverReady ? "Saved" : "Setup");
-  setText("[data-profile-view-gate]", profileState.profileReady ? "Complete" : "Missing");
+  setText("[data-profile-view-gate]", previewReady ? "Complete" : "Missing");
   setText("[data-profile-view-accent]", accent);
   setText("[data-profile-view-background]", background);
   setText("[data-profile-view-sigil]", sigilLabel(sigil));
@@ -260,9 +270,16 @@ function syncProfilePreview() {
   setText("[data-profile-view-note]", profileState.serverReady ? "Profile data saved." : "Waiting for profile save.");
   setSwatch("[data-profile-view-accent-swatch]", accent);
   setSwatch("[data-profile-view-bg-swatch]", background);
+  setText("[data-profile-id-name]", displayName);
+  setText("[data-profile-id-district]", location === "Not Set" ? "District Pending" : `${location} District`);
+  setText("[data-profile-id-role]", role);
+  setText("[data-profile-id-sigil]", sigilLabel(sigil));
+  setText("[data-profile-id-zodiac]", profile ? profile[0] : "Not Set");
+  setText("[data-profile-id-status]", previewReady ? "Neura Verified" : "Identity Pending");
+  setText("[data-profile-id-since]", updated ? `Synced ${profileUpdatedLabel(updated)}` : "Resident Since 2026");
+  setSwatch("[data-profile-id-accent-swatch]", accent);
+  setSwatch("[data-profile-id-bg-swatch]", background);
 
-  const zodiac = String(data.get("zodiac") || "");
-  const profile = zodiacProfiles[zodiac];
   const zodiacMark = document.querySelector("[data-zodiac-mark]");
   const zodiacEmpty = document.querySelector("[data-zodiac-empty]");
 
@@ -332,8 +349,8 @@ function setProfileSigil(value) {
   profileState.selectedSigil = sigil;
   profileState.pendingSigil = sigil;
   syncProfileSigilValue(sigil);
-  setText("[data-profile-sigil-preview]", sigilMark(sigil));
-  setText("[data-sigil-current-preview]", sigilMark(sigil));
+  setSigilPreview("[data-profile-sigil-preview]", sigil);
+  setSigilPreview("[data-sigil-current-preview]", sigil);
   setText("[data-avatar-current-label]", `${sigilLabel(sigil)} selected`);
   syncAvatarWindow();
   syncProfileReady();
@@ -644,7 +661,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1021,
+  build: 1023,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

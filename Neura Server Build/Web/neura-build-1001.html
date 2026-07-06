@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1081">
+<html lang="en" data-neura-pattern="UI_LSL_TO_HTML_CSS_JS" data-neura-build="1082">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,9 +7,9 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1051">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1008">
+  <link rel="stylesheet" href="neura-profile.css?v=1010">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
-  <link rel="stylesheet" href="neura-wallet.css?v=1008">
+  <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
   <link rel="stylesheet" href="neura-work.css?v=1001">
 </head>
@@ -155,7 +155,7 @@
           <section class="profile-card" data-profile-card>
             <div class="profile-identity">
               <div class="profile-avatar-frame" data-profile-avatar-frame>
-                <span class="profile-sigil-mark" data-profile-sigil-preview>CORE</span>
+                <span class="profile-sigil-mark" data-profile-sigil-preview data-sigil="core">CORE</span>
               </div>
               <div class="profile-copy">
                 <span class="profile-title-line"><span class="profile-status-pill is-offline" data-profile-lock>Locked</span></span>
@@ -229,7 +229,7 @@
               <section class="avatar-picker" aria-label="Profile sigil">
                 <div class="avatar-current">
                   <span class="avatar-current-thumb">
-                    <span class="profile-sigil-mark is-small" data-sigil-current-preview>CORE</span>
+                    <span class="profile-sigil-mark is-small" data-sigil-current-preview data-sigil="core">CORE</span>
                   </span>
                   <div>
                     <strong>Profile Sigil</strong>
@@ -292,6 +292,32 @@
               <strong data-profile-view-server>Online</strong>
             </footer>
           </section>
+
+          <section class="profile-id-card" data-profile-id-card aria-label="Resident ID preview">
+            <header>
+              <span>Camden Falls</span>
+              <strong>Resident ID</strong>
+            </header>
+            <div class="profile-id-face">
+              <div class="profile-id-topline">
+                <span data-profile-id-status>Identity Pending</span>
+                <i aria-hidden="true"></i>
+              </div>
+              <strong data-profile-id-name>Profile Setup Required</strong>
+              <small data-profile-id-district>District Pending</small>
+              <div class="profile-id-lines">
+                <p><span>Role</span><b data-profile-id-role>Not Set</b></p>
+                <p><span>Sigil</span><b data-profile-id-sigil>Core</b></p>
+                <p><span>Zodiac</span><b data-profile-id-zodiac>Not Set</b></p>
+              </div>
+              <div class="profile-id-city" aria-hidden="true"></div>
+              <footer>
+                <div><span>Accent</span><i data-profile-id-accent-swatch></i></div>
+                <div><span>Glass</span><i data-profile-id-bg-swatch></i></div>
+                <b data-profile-id-since>Resident Since 2026</b>
+              </footer>
+            </div>
+          </section>
         </section>
       </article>
     </section>
@@ -324,6 +350,11 @@
                 </div>
                 <b>GC <em data-wallet-savings>--</em></b>
               </article>
+              <aside class="wallet-summary">
+                <span>Account Summary</span>
+                <strong>GC <em data-wallet-total>--</em></strong>
+                <small>Live G-Coin balance</small>
+              </aside>
             </section>
 
             <form class="wallet-transfer-form" data-wallet-transfer-form>
@@ -342,7 +373,7 @@
                 <button type="button" class="wallet-user-open" data-wallet-user-open>Recipient</button>
                 <strong data-wallet-selected-user>No user selected</strong>
               </label>
-              <button type="submit" class="wallet-transfer-button" data-wallet-command="transfer">Transfer</button>
+              <button type="submit" class="wallet-transfer-button">Send Transfer</button>
             </form>
           </section>
 
@@ -350,7 +381,7 @@
             <header>
               <span class="hud-icon icon-wallet" aria-hidden="true"></span>
               <div>
-                <h3>Receipts</h3>
+                <h3>Recent Activity</h3>
                 <p>Incoming and outgoing G-Coin activity.</p>
               </div>
             </header>
@@ -735,9 +766,9 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1021"></script>
-  <script type="module" src="neura-stats.js?v=1003"></script>
-  <script type="module" src="neura-wallet.js?v=1005"></script>
+  <script type="module" src="neura-profile.js?v=1023"></script>
+  <script type="module" src="neura-stats.js?v=1004"></script>
+  <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>
   <script type="module" src="neura-work.js?v=1001"></script>
   <script type="module" src="neura-heart.js?v=1007"></script>
