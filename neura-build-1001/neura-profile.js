@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1021
-// Update: Single Stamina Progress Bar
+// Build: 1022
+// Update: Stamina Layout Cache Bump
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -644,7 +644,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1021,
+  build: 1022,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
