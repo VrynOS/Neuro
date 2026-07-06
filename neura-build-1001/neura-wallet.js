@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-wallet
-// Build: 1007
-// Update: Recipients And Receipts
+// Build: 1008
+// Update: Clean Wallet Picker Receipts
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -62,6 +62,30 @@ function parseWalletUsers(raw = "") {
   }).filter((user) => user.id && user.name);
 }
 
+function cleanWalletReceiptDetail(detail = "") {
+  const text = walletDecode(detail).replace(/\s+/g, " ").trim();
+  const parts = text.split(" ").filter(Boolean);
+  const kind = parts[0] || "Wallet";
+  const route = parts[1] || "";
+  const amount = parts[2] || "";
+
+  if (kind === "XFER") {
+    const label = {
+      "C>S": "Checking to Savings",
+      "S>C": "Savings to Checking",
+      "C>U": "Checking to User"
+    }[route] || "Wallet Transfer";
+    return amount ? `${label} - GC ${walletMoney(amount)}` : label;
+  }
+
+  if (kind === "SEND") return amount ? `User Payment - GC ${walletMoney(amount)}` : "User Payment";
+  if (kind === "SIGNUP") return amount ? `Signup Bonus - GC ${walletMoney(amount)}` : "Signup Bonus";
+  if (kind === "ADDFUNDS") return amount ? `Funds Added - GC ${walletMoney(amount)}` : "Funds Added";
+  if (kind === "FAIL" || kind === "ERR" || kind === "DENY") return parts.slice(1).join(" ") || "Wallet transaction failed";
+
+  return text || "Wallet transaction";
+}
+
 function renderWallet(payload = walletState) {
   const hasBalances = payload.checking !== "" && payload.savings !== "";
   const total = hasBalances
@@ -88,7 +112,6 @@ function renderWalletUsers() {
   list.innerHTML = walletState.users.map((user, index) => `
     <button type="button" class="wallet-user-option" data-wallet-user-index="${index}">
       <strong>${walletEscape(user.name)}</strong>
-      <small>${walletEscape(user.id.slice(-8).toUpperCase())}</small>
     </button>
   `).join("");
 }
@@ -104,9 +127,8 @@ function renderWalletReceipts() {
 
   list.innerHTML = walletState.receipts.slice(0, 12).map((receipt) => `
     <article>
-      <strong>${receipt.status}</strong>
-      <small>${walletEscape(receipt.detail || "Wallet transaction")}</small>
-      <em>${walletEscape(receipt.updated || "--")}</em>
+      <strong>${receipt.status === "error" ? "Failed" : "Complete"}</strong>
+      <small>${walletEscape(cleanWalletReceiptDetail(receipt.detail))}</small>
     </article>
   `).join("");
 }
@@ -224,7 +246,7 @@ renderWalletUsers();
 renderWalletReceipts();
 
 window.neuraWallet = Object.freeze({
-  build: 1007,
+  build: 1008,
   feature: "NEURA_WALLET_HOST",
   receive: receiveWallet,
   render: renderWallet,
