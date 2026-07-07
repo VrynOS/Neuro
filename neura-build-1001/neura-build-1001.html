@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1052">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1012">
+  <link rel="stylesheet" href="neura-profile.css?v=1011">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -252,13 +252,42 @@
             </form>
           </section>
 
-          <section class="profile-id-card" data-profile-id-card aria-label="Resident ID preview">
+          <section class="profile-saved-panel" data-profile-saved-panel aria-label="Saved profile">
             <header>
               <div>
-                <span>Camden Falls</span>
-                <strong>Resident ID</strong>
+                <span>Profile Matrix</span>
+                <strong>Server Synced</strong>
               </div>
-              <button type="button" class="profile-id-edit" data-profile-edit>EDIT</button>
+            </header>
+
+            <div class="profile-saved-grid">
+              <article data-profile-matrix-card="status">
+                <span>Profile Status</span>
+                <strong data-profile-view-status>Saved</strong>
+              </article>
+              <article data-profile-matrix-card="gate">
+                <span>Identity Gate</span>
+                <strong data-profile-view-gate>Complete</strong>
+              </article>
+              <article data-profile-matrix-card="server">
+                <span>Server Link</span>
+                <strong data-profile-view-server>Online</strong>
+              </article>
+              <article data-profile-matrix-card="sync">
+                <span>Last Sync</span>
+                <strong data-profile-view-updated>--</strong>
+              </article>
+            </div>
+
+            <footer>
+              <button type="button" data-profile-edit>EDIT PROFILE</button>
+            </footer>
+          </section>
+
+          <section class="profile-id-card" data-profile-id-card aria-label="Resident ID preview">
+            <header>
+              <span>Camden Falls</span>
+              <strong>Resident ID</strong>
             </header>
             <div class="profile-id-face">
               <div class="profile-id-topline">
@@ -272,6 +301,13 @@
                 <p><span>Sigil</span><b data-profile-id-sigil>Core</b></p>
               </div>
               <div class="profile-id-city" aria-hidden="true"></div>
+              <footer class="profile-id-verify">
+                <span class="profile-id-qr" aria-hidden="true"></span>
+                <div>
+                  <strong>Neura Verified</strong>
+                  <small data-profile-id-since>Resident Since 2026</small>
+                </div>
+              </footer>
             </div>
           </section>
         </section>
