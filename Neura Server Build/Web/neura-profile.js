@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1024
-// Update: Profile Readability Pass
+// Build: 1026
+// Update: Profile Personal Glass Pass
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -27,18 +27,18 @@ const profileState = {
 };
 
 const zodiacProfiles = {
-  aries: ["Aries", "Fire", "Bold / Direct / Driven", "Fast spark. First move."],
-  taurus: ["Taurus", "Earth", "Grounded / Loyal / Steady", "Built slow. Built to last."],
-  gemini: ["Gemini", "Air", "Curious / Social / Sharp", "Two signals. One mind."],
-  cancer: ["Cancer", "Water", "Protective / Intuitive / Deep", "Soft shell. Strong current."],
-  leo: ["Leo", "Fire", "Radiant / Proud / Warm", "Presence enters before words."],
-  virgo: ["Virgo", "Earth", "Precise / Helpful / Focused", "Every detail has a place."],
-  libra: ["Libra", "Air", "Balanced / Charming / Fair", "Harmony with a backbone."],
-  scorpio: ["Scorpio", "Water", "Intense / Private / Loyal", "Quiet surface. Deep power."],
-  sagittarius: ["Sagittarius", "Fire", "Free / Honest / Restless", "Truth moves forward."],
-  capricorn: ["Capricorn", "Earth", "Strategic / Patient / Resilient", "Long climb. Clear crown."],
-  aquarius: ["Aquarius", "Air", "Original / Future / Detached", "Different frequency. Clean signal."],
-  pisces: ["Pisces", "Water", "Dreaming / Kind / Fluid", "Feeling finds the path."]
+  aries: ["Aries", "Fire", "Bold / Direct / Driven", "Fast spark. First move.", "Aries carries first-move fire, pushing toward action, courage, and a life that rarely waits for permission."],
+  taurus: ["Taurus", "Earth", "Grounded / Loyal / Steady", "Built slow. Built to last.", "Taurus is rooted earth energy, known for loyalty, comfort, patience, and a steady will that becomes hard to move."],
+  gemini: ["Gemini", "Air", "Curious / Social / Sharp", "Two signals. One mind.", "Gemini moves through ideas quickly, carrying air energy that makes conversation, curiosity, and change feel natural."],
+  cancer: ["Cancer", "Water", "Protective / Intuitive / Deep", "Soft shell. Strong current.", "Cancer is protective water energy, deeply tied to memory, home, intuition, and the people it chooses to guard."],
+  leo: ["Leo", "Fire", "Radiant / Proud / Warm", "Presence enters before words.", "Leo carries warm fire, bringing confidence, creative pride, and a natural pull toward being seen and remembered."],
+  virgo: ["Virgo", "Earth", "Precise / Helpful / Focused", "Every detail has a place.", "Virgo is careful earth energy, shaped by detail, service, improvement, and the quiet power of getting things right."],
+  libra: ["Libra", "Air", "Balanced / Charming / Fair", "Harmony with a backbone.", "Libra carries air through balance, beauty, and social instinct, always reading the room for harmony and fairness."],
+  scorpio: ["Scorpio", "Water", "Intense / Private / Loyal", "Quiet surface. Deep power.", "Scorpio is deep water energy, known for privacy, intensity, loyalty, and transformation beneath a calm surface."],
+  sagittarius: ["Sagittarius", "Fire", "Free / Honest / Restless", "Truth moves forward.", "Sagittarius is known as the seeker, always moving toward truth, freedom, and the next horizon with bold fire energy."],
+  capricorn: ["Capricorn", "Earth", "Strategic / Patient / Resilient", "Long climb. Clear crown.", "Capricorn is mountain earth energy, built around patience, ambition, discipline, and the long climb toward mastery."],
+  aquarius: ["Aquarius", "Air", "Original / Future / Detached", "Different frequency. Clean signal.", "Aquarius carries future-minded air, often drawn to original ideas, community shifts, and a perspective slightly outside the crowd."],
+  pisces: ["Pisces", "Water", "Dreaming / Kind / Fluid", "Feeling finds the path.", "Pisces is dreamlike water energy, blending empathy, imagination, and emotional depth into a soft but powerful current."]
 };
 
 function profileValue(value, fallback) {
@@ -235,8 +235,8 @@ function syncProfilePreview() {
   const sex = profileSelectValue(data.get("sex"), "Sex Not Set");
   const role = profileValue(data.get("role"), "Not Set");
   const location = profileValue(data.get("location"), "Not Set");
-  const accent = profileValue(data.get("accentColor"), "#2fc7ff");
-  const background = profileValue(data.get("backgroundColor"), "#061725");
+  const accent = profileValue(data.get("accentColor"), "#d6b35f");
+  const background = profileValue(data.get("backgroundColor"), "#171211");
   const stamina = profileValue(data.get("stamina"), "100");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
   const staminaLevel = profileValue(profileState.lastServerPayload.staminaLevel || profileState.lastServerPayload.level, "1");
@@ -248,8 +248,6 @@ function syncProfilePreview() {
   const sigil = currentProfileSigil(data);
   const zodiac = String(data.get("zodiac") || "");
   const profile = zodiacProfiles[zodiac];
-  const previewReady = ["displayName", "age", "sex", "location"].every((name) => String(data.get(name) || "").trim());
-  const updated = profileState.lastServerPayload.updated || profileState.lastIdentityPayload.updated || "";
 
   shell.style.setProperty("--profile-accent", accent);
   shell.style.setProperty("--profile-bg", background);
@@ -260,25 +258,7 @@ function syncProfilePreview() {
   setText("[data-profile-sex]", sex);
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
-  setText("[data-profile-view-status]", profileState.serverReady ? "Saved" : "Setup");
-  setText("[data-profile-view-gate]", previewReady ? "Complete" : "Missing");
-  setText("[data-profile-view-accent]", accent);
-  setText("[data-profile-view-background]", background);
-  setText("[data-profile-view-sigil]", sigilLabel(sigil));
-  setText("[data-profile-view-updated]", profileUpdatedLabel(updated));
-  setText("[data-profile-view-server]", profileState.bridgeOnline ? "Online" : "Offline");
-  setText("[data-profile-view-note]", profileState.serverReady ? "Server profile is synced and ready." : "Waiting for profile save.");
-  setSwatch("[data-profile-view-accent-swatch]", accent);
-  setSwatch("[data-profile-view-bg-swatch]", background);
-  setText("[data-profile-id-name]", displayName);
-  setText("[data-profile-id-district]", location === "Not Set" ? "District Pending" : `${location} District`);
-  setText("[data-profile-id-role]", role);
-  setText("[data-profile-id-sigil]", sigilLabel(sigil));
-  setText("[data-profile-id-zodiac]", profile ? profile[0] : "Not Set");
-  setText("[data-profile-id-status]", previewReady ? "Neura Verified" : "Identity Pending");
-  setText("[data-profile-id-since]", updated ? `Synced ${profileUpdatedLabel(updated)}` : "Resident Since 2026");
-  setSwatch("[data-profile-id-accent-swatch]", accent);
-  setSwatch("[data-profile-id-bg-swatch]", background);
+  setText("[data-profile-badge-sigil]", sigilLabel(sigil));
 
   const zodiacMark = document.querySelector("[data-zodiac-mark]");
   const zodiacEmpty = document.querySelector("[data-zodiac-empty]");
@@ -291,6 +271,7 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", profile[1]);
     setText("[data-zodiac-traits]", profile[2]);
     setText("[data-zodiac-line]", profile[3]);
+    setText("[data-zodiac-story]", profile[4]);
   } else {
     zodiacMark?.removeAttribute("src");
     if (zodiacMark) zodiacMark.hidden = true;
@@ -299,6 +280,7 @@ function syncProfilePreview() {
     setText("[data-zodiac-element]", "--");
     setText("[data-zodiac-traits]", "--");
     setText("[data-zodiac-line]", "Waiting for server profile.");
+    setText("[data-zodiac-story]", "Choose a zodiac sign to shape this resident identity.");
   }
 
   syncProfileReady();
@@ -350,6 +332,7 @@ function setProfileSigil(value) {
   profileState.pendingSigil = sigil;
   syncProfileSigilValue(sigil);
   setSigilPreview("[data-profile-sigil-preview]", sigil);
+  setSigilPreview("[data-profile-badge-sigil-mark]", sigil);
   setSigilPreview("[data-sigil-current-preview]", sigil);
   setText("[data-avatar-current-label]", `${sigilLabel(sigil)} selected`);
   syncAvatarWindow();
@@ -661,7 +644,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1024,
+  build: 1026,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

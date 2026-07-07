@@ -1,14 +1,14 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1011
-Update: Profile Readability Pass
+Build: 1013
+Update: Profile Personal Glass Pass
 Date and time: 2026-07-06 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
 
 .profile-shell {
-  --profile-accent: #2fc7ff;
-  --profile-bg: #061725;
+  --profile-accent: #d6b35f;
+  --profile-bg: #171211;
   --profile-edge: color-mix(in srgb, var(--profile-accent), transparent 48%);
   --profile-faint: color-mix(in srgb, var(--profile-accent), transparent 84%);
   --profile-glow: color-mix(in srgb, var(--profile-accent), transparent 62%);
@@ -177,7 +177,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-copy small {
   min-width: 0;
   overflow: hidden;
-  color: rgba(234, 248, 255, 0.72);
+  color: rgba(248, 236, 214, 0.72);
   font-size: 12px;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -239,7 +239,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   justify-content: space-between;
   gap: 8px;
   min-width: 0;
-  color: rgba(234, 248, 255, 0.64);
+  color: rgba(248, 236, 214, 0.64);
   font-size: 11px;
   line-height: 1.16;
 }
@@ -315,7 +315,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   place-items: center;
   width: 74px;
   height: 74px;
-  color: rgba(234, 248, 255, 0.66);
+  color: rgba(248, 236, 214, 0.66);
   background:
     conic-gradient(from 90deg, transparent, color-mix(in srgb, var(--profile-accent), transparent 18%), transparent 48%, color-mix(in srgb, var(--profile-bg), white 24%), transparent 76%),
     radial-gradient(circle, rgba(1, 10, 18, 0.22) 0 54%, rgba(1, 10, 18, 0.76) 55%);
@@ -379,7 +379,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .zodiac-copy small {
   min-width: 0;
   overflow: hidden;
-  color: rgba(234, 248, 255, 0.72);
+  color: rgba(248, 236, 214, 0.72);
   font-size: 12px;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -392,7 +392,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 }
 
 .zodiac-copy small {
-  color: rgba(234, 248, 255, 0.58);
+  color: rgba(248, 236, 214, 0.58);
   font-style: italic;
 }
 
@@ -459,7 +459,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: grid;
   gap: 5px;
   min-width: 0;
-  color: rgba(234, 248, 255, 0.62);
+  color: rgba(248, 236, 214, 0.62);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.07em;
@@ -544,7 +544,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: block;
   margin-top: 3px;
   overflow: hidden;
-  color: rgba(234, 248, 255, 0.58);
+  color: rgba(248, 236, 214, 0.58);
   font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -630,7 +630,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   margin: 0;
   min-height: 0;
   overflow: auto;
-  color: rgba(234, 248, 255, 0.72);
+  color: rgba(248, 236, 214, 0.72);
   font-size: 12px;
   line-height: 1.3;
   overflow-wrap: anywhere;
@@ -648,7 +648,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   display: inline-block;
   width: 28px;
   height: 14px;
-  border: 1px solid rgba(234, 248, 255, 0.32);
+  border: 1px solid rgba(248, 236, 214, 0.32);
   border-radius: 2px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
@@ -745,7 +745,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   gap: 10px;
   margin: 0;
   min-width: 0;
-  color: rgba(234, 248, 255, 0.76);
+  color: rgba(248, 236, 214, 0.76);
   font-size: 13px;
 }
 
@@ -792,7 +792,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-id-face footer b {
   grid-column: 1 / -1;
-  color: rgba(234, 248, 255, 0.68);
+  color: rgba(248, 236, 214, 0.68);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1041,7 +1041,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .sigil-window-grid small {
   min-width: 0;
   overflow: hidden;
-  color: rgba(234, 248, 255, 0.76);
+  color: rgba(248, 236, 214, 0.76);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1108,28 +1108,28 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 /* Profile readability pass: view stays premium, edit owns customization controls. */
 .profile-shell {
-  --profile-ui: #2feaff;
-  --profile-ui-soft: rgba(47, 234, 255, 0.72);
+  --profile-ui: #e8c76f;
+  --profile-ui-soft: rgba(232, 199, 111, 0.72);
   --profile-readable: #f6fbff;
-  --profile-readable-dim: rgba(222, 240, 250, 0.72);
-  --profile-readable-faint: rgba(222, 240, 250, 0.48);
-  --profile-edge: rgba(47, 234, 255, 0.34);
+  --profile-readable-dim: rgba(246, 226, 190, 0.72);
+  --profile-readable-faint: rgba(246, 226, 190, 0.48);
+  --profile-edge: rgba(232, 199, 111, 0.34);
   --profile-faint: color-mix(in srgb, var(--profile-accent), transparent 94%);
   --profile-glow: color-mix(in srgb, var(--profile-accent), transparent 84%);
   --profile-card-bg:
-    radial-gradient(circle at 18% 0%, rgba(47, 234, 255, 0.08), transparent 36%),
+    radial-gradient(circle at 18% 0%, rgba(232, 199, 111, 0.08), transparent 36%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
     rgba(2, 9, 15, 0.88);
   color: var(--profile-readable);
   background:
-    radial-gradient(circle at 12% 0%, rgba(47, 234, 255, 0.08), transparent 34%),
+    radial-gradient(circle at 12% 0%, rgba(232, 199, 111, 0.08), transparent 34%),
     linear-gradient(135deg, rgba(2, 8, 13, 0.9), rgba(1, 5, 10, 0.82)),
     rgba(1, 7, 12, 0.5);
-  border-color: rgba(47, 234, 255, 0.38);
+  border-color: rgba(232, 199, 111, 0.38);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     inset 0 -18px 36px rgba(0, 0, 0, 0.22),
-    0 0 24px rgba(47, 234, 255, 0.13);
+    0 0 24px rgba(232, 199, 111, 0.13);
 }
 
 .profile-card,
@@ -1145,7 +1145,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-saved-panel::before,
 .profile-id-card::before {
   background: repeating-linear-gradient(90deg, var(--profile-ui) 0 3px, transparent 3px 7px);
-  filter: drop-shadow(0 0 6px rgba(47, 234, 255, 0.72));
+  filter: drop-shadow(0 0 6px rgba(232, 199, 111, 0.72));
   opacity: 0.62;
 }
 
@@ -1161,9 +1161,9 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-saved-grid article,
 .profile-matrix-note {
   background:
-    linear-gradient(135deg, rgba(47, 234, 255, 0.055), transparent 62%),
+    linear-gradient(135deg, rgba(232, 199, 111, 0.055), transparent 62%),
     rgba(2, 10, 17, 0.58);
-  border-color: rgba(47, 234, 255, 0.22);
+  border-color: rgba(232, 199, 111, 0.22);
 }
 
 .profile-zodiac {
@@ -1217,17 +1217,17 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-status-pill {
   color: var(--profile-ui);
-  border-color: rgba(47, 234, 255, 0.34);
-  box-shadow: 0 0 12px rgba(47, 234, 255, 0.12);
+  border-color: rgba(232, 199, 111, 0.34);
+  box-shadow: 0 0 12px rgba(232, 199, 111, 0.12);
 }
 
 .profile-avatar-frame,
 .avatar-current-thumb,
 .zodiac-orbit {
-  border-color: rgba(47, 234, 255, 0.4);
+  border-color: rgba(232, 199, 111, 0.4);
   box-shadow:
     inset 0 0 24px rgba(0, 0, 0, 0.28),
-    0 0 22px rgba(47, 234, 255, 0.16);
+    0 0 22px rgba(232, 199, 111, 0.16);
 }
 
 .profile-saved-panel {
@@ -1261,11 +1261,11 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   align-self: center;
   color: var(--profile-ui);
   background:
-    radial-gradient(circle at 50% 50%, rgba(47, 234, 255, 0.24), transparent 54%),
+    radial-gradient(circle at 50% 50%, rgba(232, 199, 111, 0.24), transparent 54%),
     rgba(1, 9, 15, 0.64);
-  border: 1px solid rgba(47, 234, 255, 0.36);
+  border: 1px solid rgba(232, 199, 111, 0.36);
   border-radius: 10px;
-  box-shadow: inset 0 0 16px rgba(47, 234, 255, 0.08), 0 0 14px rgba(47, 234, 255, 0.12);
+  box-shadow: inset 0 0 16px rgba(232, 199, 111, 0.08), 0 0 14px rgba(232, 199, 111, 0.12);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -1316,7 +1316,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   gap: 5px;
   min-height: 56px;
   padding: 10px 12px;
-  border: 1px solid rgba(47, 234, 255, 0.18);
+  border: 1px solid rgba(232, 199, 111, 0.18);
   border-radius: calc(var(--panel-radius) - 1px);
 }
 
@@ -1334,25 +1334,25 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   width: 100%;
   min-height: 42px;
   color: var(--profile-readable);
-  border-color: rgba(47, 234, 255, 0.42);
+  border-color: rgba(232, 199, 111, 0.42);
   font-weight: 800;
   letter-spacing: 0.08em;
   box-shadow:
-    inset 0 0 18px rgba(47, 234, 255, 0.08),
-    0 0 16px rgba(47, 234, 255, 0.12);
+    inset 0 0 18px rgba(232, 199, 111, 0.08),
+    0 0 16px rgba(232, 199, 111, 0.12);
 }
 
 .profile-id-face {
   background:
-    radial-gradient(circle at 78% 18%, rgba(47, 234, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 78% 18%, rgba(232, 199, 111, 0.12), transparent 30%),
     linear-gradient(160deg, rgba(5, 13, 25, 0.96), rgba(2, 7, 15, 0.88)),
     rgba(2, 7, 15, 0.9);
-  border-color: rgba(47, 234, 255, 0.38);
+  border-color: rgba(232, 199, 111, 0.38);
 }
 
 .profile-id-face::before {
   background:
-    linear-gradient(90deg, transparent 0 12%, rgba(47, 234, 255, 0.07) 12% 12.3%, transparent 12.3%),
+    linear-gradient(90deg, transparent 0 12%, rgba(232, 199, 111, 0.07) 12% 12.3%, transparent 12.3%),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 9px);
   opacity: 0.36;
 }
@@ -1367,11 +1367,11 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 
 .profile-id-city::before {
   background:
-    linear-gradient(to top, rgba(47, 234, 255, 0.22) 0 2px, transparent 2px),
-    linear-gradient(to top, rgba(47, 234, 255, 0.22) 0 34%, transparent 34%) 8px bottom / 16px 64px repeat-x,
-    linear-gradient(to top, rgba(47, 234, 255, 0.11) 0 52%, transparent 52%) 2px bottom / 24px 84px repeat-x;
+    linear-gradient(to top, rgba(232, 199, 111, 0.22) 0 2px, transparent 2px),
+    linear-gradient(to top, rgba(232, 199, 111, 0.22) 0 34%, transparent 34%) 8px bottom / 16px 64px repeat-x,
+    linear-gradient(to top, rgba(232, 199, 111, 0.11) 0 52%, transparent 52%) 2px bottom / 24px 84px repeat-x;
   opacity: 0.42;
-  filter: drop-shadow(0 0 10px rgba(47, 234, 255, 0.28));
+  filter: drop-shadow(0 0 10px rgba(232, 199, 111, 0.28));
 }
 
 .profile-id-face footer.profile-id-verify {
@@ -1380,7 +1380,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   gap: 12px;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px solid rgba(47, 234, 255, 0.22);
+  border-top: 1px solid rgba(232, 199, 111, 0.22);
 }
 
 .profile-id-qr {
@@ -1389,12 +1389,12 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   background:
     linear-gradient(90deg, var(--profile-readable) 8px, transparent 8px 14px, var(--profile-readable) 14px 22px, transparent 22px),
     linear-gradient(0deg, var(--profile-readable) 8px, transparent 8px 14px, var(--profile-readable) 14px 22px, transparent 22px),
-    repeating-linear-gradient(90deg, rgba(47, 234, 255, 0.9) 0 4px, transparent 4px 8px),
-    repeating-linear-gradient(0deg, rgba(47, 234, 255, 0.55) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(90deg, rgba(232, 199, 111, 0.9) 0 4px, transparent 4px 8px),
+    repeating-linear-gradient(0deg, rgba(232, 199, 111, 0.55) 0 4px, transparent 4px 8px),
     rgba(8, 18, 30, 0.9);
-  border: 1px solid rgba(47, 234, 255, 0.36);
+  border: 1px solid rgba(232, 199, 111, 0.36);
   border-radius: 6px;
-  box-shadow: 0 0 14px rgba(47, 234, 255, 0.16);
+  box-shadow: 0 0 14px rgba(232, 199, 111, 0.16);
 }
 
 .profile-id-verify strong {
@@ -1419,10 +1419,10 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .profile-sigil-mark {
   color: var(--profile-ui);
   background:
-    radial-gradient(circle at 50% 42%, rgba(47, 234, 255, 0.17), transparent 58%),
+    radial-gradient(circle at 50% 42%, rgba(232, 199, 111, 0.17), transparent 58%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(1, 10, 18, 0.54)),
     rgba(1, 10, 18, 0.74);
-  border-color: rgba(47, 234, 255, 0.42);
+  border-color: rgba(232, 199, 111, 0.42);
 }
 
 .profile-avatar-frame .profile-sigil-mark {
@@ -1436,7 +1436,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   border: 0 !important;
   border-radius: 0 !important;
   clip-path: none !important;
-  filter: drop-shadow(0 0 10px rgba(47, 234, 255, 0.56));
+  filter: drop-shadow(0 0 10px rgba(232, 199, 111, 0.56));
   -webkit-mask: var(--sigil-mask) center / contain no-repeat;
   mask: var(--sigil-mask) center / contain no-repeat;
   transform: none !important;
@@ -1460,7 +1460,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .avatar-window-grid button[data-avatar-option="star"] .profile-sigil-mark::before {
   width: 64% !important;
   height: 64% !important;
-  background: linear-gradient(180deg, #ffffff 0%, #65f6ff 46%, #9d78ff 100%) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f2d47a 46%, #d6a36f 100%) !important;
   filter: drop-shadow(0 0 14px rgba(112, 231, 255, 0.68));
 }
 
@@ -1468,7 +1468,7 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 .avatar-window-grid button[data-avatar-option="bolt"] .profile-sigil-mark::before {
   width: 62% !important;
   height: 72% !important;
-  background: linear-gradient(180deg, #ffffff 0%, #9b7dff 48%, #7d4dff 100%) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #c6a0d8 48%, #a66a86 100%) !important;
 }
 
 .profile-sigil-mark {
@@ -1571,5 +1571,680 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   .profile-saved-grid strong {
     padding-right: 12px;
     font-size: 15px;
+  }
+}
+
+/* Profile stack pass: image, identity, badges, XP, stamina. */
+.profile-card {
+  grid-template-rows: auto auto auto auto;
+  align-content: start;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.profile-identity {
+  grid-template-columns: 1fr;
+  align-items: start;
+  align-content: start;
+  justify-items: center;
+  gap: 8px;
+  min-height: 0;
+  text-align: center;
+}
+
+.profile-avatar-frame {
+  width: 122px;
+  height: 122px;
+  border-radius: 50%;
+}
+
+.profile-avatar-frame .profile-sigil-mark {
+  --sigil-size: calc(100% - 32px);
+}
+
+.profile-copy {
+  justify-items: center;
+  gap: 7px;
+  width: 100%;
+}
+
+.profile-copy strong {
+  max-width: 100%;
+  font-size: 22px;
+  text-align: center;
+}
+
+.profile-detail-stack {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  width: 100%;
+}
+
+.profile-detail-stack p {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  padding: 5px 6px;
+  background:
+    linear-gradient(135deg, rgba(232, 199, 111, 0.055), transparent 66%),
+    rgba(2, 10, 17, 0.48);
+  border: 1px solid rgba(232, 199, 111, 0.16);
+  border-radius: 6px;
+}
+
+.profile-detail-stack span,
+.profile-meter-head span,
+.profile-meter-grid small span,
+.profile-badge small {
+  color: var(--profile-readable-faint);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.profile-detail-stack b {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--profile-readable);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-badges {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.profile-badge {
+  display: grid;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px;
+  background:
+    linear-gradient(135deg, rgba(232, 199, 111, 0.06), transparent 64%),
+    rgba(2, 10, 17, 0.54);
+  border: 1px solid rgba(232, 199, 111, 0.2);
+  border-radius: 7px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.14);
+}
+
+.profile-badge-status {
+  grid-template-columns: minmax(58px, auto) minmax(0, 1fr);
+  justify-items: start;
+}
+
+.profile-badge-sigil {
+  grid-template-columns: 34px minmax(0, 1fr);
+}
+
+.profile-badge strong,
+.profile-badge small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-badge strong {
+  color: var(--profile-readable);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.profile-badge .profile-status-pill {
+  min-height: 22px;
+  padding: 0 7px;
+  font-size: 9px;
+}
+
+.profile-badge .profile-sigil-mark {
+  --sigil-size: 34px;
+}
+
+.profile-badge.profile-zodiac {
+  grid-column: 1 / -1;
+  grid-template-columns: 38px minmax(0, 1fr);
+  min-height: 52px;
+  padding: 6px;
+}
+
+.profile-badge.profile-zodiac::after {
+  display: none;
+}
+
+.profile-badge.profile-zodiac .zodiac-body {
+  display: contents;
+}
+
+.profile-badge.profile-zodiac .zodiac-orbit {
+  width: 38px;
+  height: 38px;
+}
+
+.profile-badge.profile-zodiac .zodiac-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-badge.profile-zodiac .zodiac-copy strong,
+.profile-badge.profile-zodiac .zodiac-copy span,
+.profile-badge.profile-zodiac .zodiac-copy small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-badge.profile-zodiac .zodiac-copy strong {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.profile-badge.profile-zodiac .zodiac-copy span,
+.profile-badge.profile-zodiac .zodiac-copy small {
+  font-size: 9px;
+  line-height: 1.16;
+}
+
+.profile-badge.profile-zodiac .zodiac-copy span + span,
+.profile-badge.profile-zodiac .zodiac-copy small {
+  display: none;
+}
+
+.profile-level.profile-meter-card,
+.profile-stamina-panel.profile-meter-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  min-height: 90px;
+  padding: 8px 9px;
+}
+
+.profile-meter-head {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+}
+
+.profile-meter-head > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-meter-head strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--profile-readable);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-meter-head strong b,
+.profile-meter-head output b,
+.profile-meter-grid small b {
+  color: var(--profile-ui);
+  font-weight: 900;
+}
+
+.profile-meter-head output {
+  color: var(--profile-readable-dim);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.profile-level.profile-meter-card i,
+.profile-stamina-panel.profile-meter-card i {
+  height: 6px;
+}
+
+.profile-meter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-meter-grid small {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 4px 5px;
+  color: var(--profile-readable-dim);
+  background: rgba(1, 9, 15, 0.45);
+  border: 1px solid rgba(232, 199, 111, 0.13);
+  border-radius: 5px;
+  font-size: 9px;
+  line-height: 1.14;
+}
+
+.profile-meter-grid small b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .profile-card {
+    overflow: visible;
+  }
+
+  .profile-avatar-frame {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Personal glass pass: warm profile palette, one clean icon surface, no scanner dashboard. */
+.profile-shell {
+  --profile-accent: #d6b35f;
+  --profile-bg: #171211;
+  --profile-ui: #e8c76f;
+  --profile-ui-soft: rgba(232, 199, 111, 0.74);
+  --profile-readable: #fff8e8;
+  --profile-readable-dim: rgba(248, 236, 214, 0.76);
+  --profile-readable-faint: rgba(246, 226, 190, 0.52);
+  --profile-edge: rgba(232, 199, 111, 0.3);
+  --profile-faint: rgba(255, 255, 255, 0.06);
+  --profile-glow: rgba(212, 167, 82, 0.24);
+  --profile-moss: #9fd28a;
+  --profile-rose: #f08b72;
+  --profile-plum: #c6a0d8;
+  --profile-card-bg:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035) 38%, rgba(255, 255, 255, 0.018)),
+    linear-gradient(122deg, rgba(214, 179, 95, 0.12), transparent 36%),
+    rgba(18, 13, 13, 0.58);
+  color: var(--profile-readable);
+  background:
+    linear-gradient(140deg, rgba(28, 19, 16, 0.62), rgba(16, 14, 13, 0.38)),
+    rgba(12, 9, 8, 0.26);
+  border-color: rgba(232, 199, 111, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -22px 46px rgba(0, 0, 0, 0.24),
+    0 0 24px rgba(214, 179, 95, 0.12);
+}
+
+.profile-layout,
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  grid-template-columns: minmax(340px, 0.86fr) minmax(420px, 1.14fr);
+}
+
+.profile-card,
+.profile-saved-panel,
+.profile-editor {
+  overflow: hidden;
+  background: var(--profile-card-bg);
+  border-color: var(--profile-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -26px 46px rgba(0, 0, 0, 0.24),
+    0 18px 34px rgba(0, 0, 0, 0.22);
+}
+
+.profile-id-card {
+  display: none;
+}
+
+.profile-card::before,
+.profile-saved-panel::before,
+.profile-editor::before,
+.profile-id-card::before {
+  display: none;
+}
+
+.profile-card::after,
+.profile-saved-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(126deg, transparent 0 52%, rgba(255, 255, 255, 0.08) 52% 53.5%, transparent 53.5%),
+    linear-gradient(142deg, transparent 0 61%, rgba(214, 179, 95, 0.1) 61% 66%, transparent 66%),
+    linear-gradient(28deg, transparent 0 64%, rgba(159, 210, 138, 0.09) 64% 70%, transparent 70%),
+    linear-gradient(158deg, rgba(255, 255, 255, 0.06), transparent 28%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 86%);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.profile-card > *,
+.profile-saved-panel > *,
+.profile-editor > * {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card {
+  grid-template-rows: auto auto auto auto;
+  gap: 8px;
+}
+
+.profile-avatar-frame {
+  width: 118px;
+  height: 118px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), transparent 32%),
+    linear-gradient(155deg, rgba(240, 139, 114, 0.18), transparent 46%),
+    linear-gradient(35deg, rgba(159, 210, 138, 0.2), transparent 52%),
+    rgba(17, 13, 13, 0.72);
+  border: 1px solid rgba(232, 199, 111, 0.42);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -24px 36px rgba(0, 0, 0, 0.24),
+    0 18px 30px rgba(0, 0, 0, 0.28);
+}
+
+.profile-avatar-frame::after,
+.profile-sigil-mark::after,
+.zodiac-orbit::before,
+.zodiac-orbit::after {
+  display: none;
+}
+
+.profile-avatar-frame .profile-sigil-mark,
+.profile-selected-sigil .profile-sigil-mark,
+.avatar-current-thumb .profile-sigil-mark {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.profile-avatar-frame .profile-sigil-mark {
+  --sigil-size: 82px;
+}
+
+.profile-sigil-mark {
+  color: var(--profile-ui);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.035)),
+    rgba(24, 18, 16, 0.54);
+  border-color: rgba(232, 199, 111, 0.26);
+}
+
+.profile-sigil-mark::before {
+  background: linear-gradient(180deg, #fff3bc 0%, var(--profile-ui) 44%, var(--profile-rose) 100%) !important;
+  filter: drop-shadow(0 0 9px rgba(232, 199, 111, 0.42));
+}
+
+.profile-sigil-mark[data-sigil="fire"]::before,
+.avatar-window-grid button[data-avatar-option="fire"] .profile-sigil-mark::before {
+  background: linear-gradient(180deg, #fff3bc 0%, #f3a95d 44%, #e05f49 100%) !important;
+  filter: drop-shadow(0 0 11px rgba(224, 95, 73, 0.48));
+}
+
+.profile-copy strong {
+  color: var(--profile-readable);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.32);
+}
+
+.profile-detail-stack {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.profile-detail-stack p,
+.profile-empty-badges,
+.profile-meter-card,
+.zodiac-showcase,
+.profile-right-badges,
+.profile-selected-sigil {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.026)),
+    rgba(19, 14, 14, 0.46);
+  border: 1px solid rgba(232, 199, 111, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(9px) saturate(1.12);
+}
+
+.profile-detail-stack p {
+  border-radius: 7px;
+}
+
+.profile-detail-stack span,
+.profile-meter-head span,
+.profile-meter-grid small span,
+.profile-right-badges header span,
+.profile-selected-sigil span,
+.profile-editor label,
+.profile-editor header span,
+.profile-editor footer span,
+.profile-saved-panel header span {
+  color: var(--profile-readable-faint);
+}
+
+.profile-detail-stack b,
+.profile-meter-head strong,
+.profile-meter-grid small b,
+.profile-selected-sigil strong,
+.profile-right-badges header strong,
+.zodiac-copy strong {
+  color: var(--profile-readable);
+}
+
+.profile-meter-head strong b,
+.profile-meter-head output b,
+.zodiac-copy b {
+  color: var(--profile-ui);
+}
+
+.profile-badges {
+  display: block;
+}
+
+.profile-empty-badges {
+  margin: 0;
+  min-height: 42px;
+  padding: 12px 14px;
+  color: var(--profile-readable-dim);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.profile-level.profile-meter-card,
+.profile-stamina-panel.profile-meter-card {
+  min-height: 108px;
+  padding: 9px 10px;
+  border-radius: 7px;
+}
+
+.level-mark,
+.stamina-mark {
+  background: var(--profile-ui);
+  filter: drop-shadow(0 0 8px rgba(232, 199, 111, 0.34));
+}
+
+.profile-level i,
+.profile-stamina-panel i {
+  height: 7px;
+  background: rgba(11, 8, 8, 0.62);
+  border-color: rgba(232, 199, 111, 0.18);
+  border-radius: 999px;
+}
+
+.profile-level em,
+.profile-stamina-panel em {
+  background: linear-gradient(90deg, var(--profile-moss), var(--profile-ui), var(--profile-rose));
+  box-shadow: 0 0 12px rgba(232, 199, 111, 0.24);
+}
+
+.profile-meter-grid small {
+  background: rgba(13, 9, 9, 0.42);
+  border-color: rgba(232, 199, 111, 0.16);
+  border-radius: 6px;
+}
+
+.profile-meter-note {
+  margin: 0;
+  color: var(--profile-readable-dim);
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.22;
+}
+
+.profile-saved-panel {
+  grid-template-rows: auto minmax(182px, 1fr) auto auto auto;
+  gap: 8px;
+}
+
+.profile-saved-panel header strong {
+  color: var(--profile-readable);
+}
+
+.zodiac-showcase {
+  display: grid;
+  grid-template-columns: 156px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  min-height: 188px;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+.zodiac-orbit {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), transparent 36%),
+    linear-gradient(155deg, rgba(159, 210, 138, 0.18), transparent 52%),
+    rgba(17, 13, 13, 0.6);
+  border: 1px solid rgba(232, 199, 111, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -22px 34px rgba(0, 0, 0, 0.2),
+    0 18px 32px rgba(0, 0, 0, 0.22);
+}
+
+.zodiac-orbit-large {
+  width: 150px;
+  height: 150px;
+}
+
+.zodiac-mark {
+  filter: sepia(1) saturate(1.35) hue-rotate(340deg) brightness(1.08);
+}
+
+.zodiac-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.zodiac-copy strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.zodiac-copy span {
+  color: var(--profile-readable-dim);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zodiac-copy p {
+  margin: 4px 0 0;
+  color: var(--profile-readable-dim);
+  font-size: 12px;
+  line-height: 1.36;
+}
+
+.profile-right-badges {
+  display: grid;
+  gap: 8px;
+  min-height: 84px;
+  padding: 11px;
+  border-radius: 8px;
+}
+
+.profile-right-badges header,
+.profile-selected-sigil div {
+  display: grid;
+  gap: 3px;
+}
+
+.profile-right-badges p {
+  margin: 0;
+  color: var(--profile-readable-dim);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-selected-sigil {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 102px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.profile-selected-sigil .profile-sigil-mark {
+  --sigil-size: 72px;
+}
+
+.profile-selected-sigil strong {
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.profile-selected-sigil small {
+  color: var(--profile-readable-dim);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-saved-panel footer button {
+  color: var(--profile-readable);
+  border-color: rgba(232, 199, 111, 0.34);
+  box-shadow:
+    inset 0 0 18px rgba(232, 199, 111, 0.08),
+    0 0 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 980px) {
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-saved-panel {
+    min-height: 520px;
+  }
+
+  .zodiac-showcase {
+    grid-template-columns: 128px minmax(0, 1fr);
+  }
+
+  .zodiac-orbit-large {
+    width: 124px;
+    height: 124px;
   }
 }

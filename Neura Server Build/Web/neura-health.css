@@ -1,0 +1,335 @@
+/* =====================================================//
+Name of script: neura-health
+Build: 1001
+Update: Sex Gated Health UI
+Date and time: 2026-07-02 00:00:00 -04:00
+Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
+// =====================================================*/
+
+.health-shell {
+  --health-accent: #38d8ff;
+  --health-burple: #a56bff;
+  width: 100%;
+  min-height: clamp(430px, 58vh, 590px);
+  padding: clamp(16px, 1.7vw, 24px);
+  border: 1px solid rgba(57, 190, 255, 0.34);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(65, 255, 218, 0.11), transparent 30%),
+    radial-gradient(circle at 78% 28%, rgba(165, 107, 255, 0.12), transparent 28%),
+    linear-gradient(145deg, rgba(4, 22, 36, 0.86), rgba(2, 10, 19, 0.76));
+  box-shadow: inset 0 1px 0 rgba(176, 235, 255, 0.12), 0 18px 36px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(12px) saturate(1.14);
+}
+
+.health-shell[data-health-sex="female"] {
+  --health-accent: #43f4dd;
+  --health-burple: #b46cff;
+}
+
+.health-shell[data-health-sex="male"] {
+  --health-accent: #46c8ff;
+  --health-burple: #6f9cff;
+}
+
+.health-header,
+.health-layout,
+.health-mode-tabs,
+.health-panels,
+.health-metrics,
+.health-overview-grid,
+.health-detail-list {
+  min-width: 0;
+}
+
+.health-header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.health-header span,
+.health-kicker,
+.health-panel header span,
+.health-overview-grid span,
+.health-detail-list span {
+  color: rgba(220, 247, 255, 0.64);
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.health-header h1 {
+  margin: 3px 0 0;
+  color: #35bcff;
+  font-size: clamp(1.4rem, 1.9vw, 1.9rem);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.health-header strong {
+  color: var(--health-accent);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.health-refresh {
+  width: 42px;
+  height: 38px;
+  min-width: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--health-accent) 56%, transparent);
+  border-radius: var(--button-radius);
+  background: linear-gradient(180deg, rgba(22, 45, 62, 0.9), rgba(3, 12, 21, 0.92));
+  color: var(--health-accent);
+}
+
+.health-layout {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.62fr) minmax(420px, 1fr);
+  gap: clamp(14px, 1.7vw, 22px);
+  align-items: stretch;
+}
+
+.health-focus,
+.health-workspace {
+  border: 1px solid color-mix(in srgb, var(--health-accent) 32%, rgba(210, 246, 255, 0.22));
+  background: linear-gradient(145deg, rgba(0, 12, 22, 0.62), rgba(2, 17, 30, 0.42));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11), 0 0 28px rgba(0, 0, 0, 0.14);
+}
+
+.health-focus {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  padding: clamp(18px, 2vw, 26px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.health-focus-light {
+  position: absolute;
+  inset: 24px 30px auto auto;
+  width: min(70%, 270px);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--health-accent) 28%, transparent);
+  background:
+    linear-gradient(135deg, transparent 16%, color-mix(in srgb, var(--health-accent) 42%, transparent) 17%, transparent 19%),
+    linear-gradient(315deg, transparent 24%, color-mix(in srgb, var(--health-burple) 42%, transparent) 25%, transparent 27%),
+    radial-gradient(circle at 45% 44%, color-mix(in srgb, var(--health-accent) 22%, transparent), transparent 46%);
+  opacity: 0.62;
+  transform: rotate(-7deg);
+  clip-path: polygon(0 0, 100% 0, 100% 64%, 80% 64%, 80% 22%, 0 22%);
+  pointer-events: none;
+}
+
+.health-focus h2 {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 8px;
+  max-width: 380px;
+  color: rgba(241, 252, 255, 0.94);
+  font-size: clamp(1.45rem, 2.2vw, 2.35rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.health-focus p {
+  position: relative;
+  z-index: 1;
+  max-width: 430px;
+  margin: 0 0 18px;
+  color: rgba(226, 246, 255, 0.7);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.health-metrics {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.health-metrics article,
+.health-overview-grid section,
+.health-detail-list p {
+  border: 1px solid rgba(75, 193, 245, 0.2);
+  background: rgba(0, 6, 14, 0.46);
+}
+
+.health-metrics article {
+  min-height: 64px;
+  padding: 10px;
+}
+
+.health-metrics span,
+.health-metrics b {
+  display: block;
+}
+
+.health-metrics span {
+  color: rgba(218, 246, 255, 0.62);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.health-metrics b {
+  margin-top: 8px;
+  color: var(--health-accent);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.health-workspace {
+  min-height: 360px;
+  padding: 14px;
+}
+
+.health-mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.health-mode-tabs button,
+.health-panel button {
+  border: 1px solid rgba(84, 199, 255, 0.34);
+  border-radius: var(--button-radius);
+  background: linear-gradient(180deg, rgba(25, 54, 76, 0.76), rgba(2, 11, 20, 0.82));
+  color: rgba(237, 251, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.health-mode-tabs button {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.health-mode-tabs button.is-active {
+  border-color: color-mix(in srgb, var(--health-accent) 72%, white 6%);
+  color: #ffffff;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--health-accent) 22%, transparent);
+}
+
+.health-panels {
+  display: grid;
+}
+
+.health-panel {
+  display: none;
+  min-height: 286px;
+  padding: clamp(14px, 1.4vw, 18px);
+  border: 1px solid rgba(81, 195, 255, 0.23);
+  background:
+    linear-gradient(135deg, rgba(0, 7, 15, 0.72), rgba(3, 24, 39, 0.42)),
+    radial-gradient(circle at 84% 14%, color-mix(in srgb, var(--health-burple) 16%, transparent), transparent 28%);
+}
+
+.health-panel.is-active {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 14px;
+}
+
+.health-panel header h2 {
+  margin: 4px 0 0;
+  color: rgba(242, 252, 255, 0.94);
+  font-size: clamp(1.25rem, 1.65vw, 1.7rem);
+  font-weight: 300;
+}
+
+.health-overview-grid,
+.health-detail-list {
+  display: grid;
+  gap: 8px;
+}
+
+.health-overview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.health-overview-grid section,
+.health-detail-list p {
+  min-height: 46px;
+  margin: 0;
+  padding: 9px 10px;
+}
+
+.health-detail-list p {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.7fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.health-overview-grid b,
+.health-detail-list b {
+  color: rgba(238, 252, 255, 0.92);
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-align: right;
+}
+
+.health-overview-grid b {
+  display: block;
+  margin-top: 6px;
+  text-align: left;
+}
+
+.health-panel button {
+  justify-self: start;
+  min-height: 32px;
+  padding: 0 16px;
+  color: var(--health-accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 980px) {
+  .health-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .health-focus {
+    min-height: 290px;
+  }
+}
+
+@media (max-width: 720px) {
+  .health-shell {
+    min-height: auto;
+  }
+
+  .health-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .health-header strong {
+    grid-column: 1 / -1;
+  }
+
+  .health-metrics,
+  .health-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .health-detail-list p {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .health-detail-list b {
+    text-align: left;
+  }
+}
