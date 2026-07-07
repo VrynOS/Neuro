@@ -1,7 +1,7 @@
 /* =====================================================//
 Name of script: neura-profile
-Build: 1011
-Update: Profile Readability Pass
+Build: 1012
+Update: Saved Profile Simplification
 Date and time: 2026-07-06 00:00:00 -04:00
 Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // ===================================================== */
@@ -1571,5 +1571,165 @@ Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
   .profile-saved-grid strong {
     padding-right: 12px;
     font-size: 15px;
+  }
+}
+
+/* Saved profile simplification: remove the unused center matrix and QR footer. */
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  grid-template-columns: minmax(500px, 1fr) minmax(300px, 0.64fr);
+}
+
+.profile-shell[data-profile-mode="view"] .profile-saved-panel,
+.profile-id-face footer.profile-id-verify {
+  display: none;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-card {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.92fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-identity,
+.profile-shell[data-profile-mode="view"] .profile-level {
+  grid-column: 1 / -1;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-zodiac,
+.profile-shell[data-profile-mode="view"] .profile-stamina-panel {
+  grid-row: 3;
+  min-height: 0;
+  padding: 22px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-zodiac {
+  grid-column: 1;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-stamina-panel {
+  grid-column: 2;
+  align-self: stretch;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 12px;
+  align-content: center;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-body {
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 14px;
+  align-self: center;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-orbit {
+  width: 82px;
+  height: 82px;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-mark {
+  width: 64px;
+  height: 64px;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-copy {
+  gap: 5px;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-copy strong {
+  font-size: 20px;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-copy span,
+.profile-shell[data-profile-mode="view"] .zodiac-copy small {
+  overflow: visible;
+  font-size: 13px;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.profile-shell[data-profile-mode="view"] .zodiac-copy strong {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.profile-shell[data-profile-mode="view"] .stamina-mark {
+  width: 42px;
+  height: 42px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-stamina-panel > div {
+  gap: 8px;
+}
+
+.profile-shell[data-profile-mode="view"] .stamina-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.profile-shell[data-profile-mode="view"] .stamina-row span {
+  white-space: nowrap;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-stamina-panel small {
+  font-size: 11px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-stamina-panel i {
+  height: 9px;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-id-face {
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+}
+
+.profile-shell[data-profile-mode="view"] .profile-id-city {
+  min-height: 0;
+}
+
+.profile-id-edit {
+  min-height: 32px;
+  padding: 0 12px;
+  color: var(--profile-readable);
+  border-color: rgba(47, 234, 255, 0.38);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 980px) {
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-shell[data-profile-mode="view"] .profile-id-card {
+    display: grid;
+  }
+
+  .profile-shell[data-profile-mode="view"] .profile-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+  }
+
+  .profile-shell[data-profile-mode="view"] .profile-zodiac,
+  .profile-shell[data-profile-mode="view"] .profile-stamina-panel {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 18px;
+  }
+
+  .profile-shell[data-profile-mode="view"] .zodiac-body {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .profile-shell[data-profile-mode="view"] .zodiac-orbit {
+    width: 88px;
+    height: 88px;
+  }
+
+  .profile-shell[data-profile-mode="view"] .zodiac-mark {
+    width: 68px;
+    height: 68px;
   }
 }
