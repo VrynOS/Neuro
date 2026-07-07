@@ -1,13 +1,13 @@
 // =====================================================//
 // Name of script: Neura Profile Server
-// Build: 1018
-// Update: Send Stamina Level Aliases
+// Build: 1019
+// Update: Save Profile Avatar Asset
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
 
 string DISPLAY_TITLE = "Neura Profile Server";
-integer BUILD_NUMBER = 1018;
+integer BUILD_NUMBER = 1019;
 
 string FEATURE_ID = "NEURA_PROFILE";
 integer SCHEMA_VERSION = 1;
@@ -22,6 +22,7 @@ list SEX_VALUES = ["female", "male", "nonbinary"];
 list DISTRICT_VALUES = ["Chi-Core", "Eden Palms", "Camden Falls"];
 list ZODIAC_VALUES = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 list SIGIL_VALUES = ["core", "spark", "fire", "wave", "star", "moon", "sun", "leaf", "bolt", "gem", "crown", "shield"];
+list AVATAR_VALUES = ["pro", "pro-1", "pro-2", "pro-3", "pro-4", "pro-5", "pro-6", "pro-7", "pro-8"];
 
 integer gHandshakeReady = FALSE;
 string gLastError = "";
@@ -243,7 +244,7 @@ integer profileReady(string age, string sex, string district)
     return TRUE;
 }
 
-saveProfile(string age, string sex, string role, string district, string zodiac, string bio, string sigil, string accent, string background, integer stamina, integer staminaGoal)
+saveProfile(string age, string sex, string role, string district, string zodiac, string bio, string sigil, string avatar, string accent, string background, integer stamina, integer staminaGoal)
 {
     integer ready = profileReady(age, sex, district);
     llLinksetDataWrite(profileKey("schema"), (string)SCHEMA_VERSION);
@@ -255,6 +256,7 @@ saveProfile(string age, string sex, string role, string district, string zodiac,
     llLinksetDataWrite(profileKey("zodiac"), zodiac);
     llLinksetDataWrite(profileKey("bio"), bio);
     llLinksetDataWrite(profileKey("sigil"), sigil);
+    llLinksetDataWrite(profileKey("avatar"), avatar);
     llLinksetDataWrite(profileKey("accent"), llToLower(accent));
     llLinksetDataWrite(profileKey("bg"), llToLower(background));
     llLinksetDataWrite(profileKey("stamina"), (string)stamina);
@@ -299,6 +301,7 @@ sendProfile()
         + "|zodiac=" + stored("zodiac")
         + "|bio=" + stored("bio")
         + "|sigil=" + stored("sigil")
+        + "|avatar=" + stored("avatar")
         + "|accent=" + stored("accent")
         + "|background=" + stored("bg")
         + "|stamina=" + staminaCurrent
@@ -333,6 +336,7 @@ handleSave(list parts)
     string zodiac = llToLower(cleanText(getParam(parts, "zodiac")));
     string bio = safeOptionalText(getParam(parts, "bio"), 280);
     string sigil = llToLower(cleanText(getParam(parts, "sigil")));
+    string avatar = llToLower(cleanText(getParam(parts, "avatar")));
     string accent = cleanText(getParam(parts, "accent"));
     string background = cleanText(getParam(parts, "background"));
     integer stamina = rangedInteger("stamina", cleanText(getParam(parts, "stamina")), (integer)stored("stamina"), 0, 999);
@@ -363,16 +367,32 @@ handleSave(list parts)
         gLastError = "";
     }
 
-    if (accent == "") accent = "#2fc7ff";
-    if (background == "") background = "#061725";
+    if (avatar == "")
+    {
+        avatar = stored("avatar");
+    }
+    if (avatar == "")
+    {
+        if (sex == "female") avatar = "pro-1";
+        else avatar = "pro";
+    }
+    if (!optionalAllowedValue("avatar", avatar, AVATAR_VALUES))
+    {
+        if (sex == "female") avatar = "pro-1";
+        else avatar = "pro";
+        gLastError = "";
+    }
+
+    if (accent == "") accent = "#4fd7ff";
+    if (background == "") background = "#11172b";
     if (!validColor("accent", accent))
     {
-        accent = "#2fc7ff";
+        accent = "#4fd7ff";
         gLastError = "";
     }
     if (!validColor("background", background))
     {
-        background = "#061725";
+        background = "#11172b";
         gLastError = "";
     }
 
@@ -380,8 +400,8 @@ handleSave(list parts)
     if (!allowedValue("sex", sex, SEX_VALUES)) { deny(gLastError); return; }
     if (!allowedValue("district", district, DISTRICT_VALUES)) { deny(gLastError); return; }
 
-    saveProfile(age, sex, role, district, zodiac, bio, sigil, accent, background, stamina, staminaGoal);
-    reply("NEURA_PROFILE_SAVE_OK|feature=" + FEATURE_ID + "|ready=" + stored("ready") + "|sigil=" + stored("sigil") + "|updated=" + stored("updated"));
+    saveProfile(age, sex, role, district, zodiac, bio, sigil, avatar, accent, background, stamina, staminaGoal);
+    reply("NEURA_PROFILE_SAVE_OK|feature=" + FEATURE_ID + "|ready=" + stored("ready") + "|sigil=" + stored("sigil") + "|avatar=" + stored("avatar") + "|updated=" + stored("updated"));
     sendProfile();
 }
 
@@ -414,6 +434,7 @@ default
         llLinksetDataWrite(profileKey("schema"), (string)SCHEMA_VERSION);
         if (stored("ready") == "") llLinksetDataWrite(profileKey("ready"), "0");
         if (stored("sigil") == "") llLinksetDataWrite(profileKey("sigil"), "core");
+        if (stored("avatar") == "") llLinksetDataWrite(profileKey("avatar"), "pro");
         ensureProgressDefaults();
         llOwnerSay(DISPLAY_TITLE + " online | Build " + (string)BUILD_NUMBER + " | Schema " + (string)SCHEMA_VERSION);
     }

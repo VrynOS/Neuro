@@ -2909,3 +2909,683 @@ body {
     font-size: 22px;
   }
 }
+
+/* Clean profile pass: glossy midnight, server-saved avatar, icon badges, no SL-hostile inner scroll. */
+:root {
+  --line: rgba(79, 215, 255, 0.42);
+  --text: #f5fbff;
+  --muted: #b9c8d8;
+  --accent: #4fd7ff;
+  --good: #65f7b1;
+  --gold: #ffcc70;
+  --purple: #b88cff;
+  --pink: #ff6fae;
+  --hud-icon: #9eefff;
+  --orb-mood-glow: rgba(79, 215, 255, 0.2);
+}
+
+body {
+  background: #090c18;
+}
+
+.neura-shell {
+  background:
+    linear-gradient(115deg, rgba(7, 10, 22, 0.84), rgba(10, 20, 38, 0.52) 46%, rgba(15, 9, 28, 0.72)),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02) 26%, rgba(0, 0, 0, 0.2) 76%),
+    linear-gradient(120deg, transparent 0 30%, rgba(79, 215, 255, 0.12) 30% 31%, transparent 31% 62%, rgba(184, 140, 255, 0.1) 62% 63%, transparent 63%),
+    url("Images/Luxury villa at sunset by the bay.png") center / cover no-repeat,
+    #101526;
+  border-color: rgba(124, 224, 255, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.46),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.055),
+    inset 0 -28px 48px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(0, 0, 0, 0.72),
+    0 18px 44px rgba(0, 0, 0, 0.38);
+}
+
+.neura-shell::before {
+  background:
+    linear-gradient(112deg, rgba(8, 11, 24, 0.76), rgba(13, 27, 49, 0.34) 44%, rgba(10, 8, 24, 0.72)),
+    linear-gradient(22deg, rgba(79, 215, 255, 0.13), transparent 42%, rgba(255, 111, 174, 0.08));
+}
+
+.neura-shell::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid rgba(178, 237, 255, 0.18);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+  background:
+    linear-gradient(135deg, rgba(79, 215, 255, 0.5), transparent 15%) top left / 180px 2px no-repeat,
+    linear-gradient(315deg, rgba(255, 111, 174, 0.44), transparent 16%) bottom right / 210px 2px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent 44%, rgba(79, 215, 255, 0.18)) top / 100% 1px no-repeat,
+    linear-gradient(0deg, rgba(255, 255, 255, 0.16), transparent 58%) left / 1px 100% no-repeat;
+  filter: drop-shadow(0 0 10px rgba(79, 215, 255, 0.12));
+}
+
+.neura-brand strong {
+  color: #ffd48a;
+}
+
+.neura-tabs button[data-tab="profile"],
+.neura-tabs button[data-tab="wallet"],
+.neura-actions button[data-action="settings"] {
+  --button-accent: #4fd7ff;
+  --button-rgb: 79, 215, 255;
+}
+
+.profile-shell {
+  --profile-accent: #4fd7ff;
+  --profile-bg: #11172b;
+  --profile-ui: var(--profile-accent, #4fd7ff);
+  --profile-mint: #65f7b1;
+  --profile-coral: #ff6fae;
+  --profile-violet: #b88cff;
+  --profile-readable: #f8fcff;
+  --profile-readable-dim: rgba(239, 247, 255, 0.88);
+  --profile-readable-faint: rgba(203, 221, 238, 0.72);
+  --profile-edge: color-mix(in srgb, var(--profile-accent), white 14%);
+  --profile-card-bg:
+    linear-gradient(135deg, color-mix(in srgb, var(--profile-bg), white 10%), color-mix(in srgb, var(--profile-bg), black 8%)),
+    linear-gradient(118deg, transparent 0 31%, color-mix(in srgb, var(--profile-accent), transparent 84%) 31% 32%, transparent 32% 63%, rgba(184, 140, 255, 0.08) 63% 64%, transparent 64%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 10px);
+}
+
+.profile-layout,
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  grid-template-columns: minmax(300px, 0.82fr) minmax(430px, 1.18fr);
+  gap: 12px;
+}
+
+.profile-card,
+.profile-editor,
+.profile-saved-panel {
+  background:
+    var(--profile-card-bg),
+    rgba(10, 15, 30, 0.82);
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 48%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 18px 38px rgba(0, 0, 0, 0.34),
+    0 0 26px color-mix(in srgb, var(--profile-accent), transparent 82%);
+}
+
+.profile-card {
+  display: grid !important;
+  grid-template-rows: auto 1fr 1fr;
+  gap: 9px;
+  overflow: hidden !important;
+  padding: 12px;
+}
+
+.profile-card .profile-badges,
+.profile-card .profile-color-strip {
+  display: none !important;
+}
+
+.profile-identity {
+  gap: 8px;
+}
+
+.profile-avatar-frame {
+  width: 152px;
+  height: 152px;
+  border-color: color-mix(in srgb, var(--profile-accent), white 20%);
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--profile-accent), transparent 85%), rgba(3, 6, 14, 0.96));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 14px 30px rgba(0, 0, 0, 0.46),
+    0 0 26px color-mix(in srgb, var(--profile-accent), transparent 60%);
+}
+
+.profile-avatar-photo {
+  filter: saturate(1.08) contrast(1.08) brightness(0.98);
+}
+
+.profile-avatar-sigil {
+  border-color: color-mix(in srgb, var(--profile-accent), white 16%);
+  background: rgba(5, 8, 18, 0.92);
+}
+
+.profile-copy strong {
+  font-size: 25px;
+  line-height: 1.05;
+}
+
+.profile-copy::after {
+  background: linear-gradient(90deg, var(--profile-accent), #65f7b1, #ff6fae);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--profile-accent), transparent 62%);
+}
+
+.profile-detail-stack {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  margin-top: 7px;
+}
+
+.profile-detail-stack p {
+  min-height: 37px;
+  padding: 6px 9px;
+}
+
+.profile-detail-stack span {
+  font-size: 11px;
+}
+
+.profile-detail-stack b {
+  font-size: 15px;
+}
+
+.profile-level.profile-meter-card,
+.profile-stamina-panel.profile-meter-card {
+  min-height: 0;
+  padding: 10px;
+  align-content: start;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.024)),
+    rgba(5, 9, 20, 0.68);
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 62%);
+}
+
+.profile-meter-head strong {
+  font-size: 20px;
+}
+
+.profile-meter-head output {
+  color: color-mix(in srgb, var(--profile-accent), white 12%);
+  font-size: 15px;
+}
+
+.profile-meter-note {
+  display: none;
+}
+
+.profile-level em,
+.profile-stamina-panel em {
+  background: linear-gradient(90deg, var(--profile-accent), #65f7b1, #ff6fae);
+  box-shadow: 0 0 13px color-mix(in srgb, var(--profile-accent), transparent 56%);
+}
+
+.zodiac-showcase {
+  min-height: 182px;
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 58%);
+}
+
+.zodiac-orbit-large {
+  border-color: color-mix(in srgb, var(--profile-accent), white 12%);
+  box-shadow:
+    inset 0 0 22px color-mix(in srgb, var(--profile-accent), transparent 82%),
+    0 0 24px color-mix(in srgb, var(--profile-accent), transparent 62%);
+}
+
+.zodiac-mark {
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--profile-accent), transparent 46%));
+}
+
+.zodiac-copy strong {
+  font-size: 32px;
+}
+
+.zodiac-copy span,
+.zodiac-copy p {
+  font-size: 14px;
+}
+
+.profile-right-badges,
+.profile-editor-badges {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 9px 10px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(5, 9, 20, 0.68);
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 64%);
+  border-radius: 8px;
+}
+
+.profile-right-badges header {
+  display: none;
+}
+
+.profile-mini-badges {
+  display: flex;
+  gap: 9px;
+}
+
+.profile-mini-badge,
+.profile-mini-badges span {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+    rgba(12, 18, 34, 0.86);
+}
+
+.profile-mini-badge i,
+.profile-mini-badges span i {
+  display: inline-grid;
+  place-items: center;
+  width: 27px;
+  height: 22px;
+  color: #06101c;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  border-radius: 5px;
+  background: var(--profile-accent);
+}
+
+.profile-mini-badge b,
+.profile-mini-badges span b {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.profile-mini-badge.is-verified i { background: #65f7b1; }
+.profile-mini-badge.is-location i { background: #b88cff; }
+.profile-mini-badge.is-zodiac i { background: #ff6fae; }
+.profile-mini-badge.is-sigil i { background: var(--profile-accent); }
+
+.profile-selected-sigil {
+  min-height: 78px;
+  grid-template-columns: 58px minmax(0, 1fr);
+}
+
+.profile-selected-sigil .profile-sigil-mark {
+  --sigil-size: 54px;
+}
+
+.profile-saved-panel footer {
+  justify-content: flex-end;
+}
+
+.profile-saved-panel footer button {
+  width: auto;
+  min-height: 30px;
+  padding: 0 16px;
+  color: #06101c;
+  font-size: 11px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, var(--profile-accent), #65f7b1);
+}
+
+.profile-editor form {
+  gap: 9px;
+}
+
+.profile-editor header,
+.profile-editor footer {
+  min-height: 34px;
+}
+
+.profile-editor footer {
+  justify-content: space-between;
+}
+
+.profile-editor footer button,
+.avatar-more-button {
+  width: auto;
+  min-height: 30px;
+  padding: 0 15px;
+  border-radius: 7px;
+}
+
+.color-field input[type="color"] {
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 46%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 12px color-mix(in srgb, var(--profile-accent), transparent 72%);
+}
+
+.avatar-current-thumb {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 40%);
+}
+
+.avatar-current-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+  border-radius: inherit;
+}
+
+.avatar-window {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(620px, calc(100% - 72px));
+  height: auto;
+  max-height: min(430px, calc(100% - 68px));
+  transform: translate(-50%, -50%);
+  background:
+    linear-gradient(132deg, color-mix(in srgb, var(--profile-bg), white 8%), rgba(6, 12, 26, 0.96)),
+    rgba(6, 12, 26, 0.96);
+  border-color: color-mix(in srgb, var(--profile-accent), transparent 42%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 44px rgba(0, 0, 0, 0.5),
+    0 0 26px color-mix(in srgb, var(--profile-accent), transparent 70%);
+}
+
+.avatar-window[hidden] {
+  display: none !important;
+}
+
+.avatar-window-body {
+  display: grid;
+  gap: 12px;
+  overflow: hidden;
+  padding: 12px;
+}
+
+.avatar-window-grid {
+  height: auto;
+  overflow: visible;
+  padding: 0;
+}
+
+.profile-image-window-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.profile-image-window-grid button {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-height: 82px;
+  gap: 5px;
+  padding: 7px;
+}
+
+.profile-image-window-grid img {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  object-position: 50% 28%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--profile-accent), transparent 52%);
+}
+
+.sigil-window-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.sigil-window-grid button {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-height: 64px;
+  gap: 4px;
+  padding: 6px;
+}
+
+.avatar-window-grid button.is-pending {
+  border-color: color-mix(in srgb, var(--profile-accent), white 14%);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--profile-accent), transparent 22%),
+    0 0 16px color-mix(in srgb, var(--profile-accent), transparent 54%);
+}
+
+@media (max-width: 980px) {
+  .profile-layout,
+  .profile-shell[data-profile-mode="view"] .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card {
+    grid-template-rows: auto auto auto;
+  }
+
+  .profile-avatar-frame {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* SL HUD fit: keep profile side-by-side with no page or panel scrolling. */
+.neura-view[data-view="profile"].is-active {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.profile-shell {
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 10px !important;
+}
+
+.profile-layout,
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  display: grid !important;
+  grid-template-columns: minmax(292px, 0.83fr) minmax(396px, 1.17fr) !important;
+  grid-auto-rows: minmax(0, 1fr) !important;
+  gap: 10px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.profile-card,
+.profile-editor,
+.profile-saved-panel {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.profile-card {
+  grid-template-rows: minmax(118px, 1.25fr) minmax(86px, 0.72fr) minmax(86px, 0.72fr) !important;
+  gap: 8px !important;
+  padding: 10px !important;
+}
+
+.profile-identity {
+  grid-template-columns: 138px minmax(0, 1fr) !important;
+  align-items: center !important;
+  min-height: 0 !important;
+}
+
+.profile-avatar-frame {
+  width: 138px !important;
+  height: 138px !important;
+}
+
+.profile-copy strong {
+  font-size: 23px !important;
+}
+
+.profile-detail-stack {
+  gap: 5px !important;
+}
+
+.profile-detail-stack p {
+  min-height: 31px !important;
+  padding: 5px 7px !important;
+}
+
+.profile-detail-stack span {
+  font-size: 9px !important;
+}
+
+.profile-detail-stack b {
+  font-size: 13px !important;
+}
+
+.profile-level.profile-meter-card,
+.profile-stamina-panel.profile-meter-card {
+  padding: 8px !important;
+}
+
+.profile-meter-head strong {
+  font-size: 18px !important;
+}
+
+.profile-meter-head output {
+  font-size: 14px !important;
+}
+
+.profile-meter-grid {
+  gap: 5px !important;
+}
+
+.profile-meter-grid small {
+  min-height: 31px !important;
+  padding: 4px 6px !important;
+}
+
+.profile-editor {
+  padding: 10px !important;
+}
+
+.profile-editor form {
+  gap: 7px !important;
+}
+
+.profile-editor input,
+.profile-editor select,
+.profile-editor textarea {
+  min-height: 30px !important;
+  padding: 0 9px !important;
+}
+
+.profile-editor label {
+  gap: 3px !important;
+  font-size: 9px !important;
+}
+
+.profile-editor-badges,
+.profile-right-badges {
+  min-height: 40px !important;
+  padding: 6px 8px !important;
+}
+
+.profile-mini-badge,
+.profile-mini-badges span {
+  width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+}
+
+.avatar-picker {
+  min-height: 40px !important;
+}
+
+.avatar-current-thumb {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+/* Final profile card compression for the 817x562 SL surface. */
+.profile-avatar-frame {
+  width: 128px !important;
+  height: 128px !important;
+}
+
+.profile-card {
+  grid-template-rows: minmax(108px, 1fr) minmax(88px, 0.72fr) minmax(88px, 0.72fr) !important;
+}
+
+.profile-copy strong {
+  font-size: 22px !important;
+}
+
+.profile-level.profile-meter-card,
+.profile-stamina-panel.profile-meter-card {
+  padding: 6px 8px !important;
+}
+
+.profile-meter-head {
+  gap: 7px !important;
+}
+
+.profile-meter-head strong {
+  font-size: 17px !important;
+}
+
+.profile-meter-head output {
+  font-size: 13px !important;
+}
+
+.profile-level i,
+.profile-stamina-panel i {
+  height: 5px !important;
+  margin: 4px 0 !important;
+}
+
+.profile-meter-grid small {
+  min-height: 25px !important;
+  padding: 3px 5px !important;
+}
+
+.profile-meter-grid small span {
+  font-size: 8px !important;
+}
+
+.profile-meter-grid small b {
+  font-size: 9px !important;
+}
+
+/* Profile popup stability: do not let the picker become page layout. */
+.avatar-window {
+  position: fixed !important;
+  top: 50vh !important;
+  left: 50vw !important;
+  z-index: 90 !important;
+  width: min(600px, calc(100vw - 42px)) !important;
+  height: auto !important;
+  max-height: min(424px, calc(100vh - 38px)) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.avatar-window[hidden] {
+  display: none !important;
+}
+
+.avatar-window-bar,
+.avatar-window-footer {
+  min-height: 48px;
+  padding: 9px 12px;
+}
+
+.avatar-window-bar h2 {
+  font-size: 18px;
+}
+
+.avatar-window-body {
+  min-height: 0;
+  overflow: hidden !important;
+  padding: 10px 12px;
+}
+
+.profile-image-window-grid,
+.sigil-window-grid {
+  gap: 8px;
+}
+
+.profile-image-window-grid button {
+  min-height: 76px;
+}
+
+.sigil-window-grid button {
+  min-height: 58px;
+}

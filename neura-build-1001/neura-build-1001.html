@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="neura-ui-pattern" content="Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js">
   <title>Neura Build 1001</title>
-  <link rel="stylesheet" href="neura-hud-ui.css?v=1052">
+  <link rel="stylesheet" href="neura-hud-ui.css?v=1054">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1016">
+  <link rel="stylesheet" href="neura-profile.css?v=1020">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -162,7 +162,7 @@
             <span data-profile-lock hidden>Locked</span>
             <div class="profile-identity">
               <div class="profile-avatar-frame" data-profile-avatar-frame>
-                <img class="profile-avatar-photo" data-profile-photo src="Images/Pro.png?v=2" alt="">
+                <img class="profile-avatar-photo" data-profile-photo src="Images/Pro.png?v=3" alt="">
                 <span class="profile-sigil-mark profile-avatar-sigil" data-profile-sigil-preview data-sigil="core">CORE</span>
               </div>
               <div class="profile-copy">
@@ -255,25 +255,33 @@
                 <label>Role<input name="role" type="text" maxlength="24" placeholder="Role" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
                 <label>District<select name="location"><option value="">Not Set</option><option value="Chi-Core">Chi-Core</option><option value="Eden Palms">Eden Palms</option><option value="Camden Falls">Camden Falls</option></select></label>
                 <label>Zodiac<select name="zodiac"><option value="">Not Set</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
-                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#ffb454"></label>
-                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#151019"></label>
+                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#4fd7ff"></label>
+                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#11172b"></label>
                 <input name="bio" type="hidden" value="">
                 <input name="stamina" type="hidden" value="100">
                 <input name="staminaGoal" type="hidden" value="100">
                 <input name="sigil" type="hidden" value="core" data-profile-sigil-value>
+                <input name="avatar" type="hidden" value="pro" data-profile-avatar-value>
               </div>
 
-              <section class="avatar-picker" aria-label="Profile sigil">
+              <section class="profile-editor-badges" aria-label="Profile badges">
+                <span class="profile-mini-badge is-verified" title="Neura Verified" aria-label="Neura Verified"><i>OK</i><b>Neura Verified</b></span>
+                <span class="profile-mini-badge is-location" title="District" aria-label="District"><i>CF</i><b data-profile-right-location>Chi-Core Resident</b></span>
+                <span class="profile-mini-badge is-zodiac" title="Zodiac" aria-label="Zodiac"><i>SG</i><b data-profile-right-zodiac>Sagittarius Fire</b></span>
+                <span class="profile-mini-badge is-sigil" title="Sigil" aria-label="Sigil"><i data-profile-badge-sigil-symbol>FIRE</i><b data-profile-badge-sigil>Fire</b></span>
+              </section>
+
+              <section class="avatar-picker" aria-label="Profile image and sigil">
                 <div class="avatar-current">
                   <span class="avatar-current-thumb">
-                    <span class="profile-sigil-mark is-small" data-sigil-current-preview data-sigil="core">CORE</span>
+                    <img data-avatar-current-image src="Images/Pro.png?v=3" alt="">
                   </span>
                   <div>
-                    <strong>Profile Sigil</strong>
-                    <small data-avatar-current-label>Core selected</small>
+                    <strong>Profile Look</strong>
+                    <small data-avatar-current-label>Image 1 / Core</small>
                   </div>
                 </div>
-                <button type="button" class="avatar-more-button" data-avatar-more>More</button>
+                <button type="button" class="avatar-more-button" data-avatar-more>Pick</button>
               </section>
 
               <footer>
@@ -310,9 +318,10 @@
                 <strong>Featured</strong>
               </header>
               <div class="profile-mini-badges">
-                <span>Neura Verified</span>
-                <span data-profile-right-location>Chi-Core Resident</span>
-                <span data-profile-right-zodiac>Sagittarius Fire</span>
+                <span class="profile-mini-badge is-verified" title="Neura Verified" aria-label="Neura Verified"><i>OK</i><b>Neura Verified</b></span>
+                <span class="profile-mini-badge is-location" title="District" aria-label="District"><i>CF</i><b data-profile-right-location>Chi-Core Resident</b></span>
+                <span class="profile-mini-badge is-zodiac" title="Zodiac" aria-label="Zodiac"><i>SG</i><b data-profile-right-zodiac>Sagittarius Fire</b></span>
+                <span class="profile-mini-badge is-sigil" title="Sigil" aria-label="Sigil"><i data-profile-badge-sigil-symbol>FIRE</i><b data-profile-badge-sigil>Fire</b></span>
               </div>
             </section>
 
@@ -717,14 +726,22 @@
     <section class="avatar-window" data-avatar-window hidden role="dialog" aria-modal="true" aria-labelledby="avatar-window-title">
       <header class="avatar-window-bar">
         <div>
-          <span>Profile Sigil</span>
-          <h2 id="avatar-window-title">Choose Sigil</h2>
+          <span>Profile Look</span>
+          <h2 id="avatar-window-title">Choose Image + Sigil</h2>
         </div>
         <button type="button" class="avatar-window-close" data-avatar-close aria-label="Close image picker">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
         </button>
       </header>
       <div class="avatar-window-body">
+        <section class="avatar-window-grid profile-image-window-grid" aria-label="Profile image gallery">
+          <button type="button" data-avatar-image-option="pro"><img src="Images/Pro.png?v=3" alt=""><small>Image 1</small></button>
+          <button type="button" data-avatar-image-option="pro-1"><img src="Images/Pro (1).png?v=3" alt=""><small>Image 2</small></button>
+          <button type="button" data-avatar-image-option="pro-2"><img src="Images/Pro (2).png?v=3" alt=""><small>Image 3</small></button>
+          <button type="button" data-avatar-image-option="pro-3"><img src="Images/Pro (3).png?v=3" alt=""><small>Image 4</small></button>
+          <button type="button" data-avatar-image-option="pro-4"><img src="Images/Pro (4).png?v=3" alt=""><small>Image 5</small></button>
+          <button type="button" data-avatar-image-option="pro-5"><img src="Images/Pro (5).png?v=3" alt=""><small>Image 6</small></button>
+        </section>
         <section class="avatar-window-grid sigil-window-grid" aria-label="Profile sigil gallery">
           <button type="button" data-avatar-option="core"><span class="profile-sigil-mark">CORE</span><small>Core</small></button>
           <button type="button" data-avatar-option="spark"><span class="profile-sigil-mark">SPRK</span><small>Spark</small></button>
@@ -768,9 +785,9 @@
       </footer>
     </section>
   </main>
-  <script type="module" src="neura-hud-ui.js?v=1051"></script>
+  <script type="module" src="neura-hud-ui.js?v=1053"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1028"></script>
+  <script type="module" src="neura-profile.js?v=1030"></script>
   <script type="module" src="neura-stats.js?v=1004"></script>
   <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

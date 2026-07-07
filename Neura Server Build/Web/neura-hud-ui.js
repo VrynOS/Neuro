@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-hud-ui
-// Build: 1051
-// Update: Settings Hud Resizer
+// Build: 1053
+// Update: Stable Popup Windows
 // Pattern: Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
@@ -9,7 +9,7 @@
 
 const uiLinkPattern = Object.freeze({
   pattern: "UI_LSL_TO_HTML_CSS_JS",
-  build: 1051,
+  build: 1053,
   lsl: "Hud/Neura Hud UI.lsl",
   html: "Web/neura-build-1001.html",
   css: "Web/neura-hud-ui.css",
@@ -37,6 +37,8 @@ const actionTitles = {
 };
 
 function setActiveTab(tab) {
+  if (state.activeAction) closeActionWindow();
+  closeProfilePicker();
   state.activeTab = tab;
   document.querySelectorAll("[data-tab]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.tab === tab);
@@ -44,6 +46,19 @@ function setActiveTab(tab) {
   document.querySelectorAll("[data-view]").forEach((view) => {
     view.classList.toggle("is-active", view.dataset.view === tab);
   });
+  document.dispatchEvent(new CustomEvent("neura:tab-change", { detail: { tab } }));
+}
+
+function closeProfilePicker() {
+  if (window.neuraProfile?.closePicker) {
+    window.neuraProfile.closePicker();
+    return;
+  }
+  const avatarWindow = document.querySelector("[data-avatar-window]");
+  if (avatarWindow) {
+    avatarWindow.classList.remove("is-opening");
+    avatarWindow.hidden = true;
+  }
 }
 
 function renderGate() {
