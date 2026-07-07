@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1028
-// Update: Profile Readability Avatar Cache Pass
+// Build: 1030
+// Update: Stable Profile Picker Close
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -12,6 +12,8 @@ const XP_FEATURE = "NEURA_XP";
 const PROFILE_SCHEMA = "1";
 
 const profileState = {
+  selectedAvatar: "pro",
+  pendingAvatar: "pro",
   selectedSigil: "core",
   pendingSigil: "core",
   profileReady: false,
@@ -19,6 +21,7 @@ const profileState = {
   identityReady: false,
   editingProfile: false,
   bridgeOnline: false,
+  pendingSaveAvatar: "",
   pendingSaveSigil: "",
   lastCommand: null,
   lastServerPayload: {},
@@ -71,15 +74,57 @@ function setSigilPreview(selector, sigil) {
   });
 }
 
-function syncProfilePhoto(sex) {
-  const photo = document.querySelector("[data-profile-photo]");
-  if (!photo) return;
+const avatarProfiles = {
+  pro: ["Image 1", "Images/Pro.png?v=3"],
+  "pro-1": ["Image 2", "Images/Pro (1).png?v=3"],
+  "pro-2": ["Image 3", "Images/Pro (2).png?v=3"],
+  "pro-3": ["Image 4", "Images/Pro (3).png?v=3"],
+  "pro-4": ["Image 5", "Images/Pro (4).png?v=3"],
+  "pro-5": ["Image 6", "Images/Pro (5).png?v=3"],
+  "pro-6": ["Image 7", "Images/Pro (6).png?v=3"],
+  "pro-7": ["Image 8", "Images/Pro (7).png?v=3"],
+  "pro-8": ["Image 9", "Images/Pro (8).png?v=3"]
+};
 
-  const normalized = String(sex || "").trim().toLowerCase();
-  const src = normalized === "female" ? "Images/Pro (1).png?v=2" : "Images/Pro.png?v=2";
-  if (!photo.getAttribute("src")?.endsWith(src)) {
-    photo.src = src;
-  }
+function defaultProfileAvatar(sex) {
+  return String(sex || "").trim().toLowerCase() === "female" ? "pro-1" : "pro";
+}
+
+function normalizeProfileAvatar(value, sex = "") {
+  const avatar = String(value || "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (avatarProfiles[avatar]) return avatar;
+  return defaultProfileAvatar(sex);
+}
+
+function avatarLabel(value, sex = "") {
+  return avatarProfiles[normalizeProfileAvatar(value, sex)][0];
+}
+
+function avatarSrc(value, sex = "") {
+  return avatarProfiles[normalizeProfileAvatar(value, sex)][1];
+}
+
+function syncProfileAvatarValue(value = profileState.selectedAvatar) {
+  const avatar = normalizeProfileAvatar(value);
+  const field = document.querySelector("[data-profile-avatar-value]");
+  if (field) field.value = avatar;
+}
+
+function currentProfileAvatar(data, sex = "") {
+  return normalizeProfileAvatar(
+    data?.get("avatar")
+      || profileState.selectedAvatar
+      || profileState.pendingAvatar,
+    sex
+  );
+}
+
+function syncProfilePhoto(avatar, sex = "") {
+  const src = avatarSrc(avatar, sex);
+
+  document.querySelectorAll("[data-profile-photo], [data-avatar-current-image]").forEach((photo) => {
+    if (photo.getAttribute("src") !== src) photo.src = src;
+  });
 }
 
 function setProfileBridgeStatus(message) {
@@ -249,8 +294,8 @@ function syncProfilePreview() {
   const sex = profileSelectValue(sexRaw, "Sex Not Set");
   const role = profileValue(data.get("role"), "Not Set");
   const location = profileValue(data.get("location"), "Not Set");
-  const accent = profileValue(data.get("accentColor"), "#ffb454");
-  const background = profileValue(data.get("backgroundColor"), "#151019");
+  const accent = profileValue(data.get("accentColor"), "#4fd7ff");
+  const background = profileValue(data.get("backgroundColor"), "#11172b");
   const stamina = profileValue(data.get("stamina"), "100");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
   const staminaLevel = profileValue(profileState.lastServerPayload.staminaLevel || profileState.lastServerPayload.level, "1");
@@ -260,12 +305,14 @@ function syncProfilePreview() {
   const xp = profileValue(profileState.lastXpPayload.xp || profileState.lastServerPayload.xp, "0");
   const xpGoal = profileValue(profileState.lastXpPayload.xpNext || profileState.lastServerPayload.xpGoal, "2500");
   const sigil = currentProfileSigil(data);
+  const avatar = currentProfileAvatar(data, sexRaw);
   const zodiac = String(data.get("zodiac") || "");
   const profile = zodiacProfiles[zodiac];
 
   shell.style.setProperty("--profile-accent", accent);
   shell.style.setProperty("--profile-bg", background);
   document.documentElement.style.setProperty("--profile-accent", accent);
+  document.documentElement.style.setProperty("--profile-bg", background);
 
   setText("[data-profile-display]", displayName);
   setText("[data-profile-age]", age);
@@ -281,7 +328,8 @@ function syncProfilePreview() {
   setText("[data-profile-bg-value]", background.toUpperCase());
   setSwatch("[data-profile-accent-swatch]", accent);
   setSwatch("[data-profile-bg-swatch]", background);
-  syncProfilePhoto(sexRaw);
+  setText("[data-avatar-current-label]", `${avatarLabel(avatar, sexRaw)} / ${sigilLabel(sigil)}`);
+  syncProfilePhoto(avatar, sexRaw);
 
   const zodiacMark = document.querySelector("[data-zodiac-mark]");
   const zodiacEmpty = document.querySelector("[data-zodiac-empty]");
@@ -316,7 +364,12 @@ function syncProfilePreview() {
 }
 
 function syncAvatarWindow() {
-  const hasPending = Boolean(profileState.pendingSigil);
+  const hasPending = Boolean(profileState.pendingAvatar && profileState.pendingSigil);
+  document.querySelectorAll("[data-avatar-image-option]").forEach((node) => {
+    const avatar = normalizeProfileAvatar(node.dataset.avatarImageOption || "");
+    node.classList.toggle("is-pending", avatar === profileState.pendingAvatar);
+    node.classList.toggle("is-active", avatar === profileState.selectedAvatar);
+  });
   document.querySelectorAll("[data-avatar-option]").forEach((node) => {
     const sigil = normalizeProfileSigil(node.dataset.avatarOption || "");
     node.classList.toggle("is-pending", sigil === profileState.pendingSigil);
@@ -324,12 +377,13 @@ function syncAvatarWindow() {
   });
   const chooseButton = document.querySelector("[data-avatar-choose]");
   if (chooseButton) chooseButton.disabled = !hasPending;
-  setText("[data-avatar-selection]", hasPending ? `${sigilLabel(profileState.pendingSigil)} ready` : "No sigil selected");
+  setText("[data-avatar-selection]", hasPending ? `${avatarLabel(profileState.pendingAvatar)} / ${sigilLabel(profileState.pendingSigil)} ready` : "No look selected");
 }
 
 function openAvatarWindow() {
   const windowNode = document.querySelector("[data-avatar-window]");
   if (!windowNode) return;
+  profileState.pendingAvatar = profileState.selectedAvatar;
   profileState.pendingSigil = profileState.selectedSigil;
   syncAvatarWindow();
   windowNode.hidden = false;
@@ -341,6 +395,7 @@ function openAvatarWindow() {
 function closeAvatarWindow() {
   const windowNode = document.querySelector("[data-avatar-window]");
   if (!windowNode) return;
+  profileState.pendingAvatar = profileState.selectedAvatar;
   profileState.pendingSigil = profileState.selectedSigil;
   windowNode.classList.remove("is-opening");
   windowNode.hidden = true;
@@ -348,9 +403,27 @@ function closeAvatarWindow() {
 }
 
 function setPendingAvatar(value) {
+  const avatar = normalizeProfileAvatar(value);
+  profileState.pendingAvatar = avatar;
+  syncAvatarWindow();
+}
+
+function setPendingSigil(value) {
   const sigil = normalizeProfileSigil(value);
   profileState.pendingSigil = sigil;
-  setProfileSigil(sigil);
+  syncAvatarWindow();
+}
+
+function setProfileAvatar(value) {
+  const avatar = normalizeProfileAvatar(value);
+  profileState.selectedAvatar = avatar;
+  profileState.pendingAvatar = avatar;
+  syncProfileAvatarValue(avatar);
+  syncProfilePhoto(avatar);
+  setText("[data-avatar-current-label]", `${avatarLabel(avatar)} / ${sigilLabel(profileState.selectedSigil)}`);
+  syncAvatarWindow();
+  syncProfileReady();
+  syncProfilePreview();
 }
 
 function setProfileSigil(value) {
@@ -361,14 +434,15 @@ function setProfileSigil(value) {
   setSigilPreview("[data-profile-sigil-preview]", sigil);
   setSigilPreview("[data-profile-badge-sigil-mark]", sigil);
   setSigilPreview("[data-sigil-current-preview]", sigil);
-  setText("[data-avatar-current-label]", `${sigilLabel(sigil)} selected`);
+  setText("[data-avatar-current-label]", `${avatarLabel(profileState.selectedAvatar)} / ${sigilLabel(sigil)}`);
   syncAvatarWindow();
   syncProfileReady();
   syncProfilePreview();
 }
 
 function choosePendingAvatar() {
-  if (!profileState.pendingSigil) return;
+  if (!profileState.pendingAvatar || !profileState.pendingSigil) return;
+  setProfileAvatar(profileState.pendingAvatar);
   setProfileSigil(profileState.pendingSigil);
   closeAvatarWindow();
 }
@@ -389,6 +463,7 @@ function profilePayload() {
     bio: String(data.get("bio") || "").trim(),
     stamina: String(data.get("stamina") || "100").trim(),
     staminaGoal: String(data.get("staminaGoal") || "100").trim(),
+    avatar: currentProfileAvatar(data, String(data.get("sex") || "")),
     sigil: currentProfileSigil(data),
     ready: syncProfileReady() ? "1" : "0"
   };
@@ -418,6 +493,7 @@ function profileSaveMessage(payload = profilePayload()) {
     zodiac: payload.zodiac,
     bio: payload.bio,
     sigil: payload.sigil,
+    avatar: payload.avatar,
     accent: payload.accent,
     background: payload.background,
     stamina: payload.stamina,
@@ -471,10 +547,12 @@ function sendProfileSave() {
   }
 
   const payload = profilePayload();
+  const avatar = normalizeProfileAvatar(payload.avatar, payload.sex);
   const sigil = normalizeProfileSigil(payload.sigil);
+  profileState.pendingSaveAvatar = avatar;
   profileState.pendingSaveSigil = sigil;
   dispatchProfileCommand("save", [profileSaveMessage(payload)], payload);
-  setProfileBridgeStatus(`Profile save sent. Sigil ${sigil}`);
+  setProfileBridgeStatus(`Profile save sent. ${avatarLabel(avatar)} / ${sigilLabel(sigil)}`);
   window.neuraHeart?.speak?.("Profile Save", "Profile data was sent to the Profile HUD bridge.", "good");
 }
 
@@ -522,6 +600,13 @@ function applyProfileData(payload = {}) {
   if (payload.bio !== undefined) setProfileFormValue("bio", payload.bio);
   if (payload.stamina !== undefined) setProfileFormValue("stamina", payload.stamina);
   if (payload.staminaGoal !== undefined) setProfileFormValue("staminaGoal", payload.staminaGoal);
+  if (payload.avatar !== undefined) {
+    const serverAvatar = normalizeProfileAvatar(payload.avatar, payload.sex);
+    setProfileAvatar(serverAvatar);
+    if (serverAvatar === profileState.pendingSaveAvatar) {
+      profileState.pendingSaveAvatar = "";
+    }
+  }
   if (payload.sigil !== undefined) {
     const serverSigil = normalizeProfileSigil(payload.sigil);
     setProfileSigil(serverSigil);
@@ -532,8 +617,8 @@ function applyProfileData(payload = {}) {
   profileState.bridgeOnline = true;
   setProfileRefreshEnabled(true);
   setProfileBridgeStatus(
-    profileState.pendingSaveSigil
-      ? "Profile synced. Sigil not confirmed."
+    profileState.pendingSaveAvatar || profileState.pendingSaveSigil
+      ? "Profile synced. Look not confirmed."
       : profileState.serverReady ? "Profile synced" : "Profile setup required"
   );
   syncProfilePreview();
@@ -578,11 +663,15 @@ function receiveProfile(message) {
 
   if (command === "NEURA_PROFILE_SAVE_OK") {
     profileState.bridgeOnline = true;
+    if (payload.avatar) {
+      setProfileAvatar(payload.avatar);
+      profileState.pendingSaveAvatar = "";
+    }
     if (payload.sigil) {
       setProfileSigil(payload.sigil);
       profileState.pendingSaveSigil = "";
-    } else if (profileState.pendingSaveSigil) {
-      setProfileBridgeStatus("Profile saved. Sigil not confirmed.");
+    } else if (profileState.pendingSaveAvatar || profileState.pendingSaveSigil) {
+      setProfileBridgeStatus("Profile saved. Look not confirmed.");
       return;
     }
     setProfileBridgeStatus("Profile saved. Waiting for server profile.");
@@ -636,6 +725,7 @@ function setupProfilePreview() {
   });
 
   syncProfilePreview();
+  syncProfileAvatarValue();
   syncAvatarWindow();
   syncProfileSigilValue();
   setProfileBridgeStatus("Profile bridge offline");
@@ -648,9 +738,15 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  const imageOption = event.target.closest("[data-avatar-image-option]");
+  if (imageOption) {
+    setPendingAvatar(imageOption.dataset.avatarImageOption || "");
+    return;
+  }
+
   const avatarOption = event.target.closest("[data-avatar-option]");
   if (avatarOption) {
-    setPendingAvatar(avatarOption.dataset.avatarOption || "");
+    setPendingSigil(avatarOption.dataset.avatarOption || "");
     return;
   }
 
@@ -670,8 +766,10 @@ document.addEventListener("keydown", (event) => {
   if (avatarWindow && !avatarWindow.hidden) closeAvatarWindow();
 });
 
+document.addEventListener("neura:tab-change", closeAvatarWindow);
+
 window.neuraProfile = Object.freeze({
-  build: 1028,
+  build: 1030,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
@@ -682,7 +780,9 @@ window.neuraProfile = Object.freeze({
   read: sendProfileRead,
   receive: receiveProfile,
   sync: syncProfilePreview,
-  setAvatar: setProfileSigil,
+  closePicker: closeAvatarWindow,
+  setImage: setProfileAvatar,
+  setAvatar: setProfileAvatar,
   setSigil: setProfileSigil,
   mode: () => (profileState.serverReady && profileState.identityReady && !profileState.editingProfile ? "view" : "setup"),
   serverReady: () => profileState.serverReady,
