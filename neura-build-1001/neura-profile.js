@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1026
-// Update: Profile Personal Glass Pass
+// Build: 1028
+// Update: Profile Readability Avatar Cache Pass
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -53,13 +53,15 @@ function profileSelectValue(value, fallback) {
 }
 
 function setText(selector, value) {
-  const node = document.querySelector(selector);
-  if (node) node.textContent = value;
+  document.querySelectorAll(selector).forEach((node) => {
+    node.textContent = value;
+  });
 }
 
 function setSwatch(selector, value) {
-  const node = document.querySelector(selector);
-  if (node) node.style.background = value;
+  document.querySelectorAll(selector).forEach((node) => {
+    node.style.background = value;
+  });
 }
 
 function setSigilPreview(selector, sigil) {
@@ -67,6 +69,17 @@ function setSigilPreview(selector, sigil) {
     node.textContent = sigilMark(sigil);
     node.dataset.sigil = sigil;
   });
+}
+
+function syncProfilePhoto(sex) {
+  const photo = document.querySelector("[data-profile-photo]");
+  if (!photo) return;
+
+  const normalized = String(sex || "").trim().toLowerCase();
+  const src = normalized === "female" ? "Images/Pro (1).png?v=2" : "Images/Pro.png?v=2";
+  if (!photo.getAttribute("src")?.endsWith(src)) {
+    photo.src = src;
+  }
 }
 
 function setProfileBridgeStatus(message) {
@@ -232,11 +245,12 @@ function syncProfilePreview() {
   const data = new FormData(form);
   const displayName = profileValue(data.get("displayName"), "Profile Setup Required");
   const age = profileValue(data.get("age"), "Age Not Set");
-  const sex = profileSelectValue(data.get("sex"), "Sex Not Set");
+  const sexRaw = String(data.get("sex") || "").trim().toLowerCase();
+  const sex = profileSelectValue(sexRaw, "Sex Not Set");
   const role = profileValue(data.get("role"), "Not Set");
   const location = profileValue(data.get("location"), "Not Set");
-  const accent = profileValue(data.get("accentColor"), "#d6b35f");
-  const background = profileValue(data.get("backgroundColor"), "#171211");
+  const accent = profileValue(data.get("accentColor"), "#ffb454");
+  const background = profileValue(data.get("backgroundColor"), "#151019");
   const stamina = profileValue(data.get("stamina"), "100");
   const staminaGoal = profileValue(data.get("staminaGoal"), "100");
   const staminaLevel = profileValue(profileState.lastServerPayload.staminaLevel || profileState.lastServerPayload.level, "1");
@@ -259,6 +273,15 @@ function syncProfilePreview() {
   setText("[data-profile-role]", role);
   setText("[data-profile-location]", location);
   setText("[data-profile-badge-sigil]", sigilLabel(sigil));
+  setText("[data-profile-badge-sigil-symbol]", sigilMark(sigil));
+  setText("[data-profile-color-sigil]", sigilLabel(sigil));
+  setText("[data-profile-badge-location]", location === "Not Set" ? "District Pending" : location);
+  setText("[data-profile-right-location]", location === "Not Set" ? "District Pending" : `${location} Resident`);
+  setText("[data-profile-accent-value]", accent.toUpperCase());
+  setText("[data-profile-bg-value]", background.toUpperCase());
+  setSwatch("[data-profile-accent-swatch]", accent);
+  setSwatch("[data-profile-bg-swatch]", background);
+  syncProfilePhoto(sexRaw);
 
   const zodiacMark = document.querySelector("[data-zodiac-mark]");
   const zodiacEmpty = document.querySelector("[data-zodiac-empty]");
@@ -272,6 +295,8 @@ function syncProfilePreview() {
     setText("[data-zodiac-traits]", profile[2]);
     setText("[data-zodiac-line]", profile[3]);
     setText("[data-zodiac-story]", profile[4]);
+    setText("[data-profile-badge-zodiac]", profile[0]);
+    setText("[data-profile-right-zodiac]", `${profile[0]} ${profile[1]}`);
   } else {
     zodiacMark?.removeAttribute("src");
     if (zodiacMark) zodiacMark.hidden = true;
@@ -281,6 +306,8 @@ function syncProfilePreview() {
     setText("[data-zodiac-traits]", "--");
     setText("[data-zodiac-line]", "Waiting for server profile.");
     setText("[data-zodiac-story]", "Choose a zodiac sign to shape this resident identity.");
+    setText("[data-profile-badge-zodiac]", "Zodiac Pending");
+    setText("[data-profile-right-zodiac]", "Zodiac Pending");
   }
 
   syncProfileReady();
@@ -644,7 +671,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.neuraProfile = Object.freeze({
-  build: 1026,
+  build: 1028,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({
