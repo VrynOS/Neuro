@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="neura-ui-pattern" content="Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js">
   <title>Neura Build 1001</title>
-  <link rel="stylesheet" href="neura-hud-ui.css?v=1054">
+  <link rel="stylesheet" href="neura-hud-ui.css?v=1055">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1020">
+  <link rel="stylesheet" href="neura-profile.css?v=1021">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -176,6 +176,12 @@
               </div>
             </div>
 
+            <section class="profile-action-stack" aria-label="Profile customization actions">
+              <button type="button" class="profile-action-button is-image" data-profile-image-open><i aria-hidden="true">IMG</i><b>Change Profile Image</b></button>
+              <button type="button" class="profile-action-button is-sigil" data-sigil-open><i aria-hidden="true">SIG</i><b>Add Sigil</b></button>
+              <button type="button" class="profile-action-button is-badge" data-badge-open><i aria-hidden="true">BDG</i><b>Add Badges</b></button>
+            </section>
+
             <section class="profile-badges" aria-label="Profile badges">
               <header class="profile-panel-title">
                 <span>Badges</span>
@@ -187,42 +193,6 @@
                 <span class="profile-badge-chip is-zodiac"><i>SG</i><b data-profile-badge-zodiac>Sagittarius</b></span>
                 <span class="profile-badge-chip is-sigil"><i data-profile-badge-sigil-symbol>FIRE</i><b data-profile-badge-sigil>Fire</b></span>
               </div>
-            </section>
-
-            <section class="profile-level profile-meter-card" aria-label="Profile progression">
-              <header class="profile-meter-head">
-                <span class="level-mark hud-icon icon-xp" aria-hidden="true"></span>
-                <div>
-                  <span>Experience</span>
-                  <strong>Level <b data-profile-level>--</b></strong>
-                </div>
-                <output><b data-profile-xp-current>--</b> / <b data-profile-xp-goal>--</b> XP</output>
-              </header>
-              <i aria-hidden="true"><em data-profile-xp-bar></em></i>
-              <div class="profile-meter-grid">
-                <small><span>Progress</span><b data-profile-xp-percent>--%</b></small>
-                <small><span>Next Level</span><b><span data-profile-xp-needed>--</span> XP</b></small>
-                <small><span>Status</span><b data-profile-verified-note>Server Required</b></small>
-              </div>
-              <p class="profile-meter-note">Earn XP by wearing Neuro, using Camden systems, completing actions, and interacting with the world.</p>
-            </section>
-
-            <section class="profile-stamina-panel profile-meter-card" aria-label="Profile stamina">
-              <header class="profile-meter-head">
-                <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
-                <div>
-                  <span>Stamina</span>
-                  <strong>Level <b data-profile-stamina-level>--</b></strong>
-                </div>
-                <output><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></output>
-              </header>
-              <i aria-hidden="true"><em data-profile-stamina-bar></em></i>
-              <div class="profile-meter-grid">
-                <small><span>Progress</span><b data-profile-stamina-xp-percent>--%</b></small>
-                <small><span>Stamina XP</span><b><span data-profile-stamina-xp>--</span> / <span data-profile-stamina-xp-goal>--</span> XP</b></small>
-                <small><span>Next Level</span><b><span data-profile-stamina-xp-needed>--</span> XP</b></small>
-              </div>
-              <p class="profile-meter-note">Stamina reflects your active body endurance inside Camden Falls.</p>
             </section>
 
             <section class="profile-color-strip" aria-label="Profile colors">
@@ -247,6 +217,42 @@
                 </div>
                 <button type="button" data-profile-refresh disabled>Refresh</button>
               </header>
+
+              <section class="profile-level profile-meter-card" aria-label="Profile progression">
+                <header class="profile-meter-head">
+                  <span class="level-mark hud-icon icon-xp" aria-hidden="true"></span>
+                  <div>
+                    <span>Experience</span>
+                    <strong>Level <b data-profile-level>--</b></strong>
+                  </div>
+                  <output><b data-profile-xp-current>--</b> / <b data-profile-xp-goal>--</b> XP</output>
+                </header>
+                <i aria-hidden="true"><em data-profile-xp-bar></em></i>
+                <div class="profile-meter-grid">
+                  <small><span>Progress</span><b data-profile-xp-percent>--%</b></small>
+                  <small><span>Next Level</span><b><span data-profile-xp-needed>--</span> XP</b></small>
+                  <small><span>Status</span><b data-profile-verified-note>Server Required</b></small>
+                </div>
+                <p class="profile-meter-note">Earn XP by wearing Neuro, using Camden systems, completing actions, and interacting with the world.</p>
+              </section>
+
+              <section class="profile-stamina-panel profile-meter-card" aria-label="Profile stamina">
+                <header class="profile-meter-head">
+                  <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
+                  <div>
+                    <span>Stamina</span>
+                    <strong>Level <b data-profile-stamina-level>--</b></strong>
+                  </div>
+                  <output><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></output>
+                </header>
+                <i aria-hidden="true"><em data-profile-stamina-bar></em></i>
+                <div class="profile-meter-grid">
+                  <small><span>Progress</span><b data-profile-stamina-xp-percent>--%</b></small>
+                  <small><span>Stamina XP</span><b><span data-profile-stamina-xp>--</span> / <span data-profile-stamina-xp-goal>--</span> XP</b></small>
+                  <small><span>Next Level</span><b><span data-profile-stamina-xp-needed>--</span> XP</b></small>
+                </div>
+                <p class="profile-meter-note">Stamina reflects your active body endurance inside Camden Falls.</p>
+              </section>
 
               <div class="editor-grid">
                 <label>Display Name<input name="displayName" type="text" maxlength="32" placeholder="Display name" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
@@ -281,7 +287,7 @@
                     <small data-avatar-current-label>Image 1 / Core</small>
                   </div>
                 </div>
-                <button type="button" class="avatar-more-button" data-avatar-more>Pick</button>
+                <button type="button" class="avatar-more-button" data-avatar-more>Change Image</button>
               </section>
 
               <footer>
@@ -726,23 +732,29 @@
     <section class="avatar-window" data-avatar-window hidden role="dialog" aria-modal="true" aria-labelledby="avatar-window-title">
       <header class="avatar-window-bar">
         <div>
-          <span>Profile Look</span>
-          <h2 id="avatar-window-title">Choose Image + Sigil</h2>
+          <span data-picker-kicker>Profile Image</span>
+          <h2 id="avatar-window-title" data-picker-title>Choose Profile Image</h2>
         </div>
         <button type="button" class="avatar-window-close" data-avatar-close aria-label="Close image picker">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
         </button>
       </header>
       <div class="avatar-window-body">
-        <section class="avatar-window-grid profile-image-window-grid" aria-label="Profile image gallery">
-          <button type="button" data-avatar-image-option="pro"><img src="Images/Pro.png?v=3" alt=""><small>Image 1</small></button>
-          <button type="button" data-avatar-image-option="pro-1"><img src="Images/Pro (1).png?v=3" alt=""><small>Image 2</small></button>
-          <button type="button" data-avatar-image-option="pro-2"><img src="Images/Pro (2).png?v=3" alt=""><small>Image 3</small></button>
-          <button type="button" data-avatar-image-option="pro-3"><img src="Images/Pro (3).png?v=3" alt=""><small>Image 4</small></button>
-          <button type="button" data-avatar-image-option="pro-4"><img src="Images/Pro (4).png?v=3" alt=""><small>Image 5</small></button>
-          <button type="button" data-avatar-image-option="pro-5"><img src="Images/Pro (5).png?v=3" alt=""><small>Image 6</small></button>
+        <section class="avatar-window-grid profile-image-window-grid" data-picker-panel="image" aria-label="Profile image gallery">
+          <button type="button" data-avatar-image-option="pro"><img src="Images/Pro.png?v=4" alt=""><small>Male 1</small></button>
+          <button type="button" data-avatar-image-option="pro-5"><img src="Images/Pro (5).png?v=4" alt=""><small>Male 2</small></button>
+          <button type="button" data-avatar-image-option="pro-6"><img src="Images/Pro (6).png?v=4" alt=""><small>Male 3</small></button>
+          <button type="button" data-avatar-image-option="pro-c-2"><img src="Images/Pro C (2).png?v=4" alt=""><small>Male 4</small></button>
+          <button type="button" data-avatar-image-option="pro-gal-1"><img src="Images/Pro Gal (1).png?v=4" alt=""><small>Male 5</small></button>
+          <button type="button" data-avatar-image-option="pro-gal-4"><img src="Images/Pro Gal (4).png?v=4" alt=""><small>Male 6</small></button>
+          <button type="button" data-avatar-image-option="pro-1"><img src="Images/Pro (1).png?v=4" alt=""><small>Female 1</small></button>
+          <button type="button" data-avatar-image-option="pro-2"><img src="Images/Pro (2).png?v=4" alt=""><small>Female 2</small></button>
+          <button type="button" data-avatar-image-option="pro-3"><img src="Images/Pro (3).png?v=4" alt=""><small>Female 3</small></button>
+          <button type="button" data-avatar-image-option="pro-c-1"><img src="Images/Pro C (1).png?v=4" alt=""><small>Female 4</small></button>
+          <button type="button" data-avatar-image-option="pro-c-6"><img src="Images/Pro C (6).png?v=4" alt=""><small>Female 5</small></button>
+          <button type="button" data-avatar-image-option="pro-u-2"><img src="Images/Pro U (2).png?v=4" alt=""><small>Female 6</small></button>
         </section>
-        <section class="avatar-window-grid sigil-window-grid" aria-label="Profile sigil gallery">
+        <section class="avatar-window-grid sigil-window-grid" data-picker-panel="sigil" aria-label="Profile sigil gallery">
           <button type="button" data-avatar-option="core"><span class="profile-sigil-mark">CORE</span><small>Core</small></button>
           <button type="button" data-avatar-option="spark"><span class="profile-sigil-mark">SPRK</span><small>Spark</small></button>
           <button type="button" data-avatar-option="fire"><span class="profile-sigil-mark">FIRE</span><small>Fire</small></button>
@@ -755,6 +767,14 @@
           <button type="button" data-avatar-option="gem"><span class="profile-sigil-mark">GEM</span><small>Gem</small></button>
           <button type="button" data-avatar-option="crown"><span class="profile-sigil-mark">CRWN</span><small>Crown</small></button>
           <button type="button" data-avatar-option="shield"><span class="profile-sigil-mark">SHLD</span><small>Shield</small></button>
+        </section>
+        <section class="avatar-window-grid badge-window-grid" data-picker-panel="badge" aria-label="Profile badge gallery">
+          <button type="button" data-badge-option="verified"><i>OK</i><small>Verified</small></button>
+          <button type="button" data-badge-option="district"><i>CF</i><small>District</small></button>
+          <button type="button" data-badge-option="zodiac"><i>SG</i><small>Zodiac</small></button>
+          <button type="button" data-badge-option="sigil"><i>SI</i><small>Sigil</small></button>
+          <button type="button" data-badge-option="xp"><i>XP</i><small>XP</small></button>
+          <button type="button" data-badge-option="stamina"><i>ST</i><small>Stamina</small></button>
         </section>
       </div>
       <footer class="avatar-window-footer">
@@ -785,9 +805,9 @@
       </footer>
     </section>
   </main>
-  <script type="module" src="neura-hud-ui.js?v=1053"></script>
+  <script type="module" src="neura-hud-ui.js?v=1055"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1030"></script>
+  <script type="module" src="neura-profile.js?v=1031"></script>
   <script type="module" src="neura-stats.js?v=1004"></script>
   <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

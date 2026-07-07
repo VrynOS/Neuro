@@ -3589,3 +3589,628 @@ body {
 .sigil-window-grid button {
   min-height: 58px;
 }
+
+/* =====================================================//
+Profile Guide Pass 1032
+Strict pass from Jah guide: bigger HUD controls, separated pickers, stronger frame.
+// ===================================================== */
+
+.neura-shell {
+  border-color: rgba(163, 86, 255, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 215, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44),
+    inset 0 -24px 54px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(0, 0, 0, 0.8),
+    0 0 22px rgba(79, 215, 255, 0.24),
+    0 0 38px rgba(184, 72, 255, 0.26) !important;
+}
+
+.neura-shell::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid rgba(79, 215, 255, 0.28);
+  background:
+    linear-gradient(135deg, rgba(184, 72, 255, 0.8) 0 2px, transparent 2px 42px),
+    linear-gradient(225deg, rgba(79, 215, 255, 0.72) 0 2px, transparent 2px 42px),
+    linear-gradient(315deg, rgba(184, 72, 255, 0.8) 0 2px, transparent 2px 42px),
+    linear-gradient(45deg, rgba(79, 215, 255, 0.72) 0 2px, transparent 2px 42px),
+    linear-gradient(90deg, transparent 0 18%, rgba(184, 72, 255, 0.24) 18% 20%, transparent 20% 80%, rgba(79, 215, 255, 0.2) 80% 82%, transparent 82%);
+  clip-path: polygon(0 22px, 22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px), calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px));
+  box-shadow:
+    inset 0 0 18px rgba(79, 215, 255, 0.12),
+    inset 0 0 34px rgba(184, 72, 255, 0.1);
+}
+
+.neura-shell::after {
+  content: "";
+  position: absolute;
+  inset: auto 32% 3px;
+  z-index: 2;
+  height: 34px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(79, 215, 255, 0.72), rgba(184, 72, 255, 0.86), rgba(79, 215, 255, 0.72), transparent);
+  clip-path: polygon(0 100%, 12% 0, 88% 0, 100% 100%, 72% 100%, 64% 42%, 36% 42%, 28% 100%);
+  filter: drop-shadow(0 0 14px rgba(184, 72, 255, 0.65));
+}
+
+.neura-topbar {
+  grid-template-columns: minmax(174px, 190px) minmax(382px, 1fr) minmax(194px, 214px) !important;
+  gap: 8px !important;
+}
+
+.neura-brand {
+  grid-template-columns: 70px minmax(0, 1fr) !important;
+}
+
+.neura-brand img {
+  width: 68px !important;
+  height: 68px !important;
+}
+
+.neura-brand strong {
+  font-size: 28px !important;
+  letter-spacing: 0.12em !important;
+}
+
+.neura-tabs {
+  gap: 8px !important;
+}
+
+.neura-tabs button {
+  min-width: 70px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  padding: 0 9px !important;
+  border-radius: 8px !important;
+}
+
+.neura-tabs .hud-icon,
+.neura-tabs span {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.neura-tabs em {
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.neura-actions button {
+  flex-basis: 40px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.neura-actions .hud-icon,
+.neura-actions button span {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.action-window {
+  top: var(--action-top, 108px) !important;
+  right: var(--action-right, 22px) !important;
+  left: auto !important;
+  width: min(520px, calc(100vw - 36px)) !important;
+  min-height: 260px !important;
+  max-height: min(370px, calc(100vh - 126px)) !important;
+  transform: none !important;
+  border-radius: 10px !important;
+}
+
+.action-window-bar {
+  min-height: 62px !important;
+  padding: 12px 16px !important;
+}
+
+.action-window-bar h2 {
+  font-size: 24px !important;
+}
+
+.action-window-body {
+  padding: 16px !important;
+}
+
+.action-panel {
+  min-height: 170px !important;
+  padding: 18px !important;
+}
+
+.action-panel h3 {
+  font-size: 25px !important;
+}
+
+.action-panel p {
+  font-size: 18px !important;
+}
+
+.settings-control header span,
+.settings-presets button {
+  font-size: 14px !important;
+}
+
+.settings-control header strong {
+  font-size: 28px !important;
+}
+
+.profile-shell {
+  padding: 10px !important;
+}
+
+.profile-layout,
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  grid-template-columns: minmax(246px, 0.95fr) minmax(236px, 0.9fr) minmax(236px, 0.9fr) !important;
+  gap: 10px !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-saved-panel,
+.profile-saved-panel {
+  display: grid !important;
+}
+
+.profile-card,
+.profile-editor,
+.profile-saved-panel {
+  border-radius: 10px !important;
+}
+
+.profile-card {
+  grid-template-rows: auto auto auto !important;
+  align-content: start !important;
+  gap: 7px !important;
+  padding: 9px !important;
+}
+
+.profile-identity {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+  gap: 6px !important;
+  text-align: center !important;
+}
+
+.profile-avatar-frame {
+  width: 132px !important;
+  height: 132px !important;
+}
+
+.profile-avatar-sigil {
+  right: 2px !important;
+  bottom: 2px !important;
+}
+
+.profile-copy {
+  width: 100% !important;
+}
+
+.profile-copy strong {
+  display: block !important;
+  max-width: 100% !important;
+  font-size: 25px !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.profile-detail-stack {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  width: 100% !important;
+}
+
+.profile-detail-stack p {
+  min-height: 28px !important;
+  padding: 4px 6px !important;
+}
+
+.profile-detail-stack span {
+  font-size: 9px !important;
+}
+
+.profile-detail-stack b {
+  font-size: 13px !important;
+}
+
+.profile-action-stack {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-action-button {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  align-items: center !important;
+  min-height: 36px !important;
+  padding: 0 10px 0 6px !important;
+  text-align: left !important;
+  border-radius: 8px !important;
+}
+
+.profile-action-button i {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 26px;
+  color: #071020;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  border-radius: 7px;
+  background: var(--profile-accent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--profile-accent), transparent 54%);
+}
+
+.profile-action-button b {
+  min-width: 0;
+  color: #f8fcff;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.profile-action-button.is-image {
+  --button-accent: #cf8cff;
+  --button-rgb: 207, 140, 255;
+}
+
+.profile-action-button.is-sigil {
+  --button-accent: #4fd7ff;
+  --button-rgb: 79, 215, 255;
+}
+
+.profile-action-button.is-badge {
+  --button-accent: #ffcc70;
+  --button-rgb: 255, 204, 112;
+}
+
+.profile-card .profile-badges {
+  display: grid !important;
+  min-height: 38px !important;
+  padding: 5px !important;
+}
+
+.profile-card .profile-panel-title {
+  display: none !important;
+}
+
+.profile-badge-list {
+  justify-content: center !important;
+  gap: 7px !important;
+}
+
+.profile-badge-chip {
+  width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+}
+
+.profile-badge-chip b {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+}
+
+.profile-editor {
+  padding: 10px !important;
+}
+
+.profile-editor form {
+  gap: 7px !important;
+}
+
+.profile-meter-card {
+  padding: 8px !important;
+}
+
+.profile-meter-head strong {
+  font-size: 18px !important;
+}
+
+.profile-meter-head output {
+  font-size: 15px !important;
+}
+
+.profile-meter-grid small {
+  min-height: 28px !important;
+}
+
+.profile-editor label,
+.profile-editor header span,
+.profile-editor footer span {
+  font-size: 11px !important;
+}
+
+.profile-editor input,
+.profile-editor select,
+.profile-editor textarea {
+  min-height: 34px !important;
+  font-size: 15px !important;
+}
+
+.profile-editor-badges,
+.avatar-picker {
+  display: none !important;
+}
+
+.zodiac-showcase {
+  min-height: 196px !important;
+}
+
+.zodiac-orbit-large {
+  width: 142px !important;
+  height: 142px !important;
+}
+
+.zodiac-copy strong {
+  font-size: 28px !important;
+}
+
+.zodiac-copy span,
+.zodiac-copy p {
+  font-size: 13px !important;
+}
+
+.profile-right-badges,
+.profile-selected-sigil {
+  border-radius: 9px !important;
+}
+
+.avatar-window {
+  width: min(674px, calc(100vw - 42px)) !important;
+  max-height: min(446px, calc(100vh - 38px)) !important;
+  border-radius: 12px !important;
+}
+
+.avatar-window[data-picker-mode="badge"] {
+  width: min(540px, calc(100vw - 42px)) !important;
+}
+
+.avatar-window-bar,
+.avatar-window-footer {
+  min-height: 58px !important;
+  padding: 12px 16px !important;
+}
+
+.avatar-window-bar h2 {
+  font-size: 24px !important;
+}
+
+.avatar-window-bar span,
+.avatar-window-footer span {
+  font-size: 13px !important;
+}
+
+[data-picker-panel][hidden] {
+  display: none !important;
+}
+
+.avatar-window-grid {
+  gap: 10px !important;
+}
+
+.profile-image-window-grid,
+.sigil-window-grid,
+.badge-window-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.profile-image-window-grid button {
+  min-height: 100px !important;
+  padding: 8px !important;
+}
+
+.profile-image-window-grid img {
+  width: 62px !important;
+  height: 62px !important;
+}
+
+.sigil-window-grid button,
+.badge-window-grid button {
+  min-height: 86px !important;
+}
+
+.badge-window-grid button i {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 36px;
+  margin: 0 auto;
+  color: #06101c;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 950;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #65f7b1, #b88cff);
+}
+
+.avatar-window-grid small {
+  font-size: 12px !important;
+}
+
+/* Guide fit correction: roomy edit mode at SL size. */
+.neura-shell::before {
+  background:
+    linear-gradient(135deg, rgba(184, 72, 255, 0.78) 0 2px, transparent 2px 44px),
+    linear-gradient(225deg, rgba(79, 215, 255, 0.72) 0 2px, transparent 2px 44px),
+    linear-gradient(315deg, rgba(184, 72, 255, 0.78) 0 2px, transparent 2px 44px),
+    linear-gradient(45deg, rgba(79, 215, 255, 0.72) 0 2px, transparent 2px 44px) !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-layout {
+  grid-template-columns: minmax(270px, 0.78fr) minmax(0, 1.22fr) !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-saved-panel {
+  display: none !important;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-layout {
+  grid-template-columns: minmax(248px, 0.92fr) minmax(226px, 0.82fr) minmax(236px, 0.86fr) !important;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-editor {
+  display: grid !important;
+}
+
+.profile-shell[data-profile-mode="view"] .profile-editor header,
+.profile-shell[data-profile-mode="view"] .profile-editor .editor-grid,
+.profile-shell[data-profile-mode="view"] .profile-editor footer {
+  display: none !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-editor form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-content: start !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-editor header,
+.profile-shell[data-profile-mode="setup"] .profile-editor .editor-grid,
+.profile-shell[data-profile-mode="setup"] .profile-editor footer {
+  grid-column: 1 / -1 !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-level,
+.profile-shell[data-profile-mode="setup"] .profile-stamina-panel {
+  min-height: 90px !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-meter-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .editor-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .editor-grid label {
+  min-width: 0 !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-editor input,
+.profile-shell[data-profile-mode="setup"] .profile-editor select {
+  min-height: 32px !important;
+  padding: 0 7px !important;
+  font-size: 13px !important;
+}
+
+.profile-shell[data-profile-mode="setup"] .profile-editor label {
+  font-size: 10px !important;
+}
+
+.profile-copy {
+  display: grid !important;
+  gap: 6px !important;
+}
+
+.profile-copy::after {
+  width: min(132px, 72%) !important;
+  height: 3px !important;
+  justify-self: center !important;
+  order: 3 !important;
+}
+
+.profile-detail-stack {
+  order: 2 !important;
+}
+
+/* Left profile hierarchy: image, name/details, actions, badges with no overlap. */
+.profile-card {
+  grid-template-rows: auto auto minmax(34px, 38px) !important;
+  align-content: start !important;
+}
+
+.profile-identity {
+  height: auto !important;
+  min-height: 0 !important;
+  grid-template-rows: auto auto !important;
+  overflow: visible !important;
+}
+
+.profile-avatar-frame {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+.profile-copy {
+  min-height: 0 !important;
+  gap: 3px !important;
+}
+
+.profile-copy strong {
+  font-size: 20px !important;
+}
+
+.profile-copy::after {
+  height: 2px !important;
+  margin-top: 0 !important;
+}
+
+.profile-detail-stack {
+  gap: 4px !important;
+}
+
+.profile-detail-stack p {
+  min-height: 19px !important;
+  padding: 2px 5px !important;
+}
+
+.profile-detail-stack span {
+  font-size: 8px !important;
+}
+
+.profile-detail-stack b {
+  font-size: 10px !important;
+}
+
+.profile-action-stack {
+  gap: 6px !important;
+}
+
+.profile-action-button {
+  min-height: 32px !important;
+  grid-template-columns: 36px minmax(0, 1fr) !important;
+}
+
+.profile-action-button i {
+  width: 27px !important;
+  height: 23px !important;
+  font-size: 9px !important;
+}
+
+.profile-action-button b {
+  font-size: 13px !important;
+}
+
+.profile-card .profile-badges {
+  min-height: 34px !important;
+  height: 34px !important;
+  overflow: hidden !important;
+}
+
+.profile-badge-list {
+  flex-wrap: nowrap !important;
+}
+
+.profile-badge-chip {
+  width: 27px !important;
+  height: 27px !important;
+  min-height: 27px !important;
+}
+
+.profile-badge-chip i {
+  width: 24px !important;
+  height: 19px !important;
+  font-size: 8px !important;
+}
