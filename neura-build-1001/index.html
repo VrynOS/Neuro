@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1052">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1013">
+  <link rel="stylesheet" href="neura-profile.css?v=1016">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -162,7 +162,8 @@
             <span data-profile-lock hidden>Locked</span>
             <div class="profile-identity">
               <div class="profile-avatar-frame" data-profile-avatar-frame>
-                <span class="profile-sigil-mark" data-profile-sigil-preview data-sigil="core">CORE</span>
+                <img class="profile-avatar-photo" data-profile-photo src="Images/Pro.png?v=2" alt="">
+                <span class="profile-sigil-mark profile-avatar-sigil" data-profile-sigil-preview data-sigil="core">CORE</span>
               </div>
               <div class="profile-copy">
                 <strong data-profile-display>Profile Setup Required</strong>
@@ -176,7 +177,16 @@
             </div>
 
             <section class="profile-badges" aria-label="Profile badges">
-              <p class="profile-empty-badges">No badges added yet.</p>
+              <header class="profile-panel-title">
+                <span>Badges</span>
+                <strong>Unlocked</strong>
+              </header>
+              <div class="profile-badge-list">
+                <span class="profile-badge-chip is-verified"><i>OK</i><b>Neura Verified</b></span>
+                <span class="profile-badge-chip is-location"><i>CF</i><b data-profile-badge-location>Chi-Core</b></span>
+                <span class="profile-badge-chip is-zodiac"><i>SG</i><b data-profile-badge-zodiac>Sagittarius</b></span>
+                <span class="profile-badge-chip is-sigil"><i data-profile-badge-sigil-symbol>FIRE</i><b data-profile-badge-sigil>Fire</b></span>
+              </div>
             </section>
 
             <section class="profile-level profile-meter-card" aria-label="Profile progression">
@@ -214,6 +224,18 @@
               </div>
               <p class="profile-meter-note">Stamina reflects your active body endurance inside Camden Falls.</p>
             </section>
+
+            <section class="profile-color-strip" aria-label="Profile colors">
+              <header class="profile-panel-title">
+                <span>Colors</span>
+                <strong>Profile Palette</strong>
+              </header>
+              <div class="profile-color-list">
+                <span><i data-profile-accent-swatch></i><b>Accent</b><em data-profile-accent-value>#D6B35F</em></span>
+                <span><i data-profile-bg-swatch></i><b>Glass</b><em data-profile-bg-value>#151019</em></span>
+                <span><i class="profile-color-fire"></i><b>Sigil</b><em data-profile-color-sigil>Fire</em></span>
+              </div>
+            </section>
           </section>
 
           <section class="profile-editor" data-profile-editor>
@@ -233,8 +255,8 @@
                 <label>Role<input name="role" type="text" maxlength="24" placeholder="Role" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
                 <label>District<select name="location"><option value="">Not Set</option><option value="Chi-Core">Chi-Core</option><option value="Eden Palms">Eden Palms</option><option value="Camden Falls">Camden Falls</option></select></label>
                 <label>Zodiac<select name="zodiac"><option value="">Not Set</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
-                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#d6b35f"></label>
-                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#171211"></label>
+                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#ffb454"></label>
+                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#151019"></label>
                 <input name="bio" type="hidden" value="">
                 <input name="stamina" type="hidden" value="100">
                 <input name="staminaGoal" type="hidden" value="100">
@@ -285,9 +307,13 @@
             <section class="profile-right-badges" aria-label="Sigil badges">
               <header>
                 <span>Badges</span>
-                <strong>Selected Energy</strong>
+                <strong>Featured</strong>
               </header>
-              <p>No badges added yet.</p>
+              <div class="profile-mini-badges">
+                <span>Neura Verified</span>
+                <span data-profile-right-location>Chi-Core Resident</span>
+                <span data-profile-right-zodiac>Sagittarius Fire</span>
+              </div>
             </section>
 
             <section class="profile-selected-sigil" aria-label="Selected sigil">
@@ -744,7 +770,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1026"></script>
+  <script type="module" src="neura-profile.js?v=1028"></script>
   <script type="module" src="neura-stats.js?v=1004"></script>
   <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>
