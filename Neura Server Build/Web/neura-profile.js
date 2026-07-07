@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-profile
-// Build: 1030
-// Update: Stable Profile Picker Close
+// Build: 1031
+// Update: Separate Profile Pickers
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
@@ -12,10 +12,13 @@ const XP_FEATURE = "NEURA_XP";
 const PROFILE_SCHEMA = "1";
 
 const profileState = {
+  pickerMode: "image",
   selectedAvatar: "pro",
   pendingAvatar: "pro",
   selectedSigil: "core",
   pendingSigil: "core",
+  selectedBadges: ["verified", "district", "zodiac", "sigil"],
+  pendingBadges: ["verified", "district", "zodiac", "sigil"],
   profileReady: false,
   serverReady: false,
   identityReady: false,
@@ -75,15 +78,36 @@ function setSigilPreview(selector, sigil) {
 }
 
 const avatarProfiles = {
-  pro: ["Image 1", "Images/Pro.png?v=3"],
-  "pro-1": ["Image 2", "Images/Pro (1).png?v=3"],
-  "pro-2": ["Image 3", "Images/Pro (2).png?v=3"],
-  "pro-3": ["Image 4", "Images/Pro (3).png?v=3"],
-  "pro-4": ["Image 5", "Images/Pro (4).png?v=3"],
-  "pro-5": ["Image 6", "Images/Pro (5).png?v=3"],
-  "pro-6": ["Image 7", "Images/Pro (6).png?v=3"],
-  "pro-7": ["Image 8", "Images/Pro (7).png?v=3"],
-  "pro-8": ["Image 9", "Images/Pro (8).png?v=3"]
+  pro: ["Male 1", "Images/Pro.png?v=4"],
+  "pro-5": ["Male 2", "Images/Pro (5).png?v=4"],
+  "pro-6": ["Male 3", "Images/Pro (6).png?v=4"],
+  "pro-c-2": ["Male 4", "Images/Pro C (2).png?v=4"],
+  "pro-gal-1": ["Male 5", "Images/Pro Gal (1).png?v=4"],
+  "pro-gal-4": ["Male 6", "Images/Pro Gal (4).png?v=4"],
+  "pro-1": ["Female 1", "Images/Pro (1).png?v=4"],
+  "pro-2": ["Female 2", "Images/Pro (2).png?v=4"],
+  "pro-3": ["Female 3", "Images/Pro (3).png?v=4"],
+  "pro-c-1": ["Female 4", "Images/Pro C (1).png?v=4"],
+  "pro-c-6": ["Female 5", "Images/Pro C (6).png?v=4"],
+  "pro-u-2": ["Female 6", "Images/Pro U (2).png?v=4"],
+  "pro-4": ["Legacy Female 4", "Images/Pro (4).png?v=4"],
+  "pro-7": ["Legacy Male 7", "Images/Pro (7).png?v=4"],
+  "pro-8": ["Legacy Male 8", "Images/Pro (8).png?v=4"]
+};
+
+const badgeProfiles = {
+  verified: "Verified",
+  district: "District",
+  zodiac: "Zodiac",
+  sigil: "Sigil",
+  xp: "XP",
+  stamina: "Stamina"
+};
+
+const pickerTitles = {
+  image: ["Profile Image", "Choose Profile Image"],
+  sigil: ["Profile Sigil", "Choose Sigil"],
+  badge: ["Profile Badges", "Choose Badges"]
 };
 
 function defaultProfileAvatar(sex) {
@@ -364,7 +388,21 @@ function syncProfilePreview() {
 }
 
 function syncAvatarWindow() {
-  const hasPending = Boolean(profileState.pendingAvatar && profileState.pendingSigil);
+  const mode = profileState.pickerMode || "image";
+  const badgeCount = profileState.pendingBadges.length;
+  const hasPending = mode === "image"
+    ? Boolean(profileState.pendingAvatar)
+    : mode === "sigil"
+      ? Boolean(profileState.pendingSigil)
+      : badgeCount > 0;
+  const title = pickerTitles[mode] || pickerTitles.image;
+  const windowNode = document.querySelector("[data-avatar-window]");
+  if (windowNode) windowNode.dataset.pickerMode = mode;
+  setText("[data-picker-kicker]", title[0]);
+  setText("[data-picker-title]", title[1]);
+  document.querySelectorAll("[data-picker-panel]").forEach((node) => {
+    node.hidden = node.dataset.pickerPanel !== mode;
+  });
   document.querySelectorAll("[data-avatar-image-option]").forEach((node) => {
     const avatar = normalizeProfileAvatar(node.dataset.avatarImageOption || "");
     node.classList.toggle("is-pending", avatar === profileState.pendingAvatar);
@@ -375,16 +413,27 @@ function syncAvatarWindow() {
     node.classList.toggle("is-pending", sigil === profileState.pendingSigil);
     node.classList.toggle("is-active", sigil === profileState.selectedSigil);
   });
+  document.querySelectorAll("[data-badge-option]").forEach((node) => {
+    const badge = String(node.dataset.badgeOption || "").trim().toLowerCase();
+    node.classList.toggle("is-pending", profileState.pendingBadges.includes(badge));
+    node.classList.toggle("is-active", profileState.selectedBadges.includes(badge));
+  });
   const chooseButton = document.querySelector("[data-avatar-choose]");
   if (chooseButton) chooseButton.disabled = !hasPending;
-  setText("[data-avatar-selection]", hasPending ? `${avatarLabel(profileState.pendingAvatar)} / ${sigilLabel(profileState.pendingSigil)} ready` : "No look selected");
+  let selectionText = "Nothing selected";
+  if (mode === "image" && hasPending) selectionText = `${avatarLabel(profileState.pendingAvatar)} ready`;
+  if (mode === "sigil" && hasPending) selectionText = `${sigilLabel(profileState.pendingSigil)} ready`;
+  if (mode === "badge" && hasPending) selectionText = `${badgeCount} badge${badgeCount === 1 ? "" : "s"} ready`;
+  setText("[data-avatar-selection]", selectionText);
 }
 
-function openAvatarWindow() {
+function openAvatarWindow(mode = "image") {
   const windowNode = document.querySelector("[data-avatar-window]");
   if (!windowNode) return;
+  profileState.pickerMode = mode;
   profileState.pendingAvatar = profileState.selectedAvatar;
   profileState.pendingSigil = profileState.selectedSigil;
+  profileState.pendingBadges = [...profileState.selectedBadges];
   syncAvatarWindow();
   windowNode.hidden = false;
   windowNode.classList.remove("is-opening");
@@ -397,6 +446,7 @@ function closeAvatarWindow() {
   if (!windowNode) return;
   profileState.pendingAvatar = profileState.selectedAvatar;
   profileState.pendingSigil = profileState.selectedSigil;
+  profileState.pendingBadges = [...profileState.selectedBadges];
   windowNode.classList.remove("is-opening");
   windowNode.hidden = true;
   syncAvatarWindow();
@@ -411,6 +461,23 @@ function setPendingAvatar(value) {
 function setPendingSigil(value) {
   const sigil = normalizeProfileSigil(value);
   profileState.pendingSigil = sigil;
+  syncAvatarWindow();
+}
+
+function setPendingBadge(value) {
+  const badge = String(value || "").trim().toLowerCase();
+  if (!badgeProfiles[badge]) return;
+  if (profileState.pendingBadges.includes(badge)) {
+    profileState.pendingBadges = profileState.pendingBadges.filter((item) => item !== badge);
+  } else {
+    profileState.pendingBadges = [...profileState.pendingBadges, badge].slice(0, 6);
+  }
+  syncAvatarWindow();
+}
+
+function setProfileBadges(values = profileState.pendingBadges) {
+  profileState.selectedBadges = values.filter((item) => badgeProfiles[item]).slice(0, 6);
+  profileState.pendingBadges = [...profileState.selectedBadges];
   syncAvatarWindow();
 }
 
@@ -441,9 +508,9 @@ function setProfileSigil(value) {
 }
 
 function choosePendingAvatar() {
-  if (!profileState.pendingAvatar || !profileState.pendingSigil) return;
-  setProfileAvatar(profileState.pendingAvatar);
-  setProfileSigil(profileState.pendingSigil);
+  if (profileState.pickerMode === "image") setProfileAvatar(profileState.pendingAvatar);
+  if (profileState.pickerMode === "sigil") setProfileSigil(profileState.pendingSigil);
+  if (profileState.pickerMode === "badge") setProfileBadges(profileState.pendingBadges);
   closeAvatarWindow();
 }
 
@@ -733,8 +800,18 @@ function setupProfilePreview() {
 }
 
 document.addEventListener("click", (event) => {
-  if (event.target.closest("[data-avatar-more]")) {
-    openAvatarWindow();
+  if (event.target.closest("[data-profile-image-open], [data-avatar-more]")) {
+    openAvatarWindow("image");
+    return;
+  }
+
+  if (event.target.closest("[data-sigil-open]")) {
+    openAvatarWindow("sigil");
+    return;
+  }
+
+  if (event.target.closest("[data-badge-open]")) {
+    openAvatarWindow("badge");
     return;
   }
 
@@ -747,6 +824,12 @@ document.addEventListener("click", (event) => {
   const avatarOption = event.target.closest("[data-avatar-option]");
   if (avatarOption) {
     setPendingSigil(avatarOption.dataset.avatarOption || "");
+    return;
+  }
+
+  const badgeOption = event.target.closest("[data-badge-option]");
+  if (badgeOption) {
+    setPendingBadge(badgeOption.dataset.badgeOption || "");
     return;
   }
 
@@ -769,7 +852,7 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("neura:tab-change", closeAvatarWindow);
 
 window.neuraProfile = Object.freeze({
-  build: 1030,
+  build: 1031,
   feature: PROFILE_FEATURE,
   payload: profilePayload,
   messages: () => ({

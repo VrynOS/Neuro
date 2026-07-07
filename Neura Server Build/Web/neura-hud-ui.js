@@ -1,7 +1,7 @@
 // =====================================================//
 // Name of script: neura-hud-ui
-// Build: 1053
-// Update: Stable Popup Windows
+// Build: 1055
+// Update: Button Anchored Flyouts
 // Pattern: Hud/Neura Hud UI.lsl -> Web/neura-build-1001.html -> Web/neura-hud-ui.css -> Web/neura-hud-ui.js
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
@@ -9,7 +9,7 @@
 
 const uiLinkPattern = Object.freeze({
   pattern: "UI_LSL_TO_HTML_CSS_JS",
-  build: 1053,
+  build: 1055,
   lsl: "Hud/Neura Hud UI.lsl",
   html: "Web/neura-build-1001.html",
   css: "Web/neura-hud-ui.css",
@@ -82,6 +82,14 @@ function openActionWindow(action) {
     panel.classList.toggle("is-active", panel.dataset.actionPanel === action);
   });
   if (windowNode) {
+    const sourceButton = document.querySelector(`[data-action="${action}"]`);
+    if (sourceButton) {
+      const rect = sourceButton.getBoundingClientRect();
+      const top = Math.max(12, Math.min(rect.bottom + 10, window.innerHeight - 332));
+      const right = Math.max(14, window.innerWidth - rect.right);
+      windowNode.style.setProperty("--action-top", `${top}px`);
+      windowNode.style.setProperty("--action-right", `${right}px`);
+    }
     windowNode.hidden = false;
     windowNode.classList.remove("is-opening");
     void windowNode.offsetWidth;

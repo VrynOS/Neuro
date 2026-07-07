@@ -1,13 +1,13 @@
 // =====================================================//
 // Name of script: Neura Profile Server
-// Build: 1019
-// Update: Save Profile Avatar Asset
+// Build: 1020
+// Update: Balanced Profile Avatar Assets
 // Date and time: 2026-07-02 00:00:00 -04:00
 // Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
 // =====================================================//
 
 string DISPLAY_TITLE = "Neura Profile Server";
-integer BUILD_NUMBER = 1019;
+integer BUILD_NUMBER = 1020;
 
 string FEATURE_ID = "NEURA_PROFILE";
 integer SCHEMA_VERSION = 1;
@@ -22,7 +22,7 @@ list SEX_VALUES = ["female", "male", "nonbinary"];
 list DISTRICT_VALUES = ["Chi-Core", "Eden Palms", "Camden Falls"];
 list ZODIAC_VALUES = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 list SIGIL_VALUES = ["core", "spark", "fire", "wave", "star", "moon", "sun", "leaf", "bolt", "gem", "crown", "shield"];
-list AVATAR_VALUES = ["pro", "pro-1", "pro-2", "pro-3", "pro-4", "pro-5", "pro-6", "pro-7", "pro-8"];
+list AVATAR_VALUES = ["pro", "pro-1", "pro-2", "pro-3", "pro-4", "pro-5", "pro-6", "pro-7", "pro-8", "pro-c-1", "pro-c-2", "pro-c-6", "pro-gal-1", "pro-gal-4", "pro-u-2"];
 
 integer gHandshakeReady = FALSE;
 string gLastError = "";
