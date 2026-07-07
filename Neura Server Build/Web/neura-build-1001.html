@@ -7,7 +7,7 @@
   <title>Neura Build 1001</title>
   <link rel="stylesheet" href="neura-hud-ui.css?v=1052">
   <link rel="stylesheet" href="neura-heart.css?v=1005">
-  <link rel="stylesheet" href="neura-profile.css?v=1011">
+  <link rel="stylesheet" href="neura-profile.css?v=1013">
   <link rel="stylesheet" href="neura-stats.css?v=1001">
   <link rel="stylesheet" href="neura-wallet.css?v=1014">
   <link rel="stylesheet" href="neura-health.css?v=1001">
@@ -159,51 +159,60 @@
       <article class="profile-shell" data-profile-shell data-profile-mode="setup" data-profile-server-ready="0">
         <section class="profile-layout">
           <section class="profile-card" data-profile-card>
+            <span data-profile-lock hidden>Locked</span>
             <div class="profile-identity">
               <div class="profile-avatar-frame" data-profile-avatar-frame>
                 <span class="profile-sigil-mark" data-profile-sigil-preview data-sigil="core">CORE</span>
               </div>
               <div class="profile-copy">
-                <span class="profile-title-line"><span class="profile-status-pill is-offline" data-profile-lock>Locked</span></span>
                 <strong data-profile-display>Profile Setup Required</strong>
-                <small><span data-profile-age>Age Not Set</span> / <span data-profile-sex>Sex Not Set</span></small>
-                <small>Role: <b data-profile-role>Not Set</b></small>
-                <small>District: <b data-profile-location>Not Set</b></small>
+                <div class="profile-detail-stack" aria-label="Profile identity details">
+                  <p><span>Age</span><b data-profile-age>Age Not Set</b></p>
+                  <p><span>Sex</span><b data-profile-sex>Sex Not Set</b></p>
+                  <p><span>Title</span><b data-profile-role>Not Set</b></p>
+                  <p><span>Location</span><b data-profile-location>Not Set</b></p>
+                </div>
               </div>
             </div>
 
-            <section class="profile-level" aria-label="Profile progression">
-              <span class="level-mark hud-icon icon-xp" aria-hidden="true"></span>
-              <div>
-                <div class="level-row"><span>Level <b data-profile-level>--</b></span><span><b data-profile-xp-current>--</b> / <b data-profile-xp-goal>--</b> XP</span></div>
-                <i><em data-profile-xp-bar></em></i>
-                <small><b data-profile-xp-needed>--</b> XP to next level <span data-profile-verified-note>Server Required</span> <span data-profile-xp-percent>--%</span></small>
-              </div>
+            <section class="profile-badges" aria-label="Profile badges">
+              <p class="profile-empty-badges">No badges added yet.</p>
             </section>
 
-            <section class="profile-zodiac" aria-label="Zodiac profile">
-              <div class="zodiac-body">
-                <span class="zodiac-orbit">
-                  <img class="zodiac-mark" alt="" data-zodiac-mark hidden>
-                  <span class="zodiac-empty" data-zodiac-empty>--</span>
-                </span>
-                <div class="zodiac-copy">
-                  <strong data-zodiac-name>Not Set</strong>
-                  <span>Element: <b data-zodiac-element>--</b></span>
-                  <span>Traits: <b data-zodiac-traits>--</b></span>
-                  <small data-zodiac-line>Waiting for server profile.</small>
+            <section class="profile-level profile-meter-card" aria-label="Profile progression">
+              <header class="profile-meter-head">
+                <span class="level-mark hud-icon icon-xp" aria-hidden="true"></span>
+                <div>
+                  <span>Experience</span>
+                  <strong>Level <b data-profile-level>--</b></strong>
                 </div>
+                <output><b data-profile-xp-current>--</b> / <b data-profile-xp-goal>--</b> XP</output>
+              </header>
+              <i aria-hidden="true"><em data-profile-xp-bar></em></i>
+              <div class="profile-meter-grid">
+                <small><span>Progress</span><b data-profile-xp-percent>--%</b></small>
+                <small><span>Next Level</span><b><span data-profile-xp-needed>--</span> XP</b></small>
+                <small><span>Status</span><b data-profile-verified-note>Server Required</b></small>
               </div>
+              <p class="profile-meter-note">Earn XP by wearing Neuro, using Camden systems, completing actions, and interacting with the world.</p>
             </section>
 
-            <section class="profile-stamina-panel" aria-label="Profile stamina">
-              <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
-              <div>
-                <div class="stamina-row"><span>Stamina Level <b data-profile-stamina-level>--</b></span><span><b data-profile-stamina-xp>--</b> / <b data-profile-stamina-xp-goal>--</b> XP</span></div>
-                <i><em data-profile-stamina-bar></em></i>
-                <small><span><b data-profile-stamina-xp-needed>--</b> XP to next stamina level</span><span data-profile-stamina-xp-percent>--%</span></small>
-                <small><span>Current</span><span><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></span></small>
+            <section class="profile-stamina-panel profile-meter-card" aria-label="Profile stamina">
+              <header class="profile-meter-head">
+                <span class="stamina-mark hud-icon icon-stamina" aria-hidden="true"></span>
+                <div>
+                  <span>Stamina</span>
+                  <strong>Level <b data-profile-stamina-level>--</b></strong>
+                </div>
+                <output><b data-profile-stamina>--</b> / <b data-profile-stamina-goal>--</b></output>
+              </header>
+              <i aria-hidden="true"><em data-profile-stamina-bar></em></i>
+              <div class="profile-meter-grid">
+                <small><span>Progress</span><b data-profile-stamina-xp-percent>--%</b></small>
+                <small><span>Stamina XP</span><b><span data-profile-stamina-xp>--</span> / <span data-profile-stamina-xp-goal>--</span> XP</b></small>
+                <small><span>Next Level</span><b><span data-profile-stamina-xp-needed>--</span> XP</b></small>
               </div>
+              <p class="profile-meter-note">Stamina reflects your active body endurance inside Camden Falls.</p>
             </section>
           </section>
 
@@ -224,8 +233,8 @@
                 <label>Role<input name="role" type="text" maxlength="24" placeholder="Role" autocomplete="off" autocapitalize="words" spellcheck="false"></label>
                 <label>District<select name="location"><option value="">Not Set</option><option value="Chi-Core">Chi-Core</option><option value="Eden Palms">Eden Palms</option><option value="Camden Falls">Camden Falls</option></select></label>
                 <label>Zodiac<select name="zodiac"><option value="">Not Set</option><option value="aries">Aries</option><option value="taurus">Taurus</option><option value="gemini">Gemini</option><option value="cancer">Cancer</option><option value="leo">Leo</option><option value="virgo">Virgo</option><option value="libra">Libra</option><option value="scorpio">Scorpio</option><option value="sagittarius">Sagittarius</option><option value="capricorn">Capricorn</option><option value="aquarius">Aquarius</option><option value="pisces">Pisces</option></select></label>
-                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#2fc7ff"></label>
-                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#061725"></label>
+                <label class="color-field">Accent Color<input name="accentColor" type="color" value="#d6b35f"></label>
+                <label class="color-field">Glossy Background<input name="backgroundColor" type="color" value="#171211"></label>
                 <input name="bio" type="hidden" value="">
                 <input name="stamina" type="hidden" value="100">
                 <input name="staminaGoal" type="hidden" value="100">
@@ -255,60 +264,44 @@
           <section class="profile-saved-panel" data-profile-saved-panel aria-label="Saved profile">
             <header>
               <div>
-                <span>Profile Matrix</span>
-                <strong>Server Synced</strong>
+                <span>Zodiac / Sigil</span>
+                <strong>Identity</strong>
               </div>
             </header>
 
-            <div class="profile-saved-grid">
-              <article data-profile-matrix-card="status">
-                <span>Profile Status</span>
-                <strong data-profile-view-status>Saved</strong>
-              </article>
-              <article data-profile-matrix-card="gate">
-                <span>Identity Gate</span>
-                <strong data-profile-view-gate>Complete</strong>
-              </article>
-              <article data-profile-matrix-card="server">
-                <span>Server Link</span>
-                <strong data-profile-view-server>Online</strong>
-              </article>
-              <article data-profile-matrix-card="sync">
-                <span>Last Sync</span>
-                <strong data-profile-view-updated>--</strong>
-              </article>
-            </div>
+            <section class="zodiac-showcase" aria-label="Zodiac profile">
+              <span class="zodiac-orbit zodiac-orbit-large">
+                <img class="zodiac-mark" alt="" data-zodiac-mark hidden>
+                <span class="zodiac-empty" data-zodiac-empty>--</span>
+              </span>
+              <div class="zodiac-copy">
+                <strong data-zodiac-name>Not Set</strong>
+                <span>Element: <b data-zodiac-element>--</b></span>
+                <span>Traits: <b data-zodiac-traits>--</b></span>
+                <p data-zodiac-story>Choose a zodiac sign to shape this resident identity.</p>
+              </div>
+            </section>
+
+            <section class="profile-right-badges" aria-label="Sigil badges">
+              <header>
+                <span>Badges</span>
+                <strong>Selected Energy</strong>
+              </header>
+              <p>No badges added yet.</p>
+            </section>
+
+            <section class="profile-selected-sigil" aria-label="Selected sigil">
+              <span class="profile-sigil-mark" data-profile-badge-sigil-mark data-sigil="core">CORE</span>
+              <div>
+                <span>Selected Sigil</span>
+                <strong data-profile-badge-sigil>Core</strong>
+                <small>Clean personal mark for this resident.</small>
+              </div>
+            </section>
 
             <footer>
               <button type="button" data-profile-edit>EDIT PROFILE</button>
             </footer>
-          </section>
-
-          <section class="profile-id-card" data-profile-id-card aria-label="Resident ID preview">
-            <header>
-              <span>Camden Falls</span>
-              <strong>Resident ID</strong>
-            </header>
-            <div class="profile-id-face">
-              <div class="profile-id-topline">
-                <span data-profile-id-status>Identity Pending</span>
-                <i aria-hidden="true"></i>
-              </div>
-              <strong data-profile-id-name>Profile Setup Required</strong>
-              <small data-profile-id-district>District Pending</small>
-              <div class="profile-id-lines">
-                <p><span>Role</span><b data-profile-id-role>Not Set</b></p>
-                <p><span>Sigil</span><b data-profile-id-sigil>Core</b></p>
-              </div>
-              <div class="profile-id-city" aria-hidden="true"></div>
-              <footer class="profile-id-verify">
-                <span class="profile-id-qr" aria-hidden="true"></span>
-                <div>
-                  <strong>Neura Verified</strong>
-                  <small data-profile-id-since>Resident Since 2026</small>
-                </div>
-              </footer>
-            </div>
           </section>
         </section>
       </article>
@@ -751,7 +744,7 @@
   </main>
   <script type="module" src="neura-hud-ui.js?v=1051"></script>
   <script type="module" src="neura-media-gateway.js?v=1006"></script>
-  <script type="module" src="neura-profile.js?v=1024"></script>
+  <script type="module" src="neura-profile.js?v=1026"></script>
   <script type="module" src="neura-stats.js?v=1004"></script>
   <script type="module" src="neura-wallet.js?v=1008"></script>
   <script type="module" src="neura-health.js?v=1001"></script>

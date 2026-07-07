@@ -1,0 +1,35 @@
+/* =====================================================//
+Name of script: neura-stats
+Build: 1001
+Update: Initial Stats Display Layer
+Date and time: 2026-07-02 00:00:00 -04:00
+Team: Jynx Glitch Violet.(TM) Jah-Vryn(TM) Jah'Vict(TM).
+// =====================================================*/
+
+.stats-panel {
+  --stats-accent: rgba(47, 199, 255, 0.72);
+}
+
+.stats-panel[data-stats-bridge="offline"] {
+  --stats-accent: rgba(180, 108, 255, 0.58);
+}
+
+.stat-row {
+  border-color: color-mix(in srgb, var(--stat-color, var(--accent)) 28%, rgba(210, 246, 255, 0.32));
+}
+
+.stat-row i b {
+  width: var(--stat-fill, 0%);
+}
+
+.stat-row[data-stat-state="empty"] {
+  opacity: 0.74;
+}
+
+.stat-row[data-stat-state="low"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 84, 105, 0.48), 0 0 20px rgba(255, 84, 105, 0.14);
+}
+
+.stat-row[data-stat-state="full"] {
+  box-shadow: inset 0 0 0 1px rgba(66, 255, 210, 0.34), 0 0 18px rgba(66, 255, 210, 0.12);
+}
